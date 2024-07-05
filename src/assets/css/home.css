@@ -1,0 +1,10 @@
+.home-page {
+    height: 70vh;
+  }
+  .home-head {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin: 150px auto;
+  }

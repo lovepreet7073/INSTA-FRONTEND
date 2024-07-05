@@ -1,0 +1,17 @@
+
+body {
+  height: 110vh;
+  background: url();
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  text-align: center;
+    /* background-image: url("https://img.freepik.com/free-vector/purple-background-design_1117-49.jpg?size=338&ext=jpg&ga=GA1.1.2116175301.1717977600&semt=ais_user"); */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0px;
+/* font-size: 24px; */
+font-family:Georgia, 'Times New Roman', Times, serif;
+  
+}

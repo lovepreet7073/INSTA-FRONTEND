@@ -1,0 +1,41 @@
+.Aboutpage{
+  border: 1px solid;
+  width: 29%;
+  margin: 12px auto;
+  padding: 15px;
+}
+.img-container{
+  width: max-content;
+  margin: 12px auto;
+  padding: 15px;
+}
+
+.img-container>img{
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+.err-msg-profile{
+  text-align: left;
+  color: red;
+  margin: 0px;
+}
+.edit-btn >svg{
+  position: absolute;
+  top: 31%;
+  right: 42%;
+}
+.edit-btn{
+  display: flex;
+}
+.btn-edit-profile{
+  background-color: #1773ea;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  font-weight: 750;
+  padding: 7px 10px;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 8px;
+}

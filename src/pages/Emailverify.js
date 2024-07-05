@@ -1,0 +1,67 @@
+import React, { useEffect, useState } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
+import Img from '../assets/images/successEmail.png';
+import "../assets/css/emailverify.css";
+
+const Emailverify = () => {
+  const [validUrl, setValidUrl] = useState("");
+  const [loading, setLoading] = useState(true);
+  const { id, token } = useParams();
+  useEffect(() => {
+    if (id && token) {
+      const verifyEmailUrl = async () => {
+
+        try {
+          const res = await fetch(`http://localhost:5000/verifyaccount/${id}/${token}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            }
+          });
+          setLoading(false)
+          if (res.status === 200) {
+            setValidUrl(true);
+
+          } else {
+            setValidUrl(false);
+          }
+        } catch (error) {
+          console.error("Verification error:", error);
+          setValidUrl(false);
+        }
+      };
+
+      verifyEmailUrl();
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <h4>Loading.....</h4>
+    )
+  }
+  return (
+    <div className='section'>
+      {validUrl ? (
+        <div className='email-container'>
+          <img src={Img} alt='Email Verification Success' />
+          <h1>Email verified successfully</h1>
+          <NavLink to="/login">
+            <button className='login-btn'>Log In</button>
+          </NavLink>
+        </div>
+      ) : (
+        <div className='invalid-sec'>
+          <h1>Invalid token </h1>
+          <p className="resend-part">
+         <NavLink to="/resend-confirmation" className="link">
+              Resend
+            </NavLink>
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Emailverify;

@@ -1,0 +1,142 @@
+.btn-part{
+  cursor: pointer;
+  font-weight: bolder;
+  padding: 8px 13px;
+  font-size: 0.8rem;
+ border: none;
+ color: white;
+ background: #0115eb;
+ transition: all 0.25 ease;
+ border-radius: 4px;
+ /* margin-left: 20px; */
+ }
+ .btn-part:hover{
+   transform: scale(1.1);
+   box-shadow: 0 10px 20px -10px #0115eb ;
+ }
+.section-allusers {
+  width: 40%;
+  height: 160vh;
+  padding: 18px;
+
+  margin: 12px auto;
+}
+.info-user-content {
+  color: black;
+}
+.para {
+  margin-top: 13px;
+  margin-left: 8px;
+}
+.user-part {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 40px 5px 10px;
+  width: 80%;
+  margin: auto;
+  border-radius: 15px;
+  align-items: center;
+  background: #fdecf3ad;
+  margin-top: 10px;
+  box-shadow: 0px 1px 3px 3px #f5eded4d;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.user-part:hover {
+  box-shadow:  inset 0px 1px 4px 3px rgb(235, 232, 234);
+}
+.img-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 27%;
+}
+.imgg > img {
+  border-radius: 50px;
+}
+.search-bar {
+  width: 90%;
+  text-align: center;
+  margin-left: 5%;
+  margin-bottom: 5%;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+  list-style-type: none;
+  margin-top: 20px;
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination li a {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  cursor: pointer;
+}
+
+.pagination li.active a {
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination li.previous a,
+.pagination li.next a {
+  padding: 5px 15px;
+}
+
+.pagination li a:hover {
+  background-color: #e9ecef;
+}
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.container-user-info {
+  animation: slideInFromTop 0.7s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.input-sec-allusers{
+  /* border: 1px solid lightgray; */
+  padding: 10px;
+  border-radius: 8px;
+width: 100%;
+border: none;
+}
+.search-bar{
+  display:flex;
+  align-items:center; border:1px solid grey;  border-radius: 8px;
+
+
+}
+.follow {
+  background-color: #007bff; /* Set to the color you want for the "Follow" state */
+}
+
+.following {
+  background-color: #28a745; /* Set to the color you want for the "Following" state */
+}
+

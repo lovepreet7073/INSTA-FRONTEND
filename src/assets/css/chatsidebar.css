@@ -1,0 +1,174 @@
+.chatsidebar {
+  width: 32%;
+  /* box-shadow: 0px 5px 14px -3px #dfdfdf; */
+  /* font-size: 25px; */
+  /* box-shadow: 1px 0px 0px 1px; */
+  background: inherit;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(70px);
+  padding: 3px;
+  background-color: rgba(255, 255, 255, 0.2); /* Adjust opacity as needed */
+  backdrop-filter: blur(10px); /* Adjust blur amount as needed */
+  border-right: 1px solid rgba(255, 255, 255, 0.2); /* Border for separation */
+  overflow-y: auto; /* Enable scrolling if content exceeds height */
+  z-index: 1000; /* Ensure sidebar stays above other content */
+  transition: background-color 0.3s ease;
+  
+}
+.chatsidebar {
+  width: 32%;
+  /* box-shadow: 0px 5px 14px -3px #dfdfdf; */
+  /* font-size: 25px; */
+  /* box-shadow: 1px 0px 0px 1px; */
+  background: inherit;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(70px);
+  padding: 3px;
+  background-color: rgb(255 255 255 / 43%);
+  backdrop-filter: blur(100px);
+  border-right: 1px solid rgb(235 226 226 / 20%);
+  overflow-y: auto;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+.header-chat {
+  background: #eee;
+  padding: 0px 8px 7px 4px;
+  /* border-radius: 7px; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-chat>img{
+    border-radius: 50%;
+}
+.input-sec {
+  border: 1px solid lightgray;
+  padding: 10px;
+  /* border-radius: 8px; */
+}
+.set-search{
+    display: flex;
+    align-items: center;
+}
+.set-search>span {
+  position: absolute;
+  left: 80%;
+}
+.active-chat-page{
+    background-color:#5186c2;
+    color: white;
+    box-shadow: none;
+  }
+  .nav-link-chatpage {
+    cursor: pointer;
+    cursor: pointer;
+    /* padding: 10px 11px 9px 10px; */
+    border-radius: 5px;
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    transition: background-color 0.3s ease;
+    /* justify-content: space-between; */
+  }
+  .nav-link-chatpage:hover {
+  /* background-color: #96f088; */
+  /* background-color:#bedbf6; */
+  box-shadow: inset 1px 1px 15px 4px #e6e5e4;}
+  .set-dot>img{
+    border: 1px solid #eb1377cc;
+    border-radius: 100px;
+  }
+.online-indicator{
+  color: black;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  /* margin-right: 95px; */
+  background-color: rgb(80, 236, 33);
+  border-radius: 30px;
+  padding: 1px 1px;
+  margin-left: -16px;
+  /* position: absolute;   
+  right: 91.6%;
+  top: 39%; */
+
+}
+.count{
+    background-color: red;
+    width: 15px;
+    height: 17px;
+    border-radius: 30px;
+   
+  }
+  .button__badge {
+    background-color: #fa3e3e;
+    border-radius: 2px;
+    color: white;
+    padding: 1px 3px;
+    font-size: 14px;
+    /* position: absolute; */
+    top: 20px;
+    right: 36px;
+  }
+/* Style for the dropdown button */
+.dropdown-side {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-side button {
+  background: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Badge for notification count */
+.button__badge {
+  background-color: red;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-size: 12px;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+}
+
+/* Dropdown menu */
+.dropdown-menu-side {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000; 
+  margin-top: 10px;
+  list-style-type: none;
+  padding: 0;
+  border-radius: 5px;
+  right: 33%;
+  
+
+}
+
+/* Dropdown menu items */
+.dropdown-item-sdie {
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 12px;
+}
+.lastMessage{
+  font-size: 12px;
+  margin-top: -20px;
+  margin-left: -5px;
+}
+.dropdown-item-side:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show dropdown menu when open */
+.dropdown-menu-side.show {
+  display: block;
+}

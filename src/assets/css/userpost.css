@@ -1,0 +1,11 @@
+.card-image> .profile-post-img {
+    height: 250px;
+ border-top-left-radius: 15px;
+ border-top-right-radius: 15px;
+}
+.set-icons{
+ 
+        display: flex;
+        justify-content: space-between;
+    
+}

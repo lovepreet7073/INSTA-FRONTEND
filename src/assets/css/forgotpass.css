@@ -1,0 +1,15 @@
+.btn-login {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btn-login.disabled {
+    background-color: #a0a0a0; /* Dim color for disabled button */
+    cursor: not-allowed;
+  }
+  
