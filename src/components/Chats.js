@@ -7,9 +7,10 @@ import { addNotification } from "../Reducer/notification";
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import moment from "moment";
+import UpdateGroup from "./UpdateGroup";
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare, selectedNotifications;
-const Chats = ({ setOnlineUsers, setLastMsg }) => {
+const Chats = ({ setOnlineUsers, setLastMsg,fetchAgain,setFetchAgain }) => {
   useEffect(() => {
     document.title = "Chats"
   }, [])
@@ -21,12 +22,13 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
   const [online, setOnline] = useState([])
   const [openPicker, setOpenPicker] = useState(false)
   const [socketConnected, setsocketConeected] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); 
   const notifications = useSelector(
     (state) => state.notifications.notifications
   );
   const userData = useSelector((state) => state.user.userData);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
-
+console.log(selectedChat,"wwwww")
   const getSender = (loginuser, users) => {
     const otherUser = users?.find((user) => user?._id !== loginuser?._id);
     return {
@@ -35,7 +37,9 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
     };
   };
   const dispatch = useDispatch();
-
+  const toggleModal = () => {
+    setIsUpdateModalOpen(!isUpdateModalOpen);
+  };
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", userData);
@@ -288,31 +292,51 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
           <div className="settings-tray">
             <div className="friend-drawer no-gutters friend-drawer--grey">
 
-              {selectedChat && (
-                <img
-                  className="profile-image"
-                  src={`http://localhost:5000/images/${getSender(userData, selectedChat.users).image
-                    }`}
-                  alt=""
-                />
-              )}
+        
+
+{selectedChat.isGroupChat ? (<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rUNxcDVPjBBWCPMIg6sXnvEE95gmls5Jk62kM1de5nxhSttej5SlaTLWMkO9Cd2ZzGQ&usqp=CAU"   className="profile-image"  width="53px"
+                    height="53px"/>) : (
+                  <img
+                    src={`http://localhost:5000/images/${getSender(userData, selectedChat.users).image}`}
+                    alt={`${selectedChat.users.name}'s profile`}
+                    width="53px"
+                    height="53px"
+                      className="profile-image"
+                  />
+                )}
+
+
+
+
+
               <div className="text">
 
-                {selectedChat && (
-                  <div>
-                    <h3 className="text-head">{getSender(userData, selectedChat.users).name}</h3>
-                    {online.some((OnlineUser) => OnlineUser.userId === selectedChat.users[1]._id) ? (
-                      <span className="" style={{ color: "green", fontSize: "12px" }}>Online</span>
-                    ):(
-                      <span className="" style={{ color: "red", fontSize: "12px" }}>offline</span>
-                    )}
-                  </div>
-                )}
+              {selectedChat && (
+  <div>
+    <h4>{selectedChat.isGroupChat ? selectedChat.chatName : getSender(userData, selectedChat.users).name}</h4>
+    {selectedChat.isGroupChat ? (
+      <span></span>
+    ) : (
+      <>
+        {online.some((OnlineUser) => OnlineUser.userId === selectedChat.users[1]._id) ? (
+          <span className="" style={{ color: "green", fontSize: "12px" }}>Online</span>
+        ) : (
+          <span className="" style={{ color: "red", fontSize: "12px" }}>Offline</span>
+        )}
+      </>
+    )}
+  </div>
+)}
+
 
               </div>
 
 
             </div>
+{selectedChat.isGroupChat ?(            
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" onClick={toggleModal} fill="#5f6368"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>):(
+  <></>
+)}
           </div>
           <div className="chat-panel">
             <div className="row no-gutters">
@@ -322,6 +346,9 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
             <div className="row">
               <div className="col-12">
                 <div className="messages">
+                {isUpdateModalOpen && (
+        <UpdateGroup isUpdateModalOpen={isUpdateModalOpen} setIsUpdateModalOpen={setIsUpdateModalOpen} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} fetchMessages={fetchMessages}/>
+      )}
                   <ScrollableChat messages={messages} handleDeleteForMe={handleDeleteForMe} handleDeleteForEveryone={handleDeleteForEveryone} />
 
                   {msgImg && (

@@ -113,3 +113,15 @@ export const EmailSchema = Yup.object().shape({
 
 });
 
+export const modelSchema = Yup.object().shape({
+  chatname: Yup.string()
+    .required("Enter ChatName!"),
+ 
+
+    users: Yup.string()
+    .required("Add users for create group!")
+
+
+
+});
+

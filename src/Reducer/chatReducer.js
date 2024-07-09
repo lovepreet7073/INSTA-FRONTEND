@@ -26,9 +26,13 @@ const chatSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+        updateSelectedUsers(state, action) {
+            // Assuming action.payload contains updated users array
+            state.selectedChat.users = action.payload;
+        },
     }
 });
 
-export const { openChat, closeChat, fetchChatsRequest, fetchChatsSuccess, fetchChatsFailure } = chatSlice.actions;
+export const { openChat, closeChat, fetchChatsRequest, fetchChatsSuccess, fetchChatsFailure,updateSelectedUsers } = chatSlice.actions;
 
 export const chatReducer = chatSlice.reducer;
