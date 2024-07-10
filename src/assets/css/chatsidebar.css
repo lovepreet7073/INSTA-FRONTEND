@@ -259,3 +259,36 @@
   padding: 11px;
   height: 8px;
 }
+.leave-btn{
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.users-list{
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.selected-user-list {
+  background-color: rgb(121 61 123);
+  color: white;
+  border-radius: 9px;
+  display: flex;
+  width: 45%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px;
+  height: 8px;
+  text-align: center;
+}
+.users-list-other {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,9 +1,9 @@
 import { React, useState } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import {
-    closeChat,updateSelectedUsers
+    closeChat, updateSelectedUsers
 } from "../Reducer/chatReducer";
-const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setFetchAgain ,fetchMessages}) => {
+const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setFetchAgain, fetchMessages }) => {
 
 
     const [search, setSearch] = useState('');
@@ -34,7 +34,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
             });
             if (response.ok) {
                 const updatedData = await response.json();
-                console.log(updatedData)
+                console.log(updatedData, "updated")
                 setFetchAgain(updatedData)
                 setUpdateGroupName("")
                 setIsUpdateModalOpen(false);
@@ -77,11 +77,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
     };
     const handleRemove = async (user1) => {
 
-        if (selectedChat.groupAdmin ||selectedChat.groupAdmin._id  !== userData._id) {
-            console.log("only admins can remove someone!",selectedChat.groupAdmin,userData._id)
-            alert("only admins can remove someone!")
-            return;
-        }
+       
         const dataUsers = {
             userId: user1._id,
             chatId: selectedChat._id,
@@ -98,11 +94,11 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data,'RRR')
+                console.log(data, 'RRR')
                 if (user1._id === userData._id) {
                     dispatch(closeChat());
                 } else {
-                    dispatch(updateSelectedUsers(data.users)); 
+                    dispatch(updateSelectedUsers(data.users));
 
                 }
                 setFetchAgain(data)
@@ -119,7 +115,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
     const handleAdduser = async (user1) => {
         if (selectedChat.users.find((u) => u._id === user1._id)) {
             console.log("user alreday in group")
-            alert("user alreday in group")
+            alert("user already in group")
             return;
         }
 
@@ -144,9 +140,10 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data,"vvvvv")
+                console.log(data, "vvvvv")
+                setFetchAgain(data)
                 dispatch(updateSelectedUsers(data.users));
-console.log(selectedUsers,"ppppp")
+                console.log(selectedUsers, "ppppp")
             } else {
                 throw new Error('Failed to add users');
             }
@@ -171,44 +168,58 @@ console.log(selectedUsers,"ppppp")
                                     {selectedChat.chatName}
                                 </h2>
 
-                                <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', justifyContent: "center", }}>
+                                <div className={selectedChat.groupAdmin === userData._id? `users-list`:`users-list-other`}>
                                     {selectedChat.users.map((u) => (
-                                        <div key={u._id} className="selected-user">
+                                        <div key={u._id} className={selectedChat.groupAdmin === userData._id? `selected-user`:`selected-user-list`}>
                                             <h6>{u.name}</h6>
-                                            <span style={{ cursor: 'pointer' }} onClick={() => handleRemove(u)}>
-                                                &times;
-                                            </span>
+                                            {selectedChat.groupAdmin !== userData._id ? (<>
+                                            </>) : (
+                                                <span style={{ cursor: 'pointer' }} onClick={() => handleRemove(u)}>
+                                                    &times;
+                                                </span>
+                                            )}
+
                                         </div>
                                     ))}
 
                                 </div>
+                                    {selectedChat.groupAdmin !== userData._id ? (<>
+                                    </>) :
+                                        (
+                                            <>
                                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                    <input
-                                        type="text"
-                                        placeholder="ChatName"
-                                        name="chatName"
 
-                                        value={updategroupName}
+
+                                                <input
+                                                    type="text"
+                                                    placeholder="ChatName"
+                                                    name="chatName"
+
+                                                    value={updategroupName}
+                                                    onChange={(e) => {
+                                                        setUpdateGroupName(e.target.value)
+                                                    }}
+
+                                                />
+                                                <button type="submit" style={{}} onClick={handleRename}>
+                                                    Update
+                                                </button>
+                                            </div>
+
+                                    <input
+                                        className='input-users'
+                                        type="text"
+                                        placeholder="Add Users to group"
+                                        name="users"
+                                        value={search}
                                         onChange={(e) => {
-                                            setUpdateGroupName(e.target.value)
+                                            handleSearch(e.target.value)
                                         }}
 
                                     />
-                                    <button type="submit" style={{}} onClick={handleRename}>
-                                        Update
-                                    </button>
-                                </div>
-                                <input
-                                    className='input-users'
-                                    type="text"
-                                    placeholder="Add Users to group"
-                                    name="users"
-                                    value={search}
-                                    onChange={(e) => {
-                                        handleSearch(e.target.value)
-                                    }}
+                                </>
+                                )}
 
-                                />
                                 {serachResult.map((user) => (
                                     <div
                                         key={user._id}

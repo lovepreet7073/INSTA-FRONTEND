@@ -9,7 +9,7 @@ import {
 import { removeNotification } from "../Reducer/notification";
 import moment from "moment";
 
-const ChatSidebar = ({ OnlineUsers, lastMsg,fetchAgain,setFetchAgain ,isModalOpen, setIsModalOpen}) => {
+const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalOpen, setIsModalOpen }) => {
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -19,7 +19,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg,fetchAgain,setFetchAgain ,isModalOpe
   const activeChat = useSelector((state) => state.chat.selectedChat);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const notifications = useSelector((state) => state.notifications.notifications);
-// State for modal visibility
+  // State for modal visibility
   // State for add users input
 
   const accessChat = async (userId) => {
@@ -100,8 +100,10 @@ const ChatSidebar = ({ OnlineUsers, lastMsg,fetchAgain,setFetchAgain ,isModalOpe
           if (!a.latestMessage || !b.latestMessage) return 0;
           return new Date(b.latestMessage.createdAt) - new Date(a.latestMessage.createdAt);
         });
-// setFetchAgain(sortedChats)
+        
+        // setFetchAgain(sortedChats)
         setUsers(sortedChats);
+       
       } else {
         throw new Error("Failed to fetch chats");
       }
@@ -161,7 +163,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg,fetchAgain,setFetchAgain ,isModalOpe
 
   return (
     <div className="chatsidebar">
-     
+
 
       <div className="header-chat">
         {userData.profileImage ? (
@@ -209,7 +211,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg,fetchAgain,setFetchAgain ,isModalOpe
                     key={index}
                     onClick={() => handleNotificationClick(notif)}
                   >
-                    {notif.chat.isGroupChat ? `New Message in ${notif.chat.chatName}`:`New message from ${getSender(userData,notif.chat.users).name}`}
+                    {notif.chat.isGroupChat ? `New Message in ${notif.chat.chatName}` : `New message from ${getSender(userData, notif.chat.users).name}`}
                   </li>
                 ))
               )}
@@ -278,8 +280,8 @@ const ChatSidebar = ({ OnlineUsers, lastMsg,fetchAgain,setFetchAgain ,isModalOpe
                   />
                 )}
                 {!user.isGroupChat && OnlineUsers.some((OnlineUser) => OnlineUser.userId === user.users[1]?._id) && (
-    <span className="online-indicator"></span>
-  )}
+                  <span className="online-indicator"></span>
+                )}
               </div>
               <div className="text" style={{ marginRight: "33px", marginTop: "-11px" }}>
                 <span>

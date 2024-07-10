@@ -8,9 +8,12 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import moment from "moment";
 import UpdateGroup from "./UpdateGroup";
+import {
+  closeChat,updateSelectedUsers
+} from "../Reducer/chatReducer";
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare, selectedNotifications;
-const Chats = ({ setOnlineUsers, setLastMsg,fetchAgain,setFetchAgain }) => {
+const Chats = ({fetchChats, setOnlineUsers, setLastMsg,fetchAgain,setFetchAgain }) => {
   useEffect(() => {
     document.title = "Chats"
   }, [])
@@ -55,6 +58,8 @@ console.log(selectedChat,"wwwww")
             ? { ...message, content: "This message has been deleted", ImageUrl: null }
             : message
         ));
+
+
     });
 
     socket.on("last message", (lastMsgData) => {
@@ -62,11 +67,13 @@ console.log(selectedChat,"wwwww")
     });
 
   }, [userData]);
+
   useEffect(() => {
     if (socket && userData?._id) {
       socket.emit("addUser", userData._id);
     }
   }, [userData]);
+
 
 
 
@@ -145,6 +152,43 @@ console.log(selectedChat,"wwwww")
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
   };
+  const handleRemove = async (user1) => {
+
+ 
+    const dataUsers = {
+        userId: user1._id,
+        chatId: selectedChat._id,
+    };
+
+    try {
+        const response = await fetch(`http://localhost:5000/user/api/groupremove`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('jwttoken')}`,
+            },
+            body: JSON.stringify(dataUsers),
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data,'RRR')
+            if (user1._id === userData._id) {
+                dispatch(closeChat());
+            } else {
+                dispatch(updateSelectedUsers(data.users)); 
+
+            }
+            setFetchAgain(data)
+            fetchMessages()
+        } else {
+            throw new Error('Failed to add users');
+        }
+    } catch (error) {
+        console.error('Error addding users:', error.message);
+    }
+
+};
+
 
   const fetchMessages = async () => {
     if (!selectedChat || !selectedChat._id) return;
@@ -239,17 +283,23 @@ console.log(selectedChat,"wwwww")
   };
 
   useEffect(() => {
+
+      socket.on('group created', () => {
+        fetchChats()
+      });
+    
     socket.on("message received", (newMessageReceived) => {
-      
+      console.log(newMessageReceived,'newMessageReceived')
       if (
         !selectedChatCompare ||
         selectedChatCompare?._id !== newMessageReceived?.chat?._id
-      ) {
+      ) { 
         if (
           !selectedNotifications.some(
             (notification) => notification._id === newMessageReceived._id
           )
         ) {
+          fetchChats();
           fetchMessages();
           dispatch(addNotification(newMessageReceived));
 
@@ -304,14 +354,8 @@ console.log(selectedChat,"wwwww")
                       className="profile-image"
                   />
                 )}
-
-
-
-
-
-              <div className="text">
-
-              {selectedChat && (
+          <div className="text">
+          {selectedChat && (
   <div>
     <h4>{selectedChat.isGroupChat ? selectedChat.chatName : getSender(userData, selectedChat.users).name}</h4>
     {selectedChat.isGroupChat ? (
@@ -333,10 +377,21 @@ console.log(selectedChat,"wwwww")
 
 
             </div>
-{selectedChat.isGroupChat ?(            
-<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" onClick={toggleModal} fill="#5f6368"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>):(
-  <></>
-)}
+            {selectedChat.isGroupChat ? (
+  // selectedChat.groupAdmin === userData._id ? (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      height="24px" 
+      viewBox="0 -960 960 960" 
+      width="24px" 
+      onClick={toggleModal} 
+      fill="#5f6368"
+    >
+      <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/>
+    </svg>
+
+) :(<></>) }
+
           </div>
           <div className="chat-panel">
             <div className="row no-gutters">

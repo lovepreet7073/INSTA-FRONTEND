@@ -2,26 +2,35 @@ import React, { useState ,useEffect} from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {  useDispatch } from "react-redux";
-
+import { useSelector } from "react-redux";
+import io from "socket.io-client";
 import {
 
   openChat,
 
 } from "../Reducer/chatReducer";
-const Modal = ({ isModalOpen, setIsModalOpen,setFetchAgain }) => {
+const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
   const [search, setSearch] = useState('');
   const [serachResult, setSerachResult] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+
   const modelSchema = Yup.object().shape({
     chatName: Yup.string().required('Enter Chat Name!'),
     // users: Yup.string().required('Add users for create group!'),
   });
- 
+
+
+
+
+
+  
+
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-
+  const ENDPOINT = "http://localhost:5000";
+  var socket = io(ENDPOINT);
   const handleSearch = async (event) => {
     const searchTerm = event.target.value;
     setSearch(searchTerm);
@@ -83,10 +92,12 @@ const Modal = ({ isModalOpen, setIsModalOpen,setFetchAgain }) => {
         });
         if (response.ok) {
           const newGroupChat = await response.json();
+          console.log(newGroupChat,"here")
           setFetchAgain(newGroupChat);
           dispatch(openChat(newGroupChat));
-          
+          socket.emit("create group", newGroupChat._id,newGroupChat.users);
           setIsModalOpen(false);
+          fetchChats()
         } else {
           throw new Error('Error creating group');
         }
@@ -194,3 +205,4 @@ const Modal = ({ isModalOpen, setIsModalOpen,setFetchAgain }) => {
 };
 
 export default Modal;
+ 
