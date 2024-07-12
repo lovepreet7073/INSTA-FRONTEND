@@ -1,18 +1,17 @@
 import { React, useState } from 'react'
 import { useSelector, useDispatch } from "react-redux";
-import {
-    closeChat, updateSelectedUsers
-} from "../Reducer/chatReducer";
-const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setFetchAgain, fetchMessages }) => {
+import { closeChat, updateSelectedUsers } from "../Reducer/chatReducer";
+import io from "socket.io-client";
+const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, fetchMessages }) => {
 
 
     const [search, setSearch] = useState('');
     const [serachResult, setSerachResult] = useState([]);
-    const [selectedUsers, setSelectedUsers] = useState([]);
     const [updategroupName, setUpdateGroupName] = useState([]);
     const selectedChat = useSelector((state) => state.chat.selectedChat);
     const userData = useSelector((state) => state.user.userData);
-    console.log(selectedChat, "select")
+    const ENDPOINT = "http://localhost:5000";
+    var socket = io(ENDPOINT);
     const dispatch = useDispatch()
     const toggleModal = () => {
         setIsUpdateModalOpen(!isUpdateModalOpen);
@@ -33,9 +32,10 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
                 body: JSON.stringify(formData),
             });
             if (response.ok) {
-                const updatedData = await response.json();
-                console.log(updatedData, "updated")
-                setFetchAgain(updatedData)
+                const updatedChat = await response.json();
+                console.log(updatedChat, "updated")
+                socket.emit('updateGroup', updatedChat)
+                setFetchAgain(updatedChat)
                 setUpdateGroupName("")
                 setIsUpdateModalOpen(false);
             } else {
@@ -44,10 +44,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
         } catch (error) {
             console.error('Error:', error.message);
         }
-
     }
-
-
 
     const handleSearch = async (searchTerm) => {
         setSearch(searchTerm);
@@ -77,7 +74,6 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
     };
     const handleRemove = async (user1) => {
 
-       
         const dataUsers = {
             userId: user1._id,
             chatId: selectedChat._id,
@@ -94,13 +90,8 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data, 'RRR')
-                if (user1._id === userData._id) {
-                    dispatch(closeChat());
-                } else {
-                    dispatch(updateSelectedUsers(data.users));
-
-                }
+                socket.emit('leaveGroup', data)
+                dispatch(closeChat());
                 setFetchAgain(data)
                 fetchMessages()
             } else {
@@ -112,16 +103,11 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
 
     };
 
+
     const handleAdduser = async (user1) => {
         if (selectedChat.users.find((u) => u._id === user1._id)) {
             console.log("user alreday in group")
             alert("user already in group")
-            return;
-        }
-
-        if (selectedChat.groupAdmin !== userData._id) {
-            console.log("only admins can add someone!", selectedChat.groupAdmin, userData._id)
-            alert("only admins can add someone!")
             return;
         }
         const dataUsers = {
@@ -140,10 +126,11 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data, "vvvvv")
                 setFetchAgain(data)
+                socket.emit("addUser", user1._id);
                 dispatch(updateSelectedUsers(data.users));
-                console.log(selectedUsers, "ppppp")
+                setSearch('');
+                setSerachResult([]);
             } else {
                 throw new Error('Failed to add users');
             }
@@ -154,6 +141,35 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
     }
 
 
+
+
+    const handleRemoveUser = async (userId) => {
+        const dataUsers = {
+            requesterId: selectedChat.groupAdmin,
+            chatId: selectedChat._id,
+        };
+
+        try {
+            const response = await fetch(`http://localhost:5000/user/api/userremove/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('jwttoken')}`,
+                },
+                body: JSON.stringify(dataUsers),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data, "check")
+                socket.emit('removeuserbyadmin', data.chat, userId);
+            } else {
+                throw new Error('Failed to add users');
+            }
+        } catch (error) {
+            console.error('Error addding users:', error.message);
+        }
+
+    };
     return (
         <div>
             {isUpdateModalOpen && (
@@ -168,13 +184,13 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
                                     {selectedChat.chatName}
                                 </h2>
 
-                                <div className={selectedChat.groupAdmin === userData._id? `users-list`:`users-list-other`}>
+                                <div className={selectedChat.groupAdmin === userData._id ? `users-list` : `users-list-other`}>
                                     {selectedChat.users.map((u) => (
-                                        <div key={u._id} className={selectedChat.groupAdmin === userData._id? `selected-user`:`selected-user-list`}>
+                                        <div key={u._id} className={selectedChat.groupAdmin === userData._id ? `selected-user` : `selected-user-list`}>
                                             <h6>{u.name}</h6>
                                             {selectedChat.groupAdmin !== userData._id ? (<>
                                             </>) : (
-                                                <span style={{ cursor: 'pointer' }} onClick={() => handleRemove(u)}>
+                                                <span style={{ cursor: 'pointer' }} onClick={() => handleRemoveUser(u._id)}>
                                                     &times;
                                                 </span>
                                             )}
@@ -183,11 +199,11 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
                                     ))}
 
                                 </div>
-                                    {selectedChat.groupAdmin !== userData._id ? (<>
-                                    </>) :
-                                        (
-                                            <>
-                                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                {selectedChat.groupAdmin !== userData._id ? (<>
+                                </>) :
+                                    (
+                                        <>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
 
 
                                                 <input
@@ -206,19 +222,19 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, fetchAgain, setF
                                                 </button>
                                             </div>
 
-                                    <input
-                                        className='input-users'
-                                        type="text"
-                                        placeholder="Add Users to group"
-                                        name="users"
-                                        value={search}
-                                        onChange={(e) => {
-                                            handleSearch(e.target.value)
-                                        }}
+                                            <input
+                                                className='input-users'
+                                                type="text"
+                                                placeholder="Add Users to group"
+                                                name="users"
+                                                value={search}
+                                                onChange={(e) => {
+                                                    handleSearch(e.target.value)
+                                                }}
 
-                                    />
-                                </>
-                                )}
+                                            />
+                                        </>
+                                    )}
 
                                 {serachResult.map((user) => (
                                     <div

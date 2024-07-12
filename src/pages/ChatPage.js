@@ -14,7 +14,6 @@ const ChatPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); 
   
   const dispatch = useDispatch();
-  console.log(fetchAgain,'fetch-again')
   useEffect(() => {
     fetchChats();
   }, []);
@@ -35,7 +34,6 @@ const ChatPage = () => {
       if (response.ok) {
         const data = await response.json();
          
-        console.log(data,"qqq")
         setSelectedUser(data);
         setFetchAgain(data) 
         dispatch(fetchChatsSuccess(data));

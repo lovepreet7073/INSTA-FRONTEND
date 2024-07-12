@@ -249,14 +249,14 @@
 }
 
 .selected-user {
-  background-color: rgb(10, 167, 10);
+  background-color: rgb(167 46 148);
   color: white;
-  border-radius: 17px;
+  border-radius: 11px;
   display: flex;
-  width: 41px;
+  width: 61px;
   align-items: center;
   justify-content: space-between;
-  padding: 11px;
+  padding: 13px;
   height: 8px;
 }
 .leave-btn{
@@ -291,4 +291,11 @@
   gap: 8px;
   justify-content: center;
   align-items: center;
+}
+.group-create-msg{
+
+    text-align: left;
+    color: red;
+    margin: 0px;
+    margin-left: 20px;
 }

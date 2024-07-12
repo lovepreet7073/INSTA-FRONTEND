@@ -14,7 +14,6 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
-  console.log(users, "users")
   const userData = useSelector((state) => state.user.userData);
   const activeChat = useSelector((state) => state.chat.selectedChat);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -108,7 +107,6 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
         throw new Error("Failed to fetch chats");
       }
     } catch (error) {
-      console.error("Error fetching chats:", error.message);
       dispatch(fetchChatsFailure(error.message));
     }
   };
@@ -134,7 +132,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
     sameSenderNotifications.forEach((notification) => {
       dispatch(removeNotification(notification._id));
     });
-
+ 
     dispatch(openChat(chat));
   };
 

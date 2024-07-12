@@ -7,7 +7,6 @@ import moment from "moment";
 const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }) => {
   const userId = useSelector((state) => state.user.userData._id);
   const [dropdownVisibility, setDropdownVisibility] = useState({});
-console.log(messages,"messages")
   const toggleDropdown = (messageId) => {
     setDropdownVisibility((prev) => ({
       ...prev,

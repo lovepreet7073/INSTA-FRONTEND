@@ -1,45 +1,33 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {  useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import io from "socket.io-client";
-import {
-
-  openChat,
-
-} from "../Reducer/chatReducer";
-const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
+import { openChat } from "../Reducer/chatReducer";
+const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
   const [search, setSearch] = useState('');
   const [serachResult, setSerachResult] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const ENDPOINT = "http://localhost:5000";
+  var socket = io(ENDPOINT);
+  const dispatch = useDispatch();
 
   const modelSchema = Yup.object().shape({
     chatName: Yup.string().required('Enter Chat Name!'),
-    // users: Yup.string().required('Add users for create group!'),
+    users: Yup.string().required('Add users for create group!'),
   });
-
-
-
-
-
-  
-
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-  const ENDPOINT = "http://localhost:5000";
-  var socket = io(ENDPOINT);
+
   const handleSearch = async (event) => {
     const searchTerm = event.target.value;
     setSearch(searchTerm);
-
     if (searchTerm === '') {
       setSerachResult([]);
       return;
     }
-
     try {
       const response = await fetch(
         `http://localhost:5000/api/users?search=${searchTerm}`,
@@ -61,7 +49,7 @@ const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
       console.error('Error searching users:', error.message);
     }
   };
-  const dispatch = useDispatch();
+
 
 
   const formik = useFormik({
@@ -75,7 +63,6 @@ const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
         formik.setFieldError("users", "Add at least two users to create a group");
         return;
       }
-
       const formData = {
         chatName: values.chatName,
         users: JSON.stringify(selectedUsers.map(user => user._id)),
@@ -92,10 +79,9 @@ const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
         });
         if (response.ok) {
           const newGroupChat = await response.json();
-          console.log(newGroupChat,"here")
           setFetchAgain(newGroupChat);
           dispatch(openChat(newGroupChat));
-          socket.emit("create group", newGroupChat._id,newGroupChat.users);
+          socket.emit("create group", newGroupChat._id, newGroupChat.users);
           setIsModalOpen(false);
           fetchChats()
         } else {
@@ -103,18 +89,21 @@ const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
         }
       } catch (error) {
         console.error('Error:', error.message);
-      } 
+      }
     },
   });
-  
+
 
   const handleRemove = (deleteUser) => {
     setSelectedUsers(selectedUsers.filter((sel) => sel._id !== deleteUser._id));
+
   };
 
   const handleselectedusers = (userToAdd) => {
     if (!selectedUsers.some((user) => user._id === userToAdd._id)) {
       setSelectedUsers([...selectedUsers, userToAdd]);
+      setSearch('');
+      setSerachResult([]);
     } else {
       formik.setFieldError("users", "user already added!");
     }
@@ -149,7 +138,7 @@ const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
                 onBlur={formik.handleBlur}
               />
               {formik.touched.chatName && formik.errors.chatName && (
-                <p className="err-msg-register">{formik.errors.chatName}</p>
+                <p className="group-create-msg" >{formik.errors.chatName}</p>
               )}
               <input
                 type="text"
@@ -163,7 +152,7 @@ const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
                 onBlur={formik.handleBlur}
               />
               {formik.touched.users && formik.errors.users && (
-                <p className="err-msg-register">{formik.errors.users}</p>
+                <p className="group-create-msg">{formik.errors.users}</p>
               )}
               <button type="submit" disabled={formik.isSubmitting}>
                 Create Chat
@@ -205,4 +194,3 @@ const Modal = ({ fetchChats,isModalOpen, setIsModalOpen,setFetchAgain }) => {
 };
 
 export default Modal;
- 
