@@ -165,7 +165,7 @@ const handleImageChange = (event) => {
               
 
 
-                <div className="col-md-6">
+                <div className="form-group">
                   <input
                     type="text"
                     value={formik.values.name}
@@ -181,7 +181,7 @@ const handleImageChange = (event) => {
 
             
 
-                <div className="col-md-6">
+                <div className="form-group">
                   <input
                     className="about-input"
                     type="text"
@@ -195,19 +195,20 @@ const handleImageChange = (event) => {
 
               
 
-                <div className="col-md-6">
+                <div className="form-group">
                   <input
                     type="text"
                     value={formik.values.mobile}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="mobile"
+                        className="form-control"
                   />
-                  {formik.touched.mobile && formik.errors.mobile && (
+                 
+                </div>
+                {formik.touched.mobile && formik.errors.mobile && (
                     <p className="err-msg-profile">{formik.errors.mobile}</p>
                   )}
-                </div>
-
               <div className="savebtn">
                 <button className="btn-edit-profile" type="submit">
                   Save

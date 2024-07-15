@@ -289,7 +289,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
                   {user._id == lastMsg.chatId ? (lastMsg.content ? lastMsg.content : lastMsg.image ? "Photo" : "") : renderLastMessage(user).content}
                 </p>
               </div>
-              <p className="time" style={{ fontSize: "11px" }}>
+              <p className="time" style={{ fontSize: "11px" ,marginLeft:"75px"}}>
                 {user._id == lastMsg.chatId ? lastMsg.time : renderLastMessage(user).time}
               </p>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import "../assets/css/userinfo.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
@@ -73,6 +73,7 @@ const Userinfo = () => {
   const [error, setError] = useState(null);
   const [isFollow, setIsFollow] = useState(false);
   const [followers, setFollowers] = useState();
+  const navigate = useNavigate();
   const loginUserId = useSelector((state) => state.user.userData._id);
   const fetchUserData = async () => {
     try {
@@ -138,7 +139,8 @@ const Userinfo = () => {
 
                   <div className="profile-info" style={{display:"flex"}}>
           <p> {userData.posts.length}  posts</p>
-          <p>{followers} followers</p>
+          <p >{followers} followers</p>
+          
           <p>{userData.following.length} following</p>
                   </div>
                  

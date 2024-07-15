@@ -4,7 +4,6 @@ import { closeChat, updateSelectedUsers } from "../Reducer/chatReducer";
 import io from "socket.io-client";
 const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, fetchMessages }) => {
 
-
     const [search, setSearch] = useState('');
     const [serachResult, setSerachResult] = useState([]);
     const [updategroupName, setUpdateGroupName] = useState([]);

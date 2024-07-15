@@ -169,7 +169,6 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
         }
       );
       const data = await response.json();
-
       setMessages(data);
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
@@ -188,8 +187,6 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
       });
       const data = await response.json();
       setMessages(data.allMessage);
-
-
       let updatedLastMsgData = null;
       if (data.allMessage.length > 0) {
         const lastMessage = data.allMessage[data.allMessage.length - 1];
@@ -202,13 +199,10 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
         };
       }
       setLastMsg(updatedLastMsgData);
-
       if (updatedLastMsgData) {
         socket.emit("last message", updatedLastMsgData);
       }
-
       socket.emit("deleteMessage", messageId);
-
     } catch (error) {
       console.error("Error deleting message for everyone:", error.message);
     }
@@ -223,14 +217,11 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
           "Content-Type": "application/json",
         },
       });
-
       if (!response.ok) {
         throw new Error("Failed to delete message for me");
       }
-
       const updatedMessages = messages.filter((message) => message._id !== messageId);
       setMessages(updatedMessages);
-
       const deletedMessage = messages.find((message) => message._id === messageId);
       if (deletedMessage) {
         const newLastMsg = updatedMessages.length > 0 ? updatedMessages[updatedMessages.length - 1] : null;
@@ -291,7 +282,7 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
           fetchMessages();
           dispatch(addNotification(newMessageReceived));
 
-        } 
+        }
       } else {
         fetchMessages();
         setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
@@ -310,10 +301,10 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
   if (!selectedChat) {
     return (
       <div className="container">
-        <div className="text-chat" style={{ margin: "90px" }}>
+        <div className="text-chat" style={{ marginTop:"20%"}}>
 
-          <h3>Click on a user to start a new chat</h3>
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrWBJV5mxAnv6tTdyfqYZouATuMLpgtZhgOg&s" alt="" />
+          <h1 style={{fontSize:"29px"}} className="lineUp">Click on a user to <br/> start a new chat</h1>
+          {/* <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZMXPxjiVSbkndmj8b7oOwoTWpYRTy_0JZZQ&s" alt="" /> */}
         </div>
       </div>
     );
@@ -328,9 +319,6 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
         <div className="col-md-12">
           <div className="settings-tray">
             <div className="friend-drawer no-gutters friend-drawer--grey">
-
-
-
               {selectedChat.isGroupChat ? (<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rUNxcDVPjBBWCPMIg6sXnvEE95gmls5Jk62kM1de5nxhSttej5SlaTLWMkO9Cd2ZzGQ&usqp=CAU" className="profile-image" width="53px"
                 height="53px" />) : (
                 <img
@@ -365,7 +353,7 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
 
             </div>
             {selectedChat.isGroupChat ? (
-           
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="24px"

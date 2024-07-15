@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import * as Yup from "yup"; // Import Yup for validation schema
+import * as Yup from "yup"; 
 import logo from "../assets/images/instalogo.jpg";
 import "../assets/css/forgotpass.css";
 
@@ -10,7 +10,6 @@ const ResendConfirmation = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Define validation schema using Yup
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email address")

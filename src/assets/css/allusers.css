@@ -16,11 +16,29 @@
  }
 .section-allusers {
   width: 40%;
-  height: 160vh;
+  /* height: 160vh; */
   padding: 18px;
 
   margin: 12px auto;
+  background: inherit;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(70px);
+  box-shadow: 0px 1px 3px 3px #f5eded4d;
+  transition: all 0.25s ease;
+  background: #f5f5f57d;
 }
+.postpage {
+  width: 27%;
+  margin: 72px auto;
+  padding: 24px;
+  box-shadow: 0px 1px 3px 3px #f5eded4d;
+  transition: all 0.25s ease;
+  background: #f5f5f57d;
+}
+
+
+
+
 .info-user-content {
   color: black;
 }
@@ -36,9 +54,9 @@
   margin: auto;
   border-radius: 15px;
   align-items: center;
-  background: #fdecf3ad;
+  background: #99999975;
   margin-top: 10px;
-  box-shadow: 0px 1px 3px 3px #f5eded4d;
+  box-shadow: 0px 1px 2px 1px #f5eded4d;
   transition: all 0.25s ease;
   cursor: pointer;
 }
@@ -74,7 +92,7 @@
 }
 
 .pagination li a {
-  padding: 5px 10px;
+  padding: 2px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   text-decoration: none;
@@ -87,13 +105,9 @@
   color: white;
 }
 
-.pagination li.previous a,
-.pagination li.next a {
-  padding: 5px 15px;
-}
 
 .pagination li a:hover {
-  background-color: #e9ecef;
+  background-color: #fdf5a7;
 }
 @keyframes slideInFromTop {
   from {

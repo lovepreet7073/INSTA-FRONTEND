@@ -30,10 +30,12 @@ const totalPages = Math.ceil(totalPosts / postsPerPage);
             </button>
           </li>
         ))}
-        <li
+        <li style={{fontSize:"11px"}}
           className={`page-item ${
             currentPage === totalPages ? "disabled" : ""
-          }`}
+          }`
+          
+        }
         >
           <button
             className="page-link"

@@ -148,6 +148,7 @@ const Allusers = () => {
             placeholder="Search by name"
             aria-label="Search"
             onChange={handleSerach}
+            style={{background:"none"}}
           />
           <span class="material-symbols-outlined">
             search
