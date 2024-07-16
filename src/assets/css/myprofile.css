@@ -2,12 +2,16 @@
   /* max-width: 600px; */
   margin: 10px auto;
 }
-.profile-frame{
+.profile-frame {
   display: flex;
-  width: max-content;
+  width: 39%;
   justify-content: space-evenly;
-  margin: auto;
-
+  margin: 25px auto;
+  box-shadow: 0px 1px 3px 3px #f5eded4d;
+  transition: all 0.25s ease;
+  background: #f5f5f57d;
+  padding: 12px;
+  border-radius: 12px;
 }
 .profile-pic>img {
   width: 160px;
@@ -33,10 +37,11 @@ padding: 0px 5px;
   border: 1px solid blue;
   color: blue;
   transition: 1s all ease;
-  /* padding:  4px; */
+  padding:  4px;
   border-radius: 5px;
   cursor: pointer;
   width: 17%;
+  background: transparent;
 }
 .btn-edit:hover{
   background-color: blue;
@@ -46,9 +51,10 @@ padding: 0px 5px;
   border: 1px solid green;
   color: green;
   transition: 1s all ease;
-  /* padding: 10px ; */
+  padding: 10px ;
   border-radius: 5px;
   cursor: pointer;
+  background: transparent;
   /* width: 100%; */
 }
 .btn-create-sec:hover{
@@ -59,9 +65,10 @@ padding: 0px 5px;
   border: 1px solid red;
   color: red;
   transition: 1s all ease;
-  /* padding: 5px ; */
+  padding: 5px ;
   border-radius: 5px;
   cursor: pointer;
+  background: transparent;
   /* width: 100%; */
 }
 .btn-passowrd-sec:hover{

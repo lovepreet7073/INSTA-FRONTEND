@@ -86,7 +86,7 @@ const handlecreatepost = ()=>{
           <p>{followers} followers</p>
           <p>{userData.following.length} following</p>
                   </div>
-                  <div className="all-btns" style={{display:"flex",justifyContent:"space-between"}}>
+                  <div className="all-btns" style={{display:"flex",justifyContent:"space-between",width:"110%",fontWeight:"bold"}}>
                   <button className="btn-edit" onClick={handleEdit}>  Edit <i className="bi bi-pencil"></i> </button>
                   <div></div>
                 <div>

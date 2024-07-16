@@ -18,7 +18,7 @@ export const Navbar = () => {
       const result = await Swal.fire({
         icon: "warning",
         title: "Are you sure?",
-        text: "Do you really want to log out?",
+        text: "Do you really want to log out?", 
         showCancelButton: true,
         confirmButtonText: "Yes, log out",
         cancelButtonText: "Cancel",

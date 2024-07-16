@@ -1,12 +1,14 @@
 
 body {
-  height: 110vh;
+  /* height: 110vh; */
   background: url();
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   text-align: center;
-    /* background-image: url("https://img.freepik.com/free-vector/purple-background-design_1117-49.jpg?size=338&ext=jpg&ga=GA1.1.2116175301.1717977600&semt=ais_user"); */
+    background-image: url("");
+    background: rgb(168,118,201);
+background: linear-gradient(130deg, rgba(168,118,201,1) 12%, rgba(255,118,118,1) 43%, rgba(226,190,77,1) 89%);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

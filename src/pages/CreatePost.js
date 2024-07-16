@@ -8,6 +8,8 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { CreatePostSchema } from "../components/Validations";
 const CreatePost = () => {
+  const inputRef = useRef(null);
+  const navigate = useNavigate();
   useEffect(()=>{
     document.title="Create Post"  
     },[])
@@ -16,8 +18,7 @@ const CreatePost = () => {
   const dispatch = useDispatch();
 
 
-  const inputRef = useRef(null);
-  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       title: "",

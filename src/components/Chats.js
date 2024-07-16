@@ -7,9 +7,14 @@ import { addNotification } from "../Reducer/notification";
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import moment from "moment";
+import UpdateGroup from "./UpdateGroup";
+import {
+  closeChat,
+  openChat
+} from "../Reducer/chatReducer";
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare, selectedNotifications;
-const Chats = ({ setOnlineUsers, setLastMsg }) => {
+const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     document.title = "Chats"
   }, [])
@@ -21,6 +26,8 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
   const [online, setOnline] = useState([])
   const [openPicker, setOpenPicker] = useState(false)
   const [socketConnected, setsocketConeected] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
   const notifications = useSelector(
     (state) => state.notifications.notifications
   );
@@ -35,7 +42,9 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
     };
   };
   const dispatch = useDispatch();
-
+  const toggleModal = () => {
+    setIsUpdateModalOpen(!isUpdateModalOpen);
+  };
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", userData);
@@ -43,6 +52,7 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
     socket.on("getUsers", (users) => {
       setOnlineUsers(users)
       setOnline(users)
+      fetchChats()
     });
     socket.on("messageDeleted", (deletedMessageId) => {
       setMessages((prevMessages) =>
@@ -51,6 +61,8 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
             ? { ...message, content: "This message has been deleted", ImageUrl: null }
             : message
         ));
+
+
     });
 
     socket.on("last message", (lastMsgData) => {
@@ -58,12 +70,12 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
     });
 
   }, [userData]);
+
   useEffect(() => {
     if (socket && userData?._id) {
       socket.emit("addUser", userData._id);
     }
   }, [userData]);
-
 
 
 
@@ -142,6 +154,7 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
     setNewMessage(e.target.value);
   };
 
+
   const fetchMessages = async () => {
     if (!selectedChat || !selectedChat._id) return;
     try {
@@ -156,7 +169,6 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
         }
       );
       const data = await response.json();
-
       setMessages(data);
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
@@ -175,8 +187,6 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
       });
       const data = await response.json();
       setMessages(data.allMessage);
-
-
       let updatedLastMsgData = null;
       if (data.allMessage.length > 0) {
         const lastMessage = data.allMessage[data.allMessage.length - 1];
@@ -189,18 +199,15 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
         };
       }
       setLastMsg(updatedLastMsgData);
-  
       if (updatedLastMsgData) {
         socket.emit("last message", updatedLastMsgData);
       }
-  
       socket.emit("deleteMessage", messageId);
-      
     } catch (error) {
       console.error("Error deleting message for everyone:", error.message);
     }
   };
-  
+
   const handleDeleteForMe = async (messageId) => {
     try {
       const response = await fetch(`http://localhost:5000/user/deleteforme/${messageId}`, {
@@ -210,14 +217,11 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
           "Content-Type": "application/json",
         },
       });
-
       if (!response.ok) {
         throw new Error("Failed to delete message for me");
       }
-
       const updatedMessages = messages.filter((message) => message._id !== messageId);
       setMessages(updatedMessages);
-
       const deletedMessage = messages.find((message) => message._id === messageId);
       if (deletedMessage) {
         const newLastMsg = updatedMessages.length > 0 ? updatedMessages[updatedMessages.length - 1] : null;
@@ -234,9 +238,37 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
     }
   };
 
+
+
   useEffect(() => {
+    socket.on('group created', () => {
+      fetchChats()
+    });
+
+    socket.on('userLeftGroup', (chat) => {
+      fetchChats()
+      dispatch(openChat(chat));
+    });
+    socket.on('UpdateGroup-name', (newChat) => {
+      fetchChats()
+      dispatch(openChat(newChat));
+    });
+
+    socket.on('userRemoved', ({ chat, removedUserId }) => {
+      fetchChats();
+      console.log("User removed from chat:", removedUserId);
+
+      const currentUserId = userData._id;
+
+      if (removedUserId === currentUserId) {
+        dispatch(closeChat());
+      } else {
+        dispatch(openChat(chat));
+      }
+    });
+
+
     socket.on("message received", (newMessageReceived) => {
-      
       if (
         !selectedChatCompare ||
         selectedChatCompare?._id !== newMessageReceived?.chat?._id
@@ -246,6 +278,7 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
             (notification) => notification._id === newMessageReceived._id
           )
         ) {
+          fetchChats();
           fetchMessages();
           dispatch(addNotification(newMessageReceived));
 
@@ -265,14 +298,13 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
     selectedNotifications = notifications;
   }, [selectedChat, notifications]);
 
-
   if (!selectedChat) {
     return (
       <div className="container">
-        <div className="text-chat" style={{ margin: "90px" }}>
+        <div className="text-chat" style={{ marginTop:"20%"}}>
 
-          <h3>Click on a user to start a new chat</h3>
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrWBJV5mxAnv6tTdyfqYZouATuMLpgtZhgOg&s" alt="" />
+          <h1 style={{fontSize:"29px"}} className="lineUp">Click on a user to <br/> start a new chat</h1>
+          {/* <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZMXPxjiVSbkndmj8b7oOwoTWpYRTy_0JZZQ&s" alt="" /> */}
         </div>
       </div>
     );
@@ -287,32 +319,54 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
         <div className="col-md-12">
           <div className="settings-tray">
             <div className="friend-drawer no-gutters friend-drawer--grey">
-
-              {selectedChat && (
+              {selectedChat.isGroupChat ? (<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rUNxcDVPjBBWCPMIg6sXnvEE95gmls5Jk62kM1de5nxhSttej5SlaTLWMkO9Cd2ZzGQ&usqp=CAU" className="profile-image" width="53px"
+                height="53px" />) : (
                 <img
+                  src={`http://localhost:5000/images/${getSender(userData, selectedChat.users).image}`}
+                  alt={`${selectedChat.users.name}'s profile`}
+                  width="53px"
+                  height="53px"
                   className="profile-image"
-                  src={`http://localhost:5000/images/${getSender(userData, selectedChat.users).image
-                    }`}
-                  alt=""
                 />
               )}
               <div className="text">
-
                 {selectedChat && (
                   <div>
-                    <h3 className="text-head">{getSender(userData, selectedChat.users).name}</h3>
-                    {online.some((OnlineUser) => OnlineUser.userId === selectedChat.users[1]._id) ? (
-                      <span className="" style={{ color: "green", fontSize: "12px" }}>Online</span>
-                    ):(
-                      <span className="" style={{ color: "red", fontSize: "12px" }}>offline</span>
+                    <h4>{selectedChat.isGroupChat ? selectedChat.chatName : getSender(userData, selectedChat.users).name}</h4>
+                    {selectedChat.isGroupChat ? (
+                      <span></span>
+                    ) : (
+                      <>
+                        {online.some((OnlineUser) => OnlineUser.userId === selectedChat.users[1]._id) ? (
+                          <span className="" style={{ color: "green", fontSize: "12px" }}>Online</span>
+                        ) : (
+                          <span className="" style={{ color: "red", fontSize: "12px" }}>Offline</span>
+                        )}
+                      </>
                     )}
                   </div>
                 )}
+
 
               </div>
 
 
             </div>
+            {selectedChat.isGroupChat ? (
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                onClick={toggleModal}
+                fill="#5f6368"
+              >
+                <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
+              </svg>
+
+            ) : (<></>)}
+
           </div>
           <div className="chat-panel">
             <div className="row no-gutters">
@@ -322,6 +376,9 @@ const Chats = ({ setOnlineUsers, setLastMsg }) => {
             <div className="row">
               <div className="col-12">
                 <div className="messages">
+                  {isUpdateModalOpen && (
+                    <UpdateGroup isUpdateModalOpen={isUpdateModalOpen} setIsUpdateModalOpen={setIsUpdateModalOpen} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} fetchMessages={fetchMessages} />
+                  )}
                   <ScrollableChat messages={messages} handleDeleteForMe={handleDeleteForMe} handleDeleteForEveryone={handleDeleteForEveryone} />
 
                   {msgImg && (

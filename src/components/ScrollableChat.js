@@ -7,7 +7,6 @@ import moment from "moment";
 const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }) => {
   const userId = useSelector((state) => state.user.userData._id);
   const [dropdownVisibility, setDropdownVisibility] = useState({});
-
   const toggleDropdown = (messageId) => {
     setDropdownVisibility((prev) => ({
       ...prev,
@@ -32,8 +31,10 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
       padding: "5px 15px",
       maxWidth: "75%",
       marginBottom: "10px",
+    
       borderRadius: message.sender?._id === userId ? "8px 0px 8px 8px" : "0px 8px 8px 8px",
       position: "relative",
+      
     };
 
     if (message.sender?._id === userId) {
@@ -83,7 +84,11 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
           <div style={{ display: "flex" }} key={message._id}>
         
             <span style={getMessageStyles(message, userId)}>
+              <div style={{display:"flex",justifyContent:"space-between"}}>
+            <span style={{fontSize:"11px",color:"#bc21c5",}}>~{message.sender.name}</span>
+
               <span onClick={() => toggleDropdown(message._id)}>
+
                 <svg
                   style={{ marginLeft: "90%", cursor: "pointer" }}
                   xmlns="http://www.w3.org/2000/svg"
@@ -103,8 +108,10 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
                   <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                 </svg>
               </span>
+              </div>
               {dropdownVisibility[message._id] && (
                 <div className={`dropdown-menu ${message.sender?._id !== userId ? 'dropdown-other' : ''}`}>
+                  
                   <button onClick={() => { handleDeleteForMe(message._id); closeDropdown(message._id); }}>
                     Delete for me
                   </button>
