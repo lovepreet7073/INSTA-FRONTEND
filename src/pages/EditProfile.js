@@ -95,28 +95,16 @@ const handleImageChange = (event) => {
   return (
     <>
       <div className="backpage" style={{display:"flex",margin:"20px"}}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="36"
-          height="36"
-          fill="#030303"
-          className="backpage-icon"
-          class="bi bi-arrow-left-circle-fill"
-          viewBox="0 0 16 16"
-          onClick={handleback}
-        >
-          <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
-        </svg>
-
+      
         <div className="Aboutpage">
           <div className="first-part">
-            <div className="edit-sec" onClick={() => inputref.current.click()}>
+            <div className="edit-sec" onClick={() => inputref.current.click()} style={{display:"flex",alignItems:"center"}}>
             <div className="img-container">
     {formik.values.profileImage ? (
         typeof formik.values.profileImage === "object" ? (
             <img src={URL.createObjectURL(formik.values.profileImage)} alt="Selected Profile" />
         ) : (
-            <img src={`http://localhost:5000/images/${formik.values.profileImage}`} alt="Profile" />
+            <img src={`http://localhost:5000/images/${formik.values.profileImage}`} alt="Profile"style={{width:"150px",height:"150px",borderRadius:"50%"}} />
         )
     ) : (
         <img
@@ -129,7 +117,7 @@ const handleImageChange = (event) => {
 </div>
 
 
-              <div className="edit-btn">
+              <div className="edit-btn" >
                 <input
                   type="file"
                   className="edit-btn-profile"
@@ -138,20 +126,8 @@ const handleImageChange = (event) => {
                   ref={inputref}
                   onChange={handleImageChange}
                 />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  className="bi bi-pencil-square"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                  <path
-                    fillRule="evenodd"
-                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
-                  />
-                </svg>
+                <button type="submit" className="btn btn-primary">Edit Profile Picture</button>
+            
               </div>
             </div>
           </div>
@@ -165,25 +141,26 @@ const handleImageChange = (event) => {
               
 
 
-                <div className="form-group">
+                <div className="input-control">
                   <input
                     type="text"
                     value={formik.values.name}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="name"
+                    className="form-control form-control-sm" 
                   />
                 </div>
                 {formik.touched.name && formik.errors.name && (
-                  <p className="err-msg-profile">{formik.errors.name}</p>
+                  <p className="err-msg-login">{formik.errors.name}</p>
                 )}
           
 
             
 
-                <div className="form-group">
+                <div className="input-control">
                   <input
-                    className="about-input"
+                 className="form-control form-control-sm" 
                     type="text"
                     value={formik.values.email}
                     onChange={formik.handleChange}
@@ -195,22 +172,22 @@ const handleImageChange = (event) => {
 
               
 
-                <div className="form-group">
+                <div className="input-control">
                   <input
                     type="text"
                     value={formik.values.mobile}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     name="mobile"
-                        className="form-control"
+                    className="form-control form-control-sm" 
                   />
                  
                 </div>
                 {formik.touched.mobile && formik.errors.mobile && (
-                    <p className="err-msg-profile">{formik.errors.mobile}</p>
+                    <p className="err-msg-login">{formik.errors.mobile}</p>
                   )}
-              <div className="savebtn">
-                <button className="btn-edit-profile" type="submit">
+              <div className="savebtn" >
+                <button className="btn btn-primary" type="submit" style={{width:"100%"}}>
                   Save
                 </button>
               </div>

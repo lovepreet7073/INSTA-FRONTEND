@@ -26,14 +26,15 @@ import ChatPage from "./pages/ChatPage";
 import ResetPassword from "./components/resetPassword";
 import Emailverify from "./pages/Emailverify";
 import ResendConfirmation from "./components/ResendConfirmation";
+import Videocall from "./components/Videocall";
+import Sidebar from "./components/Sidebar";
 export const UserContext = createContext();
+
 const App = () => {
-
-
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = localStorage.getItem("jwttoken");
+  
   const getUser = async () => {
     if (token) {
       try {
@@ -55,54 +56,57 @@ const App = () => {
         dispatch(setUserData(userData));
       } catch (error) {
         console.error(error);
-        navigate('/login'); }
+        navigate('/login');
+      }
     } else {
       navigate('/login');
     }
   };
+
   useEffect(() => {
     getUser();
   }, []);
 
   return (
-    <>
-      {token && <Navbar />}
-
-      <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/resetpassword/:token" element={<ResetPassword />} />
-        <Route path="/verifyaccount/:id/:token" element={<Emailverify />} />
-        <Route path="/resend-confirmation" element={<ResendConfirmation />} />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-
-        {token &&
-           <>
-        <Route path="/editprofile" element={<EditProfile />} />
-
-        <Route path="/createpost" element={<CreatePost />} />
-        <Route path="/updatepost" element={<UpdatePost />} />
-        <Route path="/allposts" element={<Allposts />} />
-        <Route path="/userinfo/:userId" element={<Userinfo />} />
-        <Route path="/pagination" element={<Pagination />} />
-        <Route path="/allusers" element={<Allusers />} />
-        <Route path="/userpost/:userId" element={<UserPost />} />
-        <Route path="/myprofile" element={<MyProfile />} />
-        <Route path="/password" element={<Password />} />
-        <Route path="/follow" element={<Follow />} />
-        <Route path="/chatpage" element={<ChatPage />} />
-        <Route path="/footer" element={<Footer />} />
-        </>
-}
-
-
-      </Routes>
-      {token && <Footer />}
-    </>
+    <div className="app-container d-flex">
+      {token ?    <Sidebar />:""}
+      <div className={` ${token ? "content flex-grow-1 bg-light" : "flex-grow-1 bg-light"}`}>
+        
+        <Routes>
+          {!token && (
+            <>
+              <Route path="/" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/resetpassword/:token" element={<ResetPassword />} />
+              <Route path="/verifyaccount/:id/:token" element={<Emailverify />} />
+              <Route path="/resend-confirmation" element={<ResendConfirmation />} />
+              <Route path="/forgotpassword" element={<ForgotPassword />} />
+            </>
+          )}
+          {token && (
+            <>
+              <Route path="/editprofile" element={<EditProfile />} />
+              <Route path="/createpost" element={<CreatePost />} />
+              <Route path="/updatepost" element={<UpdatePost />} />
+              <Route path="/allposts" element={<Allposts />} />
+              <Route path="/userinfo/:userId" element={<Userinfo />} />
+              <Route path="/pagination" element={<Pagination />} />
+              <Route path="/allusers" element={<Allusers />} />
+              <Route path="/userpost/:userId" element={<UserPost />} />
+              <Route path="/myprofile" element={<MyProfile />} />
+              <Route path="/password" element={<Password />} />
+              <Route path="/follow" element={<Follow />} />
+              <Route path="/chatpage" element={<ChatPage />} />
+              <Route path="/footer" element={<Footer />} />
+              <Route path="/videocall/:roomID" element={<Videocall />} />
+            </>
+          )}
+        </Routes>
+        {/* {token && <Footer />} */}
+      </div>
+    </div>
   );
 };
-
 
 export default App;

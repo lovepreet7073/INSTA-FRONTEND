@@ -1,9 +1,10 @@
 
-   .logo{
-    width: 10%;
-    object-fit: contain;
-    border-radius: 0px;
-   }
+.logo {
+  width: 68%;
+  object-fit: contain;
+  border-radius: 0px;
+  padding: 18px 0px 10px 1px;
+}
    .navbar{
     display: flex;justify-content: space-around;
     box-shadow: 1px 5px 5px #e0dcdc;
@@ -15,13 +16,13 @@
     display: flex;
     align-items: baseline;
    }
-   li{
+   /* li{
     list-style: none;
     font-size: 20px;
     transition: 0.6s all ease;
     padding: 1px 15px;
     color: black;
-   }
+   } */
    .nav-menu>a{
     text-decoration: none;
     /* color: black; */
@@ -46,14 +47,7 @@
    .nav-mobile{
     display: none;
    }  
-   .active {
-background-color: #fff;
-box-shadow: inset 0px 4px 7px -1px rgb(243 61 95 / 15%), inset 0px 0px 12px 0px rgb(231 114 96 / 32%);
-padding: 0.75rem;
-border-radius: 15px;
-color: red;
-/* font-weight: bold; */
-  }
+
 
    @media screen and (max-width:800px){
     #insta-logo{

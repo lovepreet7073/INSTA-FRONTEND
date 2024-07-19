@@ -77,7 +77,7 @@ const Login = () => {
   return (
     <>
       <div className="signIn">
-        <div>
+        <div className="login-section">
           <div className="login-form">
          <img className = "signUp-logo"src={logo} alt=""/>
 
@@ -88,7 +88,7 @@ const Login = () => {
           <div className="input-control">
                   <input
                     type="email"
-                    className="form-control"
+                    className="form-control form-control-sm" 
                     id="exampleInputEmail1"
                     placeholder="Email Address"
                     value={formik.values.email}
@@ -104,7 +104,7 @@ const Login = () => {
        <div className="input-control">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="form-control"
+                    className="form-control form-control-sm" 
                     id="exampleInputPassword1"
                     placeholder="Password"
                     name="password"
@@ -131,12 +131,12 @@ const Login = () => {
            <button
                 id="clk"
                 type="submit"
-                className={`btn-login ${loading ? "disabled" : ""}`}
+                className={`btn-login btn btn-primary${loading ? "disabled" : ""}`}
                 disabled={loading}
               >
                 {loading ? "loading.." : "Log In"}
               </button>
-                 <NavLink to ="/forgotpassword">Forgot Password? </NavLink>
+                 <NavLink to ="/forgotpassword" className="forgot-pass">Forgot Password? </NavLink>
               </form>
             </div>
 
@@ -145,7 +145,7 @@ const Login = () => {
               
               Don't have an account?
               <span style={{color:"blue",cursor:"pointer"}}>
-              <NavLink to="/register" className="link-login">
+              <NavLink to="/register" className="login-link">
                 SignUp
               </NavLink>
      

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import ChatSidebar from "../components/chatSidebar";
 import Chats from "../components/Chats";
 import "../assets/css/chat.css";
+import IncomingVideoCall from "../components/IncomingVideoCall";
 import { useDispatch } from "react-redux";
 import { fetchChatsSuccess } from "../Reducer/chatReducer";
 import Modal from "../components/Modal";
 const ChatPage = () => {
-
+  // const incomingVideoCall = useSelector((state) => state.call.incomingVideoCall);
   const [selectedUser, setSelectedUser] = useState(null);
   const [lastMsg, setLastMsg] = useState('');
   const [OnlineUsers, setOnlineUsers] = useState([]);
@@ -54,11 +55,13 @@ const ChatPage = () => {
         {isModalOpen && (
           <Modal fetchChats={fetchChats} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setFetchAgain={setFetchAgain} />
         )}
+     
         {selectedUser && (
           <Chats fetchChats={fetchChats} setLastMsg={setLastMsg} setOnlineUsers={setOnlineUsers} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
         )}
 
       </div>
+      {/* <IncomingVideoCall /> */}
     </div>
   );
 

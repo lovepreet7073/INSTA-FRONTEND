@@ -18,6 +18,7 @@ const Emailverify = () => {
               "Content-Type": "application/json",
             }
           });
+          console.log(res,"response")
           setLoading(false)
           if (res.status === 200) {
             setValidUrl(true);

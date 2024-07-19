@@ -58,15 +58,15 @@ export const Navbar = () => {
     if (isAuthorized) {
       return [
         <>
-          <NavLink to="/home">
+          {/* <NavLink to="/home">
             <li>Home</li>
-          </NavLink>
+          </NavLink> */}
 
           <NavLink to="/allusers">
             <li>All Users</li>
           </NavLink>
           <NavLink to="/allposts">
-            <li>All Posts</li>
+            <li>Home</li>
           </NavLink>
           <NavLink to="/chatpage">
             <li>Chat</li>

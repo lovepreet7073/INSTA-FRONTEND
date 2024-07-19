@@ -1,55 +1,8 @@
 .Aboutpage{
-  width: 29%;
-  margin: 12px auto;
-  padding: 15px;
-  box-shadow: 0px 1px 3px 3px #f5eded4d;
-  transition: all 0.25s ease;
-  background: #f5f5f57d;
-
-}
-
-.img-container {
-  width: max-content;
-  margin: -8px auto;
-  padding: 39px;
-}
-
-.img-container>img{
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-}
-.err-msg-profile{
-  text-align: left;
-  color: red;
-  margin: 0px;
-}
-.edit-btn >svg{
-  position: absolute;
-  top: 27%;
-  right: 42%;
-}
-.edit-btn{
-  display: flex;
-}
-.btn-edit-profile{
-  background-color: #1773ea;
-  border: none;
-  border-radius: 3px;
-  color: white;
-  font-weight: 750;
-  padding: 11px 10px;
-  width: 100%;
-  cursor: pointer;
-  margin-top: 8px;
-}
-.form-group>input{
-  border: none;
-  background: transparent;
-  width: 100%;
-}
-.form-group>input::placeholder {
-  font-weight: bold;
-  opacity: 0.5;
-  color: rgb(104, 98, 98);
+    padding: 17px;
+    padding-top: 1px;
+    border-radius: 1px;
+    max-width: 400px;
+    border: 1px solid rgb(219, 219, 219);
+    background-color: rgb(255, 255, 255);
 }

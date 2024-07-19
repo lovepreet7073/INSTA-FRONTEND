@@ -8,6 +8,8 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import moment from "moment";
 import UpdateGroup from "./UpdateGroup";
+import { setVideoCall ,setIncomingCall, endCall} from "../Reducer/callReducer";
+import { useNavigate } from "react-router-dom";
 import {
   closeChat,
   openChat
@@ -19,6 +21,7 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
     document.title = "Chats"
   }, [])
   const inputref = useRef(null);
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [msgImg, setMsgImg] = useState("");
@@ -27,13 +30,13 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
   const [openPicker, setOpenPicker] = useState(false)
   const [socketConnected, setsocketConeected] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-
+  const[currentCall,setCureentCall]=useState("");
   const notifications = useSelector(
     (state) => state.notifications.notifications
   );
   const userData = useSelector((state) => state.user.userData);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
-
+  const videoCall = useSelector((state) => state.call.videoCall);
   const getSender = (loginuser, users) => {
     const otherUser = users?.find((user) => user?._id !== loginuser?._id);
     return {
@@ -238,6 +241,45 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
     }
   };
 
+  const handleVideocall = () => {
+       
+    const roomID = Date.now().toString();
+    navigate(`/videocall/${roomID}`);
+    // const selectedUser = selectedChat.isGroupChat
+    //   ? null 
+    //   : getSender(userData, selectedChat.users);
+  
+    //   dispatch(setVideoCall({
+    //     type: 'outgoing',
+    //     user: selectedUser,
+    //     roomId: Date.now()
+        
+    //   }));
+  
+  };
+
+
+
+
+
+// useEffect(()=>{
+// if(videoCall?.type=== 'outgoing'){
+//   socket.current.emit("outgoing-video-call",{
+//     to:videoCall.id,
+//     from:{
+//       id:userData._id,
+//       profileImage:userData.profileImage,
+//       name:userData.name,
+//     },
+//     roomId:videoCall.roomId,
+//   });
+// }
+
+
+
+
+
+// },[videoCall]);
 
 
   useEffect(() => {
@@ -268,6 +310,10 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
     });
 
 
+
+  
+
+    
     socket.on("message received", (newMessageReceived) => {
       if (
         !selectedChatCompare ||
@@ -332,7 +378,7 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
               <div className="text">
                 {selectedChat && (
                   <div>
-                    <h4>{selectedChat.isGroupChat ? selectedChat.chatName : getSender(userData, selectedChat.users).name}</h4>
+                    <h4 style={{margin:"2px 0px 2px 0px"}}>{selectedChat.isGroupChat ? selectedChat.chatName : getSender(userData, selectedChat.users).name}</h4>
                     {selectedChat.isGroupChat ? (
                       <span></span>
                     ) : (
@@ -344,7 +390,7 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
                         )}
                       </>
                     )}
-                  </div>
+                  </div> 
                 )}
 
 
@@ -367,6 +413,8 @@ const Chats = ({ fetchChats, setOnlineUsers, setLastMsg, fetchAgain, setFetchAga
 
             ) : (<></>)}
 
+
+<svg xmlns="http://www.w3.org/2000/svg" style={{marginRight:"22px"}}height="34px" onClick={handleVideocall}viewBox="0 -960 960 960" width="34px" fill="#5f6368"><path d="M166.78-140.78q-44.3 0-75.15-30.85-30.85-30.85-30.85-75.15v-466.44q0-44.3 30.85-75.15 30.85-30.85 75.15-30.85h466.44q44.3 0 75.15 30.85 30.85 30.85 30.85 75.15V-540l160-160v440l-160-160v173.22q0 44.3-30.85 75.15-30.85 30.85-75.15 30.85H166.78Zm0-106h466.44v-466.44H166.78v466.44Zm0 0v-466.44 466.44Z"/></svg> 
           </div>
           <div className="chat-panel">
             <div className="row no-gutters">

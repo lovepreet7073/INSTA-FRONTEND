@@ -140,19 +140,17 @@ const Allusers = () => {
     <div>
       <h3 className="allusers-head"></h3>
 
-      <div className="section-allusers">
+      <div className="section-allusers ">
         <div className="search-bar" style={{}} >
-          <input
-            className="input-sec-allusers"
+        <i className="bi bi-search"></i>
+         <input
+             className="form-control form-control-sm" 
             type="search"
-            placeholder="Search by name"
+            placeholder="Search"
             aria-label="Search"
             onChange={handleSerach}
-            style={{background:"none"}}
-          />
-          <span class="material-symbols-outlined">
-            search
-          </span>
+            style={{background:"none",border:"none"}}
+          /> 
         </div>
         {users.length === 0 ? (
           <div className="err-msg">{error}</div>
@@ -171,7 +169,7 @@ const Allusers = () => {
                       />
                     ) : (
                       <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU"
+                        src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-image-gray-blank-silhouette-vector-illustration-305504015.jpg"
                         width="53px"
                         height="53px"
                         alt="Default Profile"
@@ -207,7 +205,7 @@ const Allusers = () => {
             ))}
           </div>
         )}
-        {currentUsers.length > 6 && (
+        {/* {currentUsers.length > 6 && (
           <ReactPaginate
             previousLabel={"<<"}
             nextLabel={">>"}
@@ -219,7 +217,7 @@ const Allusers = () => {
             containerClassName={"pagination"}
             activeClassName={"active"}
           />
-        )}
+        )} */}
       </div>
     </div>
   );

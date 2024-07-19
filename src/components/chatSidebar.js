@@ -16,6 +16,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
   const [searchResult, setSearchResult] = useState([]);
   const userData = useSelector((state) => state.user.userData);
   const activeChat = useSelector((state) => state.chat.selectedChat);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const notifications = useSelector((state) => state.notifications.notifications);
   // State for modal visibility
@@ -95,7 +96,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
 
       if (response.ok) {
         const data = await response.json();
-        const sortedChats = data.sort((a, b) => {
+        const sortedChats = data.sort((a, b) =>{ 
           if (!a.latestMessage || !b.latestMessage) return 0;
           return new Date(b.latestMessage.createdAt) - new Date(a.latestMessage.createdAt);
         });
@@ -272,7 +273,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
                   height="53px" />) : (
                   <img
                     src={`http://localhost:5000/images/${getSender(userData, user.users).image}`}
-                    alt={`${user.users.name}'s profile`}
+                    alt={`${getSender(userData, user.users).name}'s profile`}
                     width="53px"
                     height="53px"
                   />

@@ -15,8 +15,9 @@ const AllPosts = () => {
   const [error, setError] = useState("");
   const userData = useSelector((state) => state.user.userData);
   const postsPerPage = 3;
-
+console.log(posts,"posts")
   const fetchPosts = async (id) => {
+    setLoading(true)
     try {
       const response = await fetch(
         `http://localhost:5000/user/allposts/${id}`,
@@ -42,6 +43,8 @@ const AllPosts = () => {
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -101,19 +104,35 @@ const AllPosts = () => {
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
+console.log(currentPosts.length,"post:=")
   const handlePageChange = (data) => {
     setCurrentPage(data.selected + 1);
   };
 
   return (
-    <div className="header">
+
       <div className="home">
         <div className="card">
-          {currentPosts.length > 0 ? (
-            currentPosts.map((post) => (
-              <div className="ww" key={post._id}>
-                <div className="card-header">
+          {loading? (
+             Array.from({ length: postsPerPage }).map((_, index) => (
+              <div key={index} className="card-placeholder">
+                <div className="card-header-placeholder">
+                  <div className="card-pic-placeholder"></div>
+                  <div className="card-user-placeholder"></div>
+                </div>
+                <div className="card-image-placeholder"></div>
+                <div className="card-content-placeholder">
+                  <div className="card-title-placeholder"></div>
+                  <div className="card-text-placeholder"></div>
+                </div>
+              </div>
+              ))
+            ):(
+                <>
+          {posts.length > 0 ? (
+            posts.map((post) => (
+         <>
+                <div className="card-header" key={post._id}>
                   <div className="card-pic">
                     {post.userId && post.userId.profileImage ? (
                       <img
@@ -132,11 +151,15 @@ const AllPosts = () => {
                   </div>
                   <NavLink
                     className="info-user-content"
+                    style={{textDecoration:"none"}}
                     to={post.userId ? `/userinfo/${post.userId._id}` : "#"}
                   >
-                    <h3 className="name-of-user">
+                    <p className="name-of-user" style={
+                      {marginTop:"10px"}
+                    }>
                       {post.userId ? post.userId.name : "Unknown User"}
-                    </h3>
+                    </p>
+            
                   </NavLink>
                 </div>
                 <div className="card-image">
@@ -147,7 +170,7 @@ const AllPosts = () => {
                   />
                 </div>
                 <div className="card-content">
-                  <span>
+                  <span style={{display:"flex",alignItems:"center"}}>
                     {post?.likedBy?.includes(userData?._id) ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -175,28 +198,30 @@ const AllPosts = () => {
                         <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
                       </svg>
                     )}
-                    <p>{post.likes} Likes</p>
+                    <p style={{margin:"0px"}}>{post.likes} </p>
                   </span>
-                  <span>
-                    <p className="post-title">
-                      <strong>Title:</strong> {post.title}
-                    </p>
-                    <p className="post-des">
-                      <strong>Description:</strong> {post.description}
+                  <span style={{lineHeight:"16px"}}>
+                    <h6 className="card-title">
+                    {post.title}
+                    </h6>
+                    <p style={{marginBottom:"5px"}}className="card-text">
+                       {post.description}
                     </p>
                   </span>
                 </div>
-              </div>
+          </>
             ))
           ) : (
             <p style={{ textAlign: "center", marginTop: "20px" }}>
               {error || "No posts found"}
             </p>
           )}
+          </>
+        )}
           {/* Pagination */}
       
         </div>
-        {currentPosts.length > 0 && (
+        {/* {currentPosts.length > 0 && (
             <ReactPaginate
               previousLabel={"<"}
               nextLabel={">"}
@@ -208,9 +233,9 @@ const AllPosts = () => {
               containerClassName={"pagination"}
               activeClassName={"active-page"}
             />
-          )}
+          )} */}
       </div>
-    </div>
+
   );
 };
 
