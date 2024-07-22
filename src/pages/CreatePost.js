@@ -112,7 +112,7 @@ const CreatePost = () => {
                   className="edit-sec-post"
                   onClick={() => inputRef.current.click()}
                 >
-               <i class="bi bi-image-fill size"></i>
+               <i class="bi bi-image-fill size" style={{marginLeft:"80px",fontSize:"30px"}}></i>
                   <div className="edit-btn">
                     <input
                       type="file"

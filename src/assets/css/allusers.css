@@ -20,7 +20,7 @@
   border-radius: 8px;
   padding: 0px 10px;
   margin-bottom: 20px;
-  width: 44%;
+  width: 56%;
   /* max-width: 522px; */
   background-color: #fafafa;
 }
@@ -52,7 +52,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px;
-  /* border: 1px solid #ddd; */
+  border: 1px solid #ddd;
   border-radius: 10px;
   background-color: #fff;
 }

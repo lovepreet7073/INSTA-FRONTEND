@@ -98,13 +98,13 @@ const handleImageChange = (event) => {
       
         <div className="Aboutpage">
           <div className="first-part">
-            <div className="edit-sec" onClick={() => inputref.current.click()} style={{display:"flex",alignItems:"center"}}>
+            <div className="edit-sec"style={{display:"flex",alignItems:"center",gap:"12px"}}>
             <div className="img-container">
     {formik.values.profileImage ? (
         typeof formik.values.profileImage === "object" ? (
             <img src={URL.createObjectURL(formik.values.profileImage)} alt="Selected Profile" />
         ) : (
-            <img src={`http://localhost:5000/images/${formik.values.profileImage}`} alt="Profile"style={{width:"150px",height:"150px",borderRadius:"50%"}} />
+            <img src={`http://localhost:5000/images/${formik.values.profileImage}`} alt="Profile"style={{width:"100px",height:"100px",borderRadius:"50%"}} />
         )
     ) : (
         <img
@@ -117,7 +117,7 @@ const handleImageChange = (event) => {
 </div>
 
 
-              <div className="edit-btn" >
+              <div className="edit-btn"  onClick={() => inputref.current.click()}  >
                 <input
                   type="file"
                   className="edit-btn-profile"
@@ -134,14 +134,15 @@ const handleImageChange = (event) => {
 
           <div className="profilesection  emp-profile">
             <form
-              className="section-about"
+              // className="section-about"
               method="GET"
               onSubmit={formik.handleSubmit}
             >
               
 
 
-                <div className="input-control">
+                <div className="">
+                <label for="exampleInputEmail1" className="form-label" style={{fontSize:"14px",fontWeight:"600",margin:"0px",marginTop:"8px"}}>Name</label>
                   <input
                     type="text"
                     value={formik.values.name}
@@ -158,7 +159,8 @@ const handleImageChange = (event) => {
 
             
 
-                <div className="input-control">
+          <div className="">
+          <label for="exampleInputPassword1" class="form-label"style={{fontSize:"14px",fontWeight:"600",margin:"0px",marginTop:"8px"}}>Email Address</label>
                   <input
                  className="form-control form-control-sm" 
                     type="text"
@@ -172,7 +174,8 @@ const handleImageChange = (event) => {
 
               
 
-                <div className="input-control">
+                <div class="">
+                <label for="exampleInputPassword1" class="form-label" style={{fontSize:"14px",fontWeight:"600",margin:"0px",marginTop:"8px"}}>Mobile</label>
                   <input
                     type="text"
                     value={formik.values.mobile}
@@ -187,7 +190,7 @@ const handleImageChange = (event) => {
                     <p className="err-msg-login">{formik.errors.mobile}</p>
                   )}
               <div className="savebtn" >
-                <button className="btn btn-primary" type="submit" style={{width:"100%"}}>
+                <button className="btn btn-primary mt-2" type="submit" style={{width:"100%"}}>
                   Save
                 </button>
               </div>

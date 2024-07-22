@@ -28,6 +28,7 @@ import Emailverify from "./pages/Emailverify";
 import ResendConfirmation from "./components/ResendConfirmation";
 import Videocall from "./components/Videocall";
 import Sidebar from "./components/Sidebar";
+import ChatSidebar from "./components/chatSidebar";
 export const UserContext = createContext();
 
 const App = () => {
@@ -99,6 +100,7 @@ const App = () => {
               <Route path="/follow" element={<Follow />} />
               <Route path="/chatpage" element={<ChatPage />} />
               <Route path="/footer" element={<Footer />} />
+              <Route path="/chatsidebar" element={<ChatSidebar />} />
               <Route path="/videocall/:roomID" element={<Videocall />} />
             </>
           )}

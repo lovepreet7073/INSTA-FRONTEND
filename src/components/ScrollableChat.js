@@ -84,10 +84,10 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
           <div style={{ display: "flex" }} key={message._id}>
         
             <span style={getMessageStyles(message, userId)}>
-              <div style={{display:"flex",justifyContent:"space-between"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <span style={{fontSize:"11px",color:"#bc21c5",}}>~{message.sender.name}</span>
 
-              <span onClick={() => toggleDropdown(message._id)}>
+              {/* <span onClick={() => toggleDropdown(message._id)}>
 
                 <svg
                   style={{ marginLeft: "90%", cursor: "pointer" }}
@@ -107,21 +107,30 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
                   <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                   <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                 </svg>
-              </span>
-              </div>
-              {dropdownVisibility[message._id] && (
-                <div className={`dropdown-menu ${message.sender?._id !== userId ? 'dropdown-other' : ''}`}>
-                  
-                  <button onClick={() => { handleDeleteForMe(message._id); closeDropdown(message._id); }}>
+              </span> */}
+          
+       
+              <div className="dropdown">
+  <a className="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <i className="bi bi-three-dots-vertical" style={{fontSize:"14px",fontWeight:"500",color:"black"}}></i>
+  </a>
+
+  <ul className="dropdown-menu">
+    <li>
+    <button className="dropdown-item" onClick={() => { handleDeleteForMe(message._id); closeDropdown(message._id); }}>
                     Delete for me
                   </button>
-                  {message.sender?._id === userId && (
-                    <button onClick={() => { handleDeleteForEveryone(message._id,message.chat._id); closeDropdown(message._id); }}>
+     </li>
+    <li>
+    {message.sender?._id === userId && (
+    <button className="dropdown-item" onClick={() => { handleDeleteForEveryone(message._id,message.chat._id); closeDropdown(message._id); }}>
                       Delete for everyone
                     </button>
-                  )}
-                </div>
-              )}
+    )}
+      </li>
+  </ul>
+</div>
+</div>
               {message.content && <p style={{ margin: "0px" }}>{message.content}</p>}
 
               {message.ImageUrl && (

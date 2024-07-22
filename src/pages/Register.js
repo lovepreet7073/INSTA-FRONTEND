@@ -144,6 +144,7 @@ const Register = () => {
                   onBlur={formik.handleBlur}
                   name="name"
                 />
+                
               </div>
               {formik.touched.name && formik.errors.name && (
                 <p className="err-msg-register">{formik.errors.name}</p>
