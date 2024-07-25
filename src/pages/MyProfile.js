@@ -61,7 +61,7 @@ const handlecreatepost = ()=>{
                 {userData.profileImage ? (
                   <img
                     src={`http://localhost:5000/images/${userData.profileImage}`}
-                    alt={`${userData.name}'s profile`}
+                    
                     width="130px"
                     height="130px"
                   />

@@ -1,11 +1,14 @@
 .postpage-create {
-  padding: 17px;
-  padding-top: 1px;
+  padding: 15px;
+  /* padding-top: 1px; */
   border-radius: 1px;
-width: 38%;
-margin: auto;
+  width: 40%;
+  gap: 35px;
+  margin: auto;
+  display: flex;
   border: 1px solid rgb(219, 219, 219);
   background-color: rgb(255, 255, 255);
+  flex-direction: column;
 }
 .err-msg {
   color: red;
@@ -16,7 +19,7 @@ margin: auto;
 .edit-sec-post{
 border:  1px solid lightgrey;
     background-color: rgb(250, 250, 250);
-    padding: 50px;
+    padding: 70px;
     margin-left: 4px;
     margin-right: 4px;
 }

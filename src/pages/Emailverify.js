@@ -34,7 +34,7 @@ const Emailverify = () => {
 
       verifyEmailUrl();
     }
-  }, []);
+  }, [id,token]);
 
   if (loading) {
     return (

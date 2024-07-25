@@ -185,7 +185,7 @@ const Allusers = () => {
                     {user.profileImage ? (
                       <img
                         src={`http://localhost:5000/images/${user.profileImage}`}
-                        alt={`${user.name}'s profile`}
+                        // alt={`${user.name}'s profile`}
                         width="53px"
                         height="53px"
                         style={{objectFit:"cover"}}

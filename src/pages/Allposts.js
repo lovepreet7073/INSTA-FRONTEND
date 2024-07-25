@@ -121,7 +121,7 @@ console.log(posts.length,page,'check')
           next={() => setPage((prevPage) => prevPage + 1)}
           hasMore={hasMore}
           loader={
-            <div className="skeleton-wrapper">
+            <div className="skeleton-wrapper"  style={{textAlign:"left"}}>
               {Array.from({ length: postsPerPage }).map((_, index) => (
                 <div key={index} className="skeleton-card">
                   <Skeleton height={35} width={35} circle={true} />
@@ -138,7 +138,7 @@ console.log(posts.length,page,'check')
         >
           {posts.length > 0 ? (
             posts.map((post) => (
-              <div key={post._id}>
+              <div key={post._id} className="div-card">
                 <div className="card-header">
                   <div className="card-pic">
                     {post.userId && post.userId.profileImage ? (
@@ -174,7 +174,7 @@ console.log(posts.length,page,'check')
                   />
                 </div>
                 <div className="card-content">
-                  <span style={{ display: "flex", alignItems: "center" }}>
+                  <span style={{ display: "flex", alignItems: "center",gap:"5px" }}>
                     {post?.likedBy?.includes(userData?._id) ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -204,11 +204,9 @@ console.log(posts.length,page,'check')
                     )}
                     <p style={{ margin: "0px" }}>{post.likes}</p>
                   </span>
-                  <span style={{ lineHeight: "16px" }}>
+                  <span style={{ marginTop: "6px" }}>
                     <h6 className="card-title">{post.title}</h6>
-                    <p style={{ marginBottom: "5px" }} className="card-text">
-                      {post.description}
-                    </p>
+                    
                   </span>
                 </div>
               </div>

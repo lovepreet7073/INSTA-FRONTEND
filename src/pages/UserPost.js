@@ -85,8 +85,8 @@ console.log(posts,"posts")
       text: "Do you want to delete this post?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "No, cancel",
       reverseButtons: true,
     });
 
@@ -133,7 +133,7 @@ console.log(posts,"posts")
     <div className="home">
       <div className="card">
         {loading ? (
-            <div className="skeleton-wrapper">
+            <div className="skeleton-wrapper" style={{textAlign:"left"}}>
           
               <div  className="skeleton-card">
                 <Skeleton height={35} width={35} circle={true} />
@@ -155,7 +155,7 @@ console.log(posts,"posts")
           </div>
         ) : (
           posts.map((post, index) => (
-            <div className="card-image" key={index}>
+            <div className="card-image div-card" key={index}>
               {post.image && (
                 <img
                   src={`http://localhost:5000/${post.image.path}`}
@@ -165,7 +165,7 @@ console.log(posts,"posts")
               )}
               <div className="card-content">
                 <div className="set-icons">
-                  <span style={{ display: "flex", alignItems: "center",gap:"7px" }}>
+                <span style={{ display: "flex", alignItems: "center",gap:"5px" }}>
                     {post?.likedBy?.includes(loginUserId) ? (
                
                       <i class="bi bi-heart-fill" onClick={() => {
@@ -186,6 +186,7 @@ console.log(posts,"posts")
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           onClick={() => handleUpdateLink(post._id)}
+                          style={{marginRight:"15px"}}
                           width="24"
                           height="24"
                           viewBox="0 0 24 24"
@@ -227,8 +228,9 @@ console.log(posts,"posts")
                   </div>
                 </div>
                 <div className="des-title">
-                  <p className="post-title">{post.title}</p>
-                  <p className="post-des">{post.description}</p>
+                  <p className="post-title" style={{marginTop:"6px"}}
+                  >{post.title}</p>
+             
                 </div>
               </div>
             </div>

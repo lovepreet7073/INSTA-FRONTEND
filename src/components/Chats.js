@@ -39,6 +39,7 @@ const Chats = ({
   const notifications = useSelector(
     (state) => state.notifications.notifications
   );
+  console.log(notifications,"test")
   const userData = useSelector((state) => state.user.userData);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
   const videoCall = useSelector((state) => state.call.videoCall);
@@ -331,6 +332,7 @@ const Chats = ({
           fetchChats();
           fetchMessages();
           dispatch(addNotification(newMessageReceived));
+          console.log('Notification dispatched:', newMessageReceived);
         }
       } else {
         fetchMessages();
@@ -370,7 +372,7 @@ const Chats = ({
   return (
     <div className="container ">
       <div className="row no-gutters">
-        <div className="col-md-12">
+        <div className="col-md-12" >
           <div
             className="d-flex justify-content-between align-items-center"
             style={{ borderBottom: "1px solid grey", padding: "4px" }}
@@ -493,8 +495,8 @@ const Chats = ({
                         flexDirection: "column",
                         alignItems: "center",
                         position: "absolute",
-                        top: "53%",
-                        left: "80%",
+                        top: "55%",
+                      
                       }}
                     >
   

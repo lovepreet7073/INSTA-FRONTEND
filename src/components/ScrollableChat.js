@@ -153,7 +153,7 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
           
               <span
                 className="setTime"
-                style={{ fontSize: "11px", textAlign: "right", color: "#fd0808" }}
+                style={{ fontSize: "11px", textAlign: "right", color: "rgb(112 108 108 / 74%)" }}
               >
                 {formatTimestamp(message.createdAt)}
               </span>

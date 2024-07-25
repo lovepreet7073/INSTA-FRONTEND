@@ -81,7 +81,7 @@ const handleToggleVisibility = (field) => {
       <form onSubmit={formik.handleSubmit}>
         <div className="form-container">
           <h3>Change Password</h3>
-          <div className="input-control mt-2">
+          <div className="input-control passowrd-eye">
             <input
               type={passwordVisibility.showPassword ? "text" : "password"}
               className="form-control form-control-sm" 
@@ -92,7 +92,8 @@ const handleToggleVisibility = (field) => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            <span
+       
+                <span className="eye-icon"
                          onClick={() => handleToggleVisibility('showPassword')}
 
               style={{ cursor: "pointer" }}
@@ -114,7 +115,7 @@ const handleToggleVisibility = (field) => {
               <p className="err-msg-register">{formik.errors.password}</p>
             )}
           {/* New password input */}
-          <div className="input-control mt-2">
+          <div className="input-control passowrd-eye">
             <input
               type={passwordVisibility.showNewPassword ? "text" : "password"}
               className="form-control form-control-sm" 
@@ -125,7 +126,8 @@ const handleToggleVisibility = (field) => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            <span
+   
+                <span className="eye-icon"
                          onClick={() => handleToggleVisibility('showNewPassword')}
 
               style={{ cursor: "pointer" }}
@@ -146,7 +148,7 @@ const handleToggleVisibility = (field) => {
           {formik.touched.newPassword && formik.errors.newPassword && (
               <p className="err-msg-register">{formik.errors.newPassword}</p>
             )}
-            <div className="input-control mt-2">
+               <div className="input-control passowrd-eye">
             <input
           type={passwordVisibility.showConfirmPassword ? 'text' : 'password'}
           className="form-control form-control-sm" 
@@ -157,7 +159,8 @@ const handleToggleVisibility = (field) => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            <span
+       
+                <span className="eye-icon"
               onClick={() => handleToggleVisibility('showConfirmPassword')}
               style={{ cursor: "pointer" }}
             >
@@ -177,7 +180,7 @@ const handleToggleVisibility = (field) => {
           {formik.touched.confirmPassword && formik.errors.confirmPassword && (
               <p className="err-msg-register">{formik.errors.confirmPassword}</p>
             )}
-          <button type="submit" className="btn btn-primary" style={{width:"100%"}}>
+          <button type="submit" className="btn btn-primary mt-2" style={{width:"100%"}}>
             Save
           </button>
         </div>

@@ -91,3 +91,10 @@ width: 100%;
   cursor: pointer;
 
 }
+span.eye-icon {
+  position: absolute;
+  right: 7px;
+}
+.passowrd-eye {
+  position: relative;
+}

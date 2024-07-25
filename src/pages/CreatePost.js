@@ -103,7 +103,7 @@ const CreatePost = () => {
                     src={URL.createObjectURL(formik.values.postImg)}
                     alt="Selected"
                     className="selected-image"
-                    style={{width:"100%"}}
+                    style={{width:"370px",height:"310px"}}
                   />
                 </div>
               ) : (
@@ -112,12 +112,12 @@ const CreatePost = () => {
                   className="edit-sec-post"
                   onClick={() => inputRef.current.click()}
                 >
-               <i class="bi bi-image-fill size" style={{marginLeft:"80px",fontSize:"30px"}}></i>
+               <i class="bi bi-image-fill size" style={{fontSize:"30px"}}></i>
                   <div className="edit-btn">
                     <input
                       type="file"
                       className="input-control"
-                      name="postImg"
+                      name="postImg"SSS
                       style={{ display: "none" }}
                       ref={inputRef}
                       onChange={handleFileChange}
@@ -132,12 +132,12 @@ const CreatePost = () => {
                   <p className="err-msg-login">{formik.errors.postImg}</p>
                 )}
             <div className="setting">
-              <div className="input-control">
+              <div className="input-control mt-2">
                 <input
                   type="text"
                   className="form-control form-control-sm" 
                   id="exampleInputTitle"
-                  placeholder="Title"
+                  placeholder="Caption"
                   name="title"
                   value={formik.values.title}
                   onChange={formik.handleChange}
@@ -147,7 +147,7 @@ const CreatePost = () => {
               {formik.touched.title && formik.errors.title && (
                   <p className="err-msg-login">{formik.errors.title}</p>
                 )}
-              <div className="input-control">
+              {/* <div className="input-control">
                 <input
                   type="text"
                   className="form-control form-control-sm" 
@@ -161,9 +161,9 @@ const CreatePost = () => {
               </div>
               {formik.touched.description && formik.errors.description && (
                   <p className="err-msg-login">{formik.errors.description}</p>
-                )}
+                )} */}
               <button type="submit" className="btn btn-primary mt-3" style={{width:"100%"}}>
-                Submit Post
+                Submit
               </button>
             </div>
           </form>
