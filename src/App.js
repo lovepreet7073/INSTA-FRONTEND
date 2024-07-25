@@ -1,17 +1,15 @@
 import React, { createContext, useEffect } from "react";
-import { Navbar } from "./components/Navbar";
-import CreatePost from "./pages/CreatePost";
+import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUserData } from "./Reducer/UseReducer";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
-
-import "./App.css";
-import { useNavigate } from "react-router-dom";
-import { Routes, Route } from "react-router-dom"; // Import Routes component
+import CreatePost from "./pages/CreatePost";
 import Home from "./pages/Home";
 import EditProfile from "./pages/EditProfile";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "./Reducer/UseReducer";
 import UpdatePost from "./pages/UpdatePost";
 import Allposts from "./pages/Allposts";
 import Userinfo from "./components/Userinfo";
@@ -27,37 +25,39 @@ import ResetPassword from "./components/resetPassword";
 import Emailverify from "./pages/Emailverify";
 import ResendConfirmation from "./components/ResendConfirmation";
 import Videocall from "./components/Videocall";
-import Sidebar from "./components/Sidebar";
 import ChatSidebar from "./components/chatSidebar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
+
 export const UserContext = createContext();
 
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = localStorage.getItem("jwttoken");
-  
+
   const getUser = async () => {
     if (token) {
       try {
-        const res = await fetch('http://localhost:5000/user', {
-          method: 'GET',
+        const res = await fetch("http://localhost:5000/user", {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          credentials: 'include',
+          credentials: "include",
         });
 
         if (!res.ok) {
-          localStorage.removeItem('jwttoken'); // Remove invalid token if any
-          throw new Error('Failed to fetch user data');
+          localStorage.removeItem("jwttoken"); // Remove invalid token if any
+          throw new Error("Failed to fetch user data");
         }
 
         const userData = await res.json();
         dispatch(setUserData(userData));
       } catch (error) {
         console.error(error);
-        navigate('/login');
+        navigate("/login");
       }
     }
   };
@@ -68,13 +68,16 @@ const App = () => {
 
   return (
     <div className="app-container d-flex">
-      {token ?    <Sidebar />:""}
-      <div className={` ${token ? "content flex-grow-1 bg-light" : "flex-grow-1 bg-light"}`}>
-        
+      {token && <Sidebar />}
+      <div
+        className={`${
+          token ? "content flex-grow-1 " : "flex-grow-1 "
+        }`}
+      >
         <Routes>
+          <Route path="/" element={token ? <Navigate to="/allposts" /> : <Register />} />
           {!token && (
             <>
-              <Route path="/" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/resetpassword/:token" element={<ResetPassword />} />
@@ -85,25 +88,24 @@ const App = () => {
           )}
           {token && (
             <>
-              <Route path="/editprofile" element={<EditProfile />} />
-              <Route path="/createpost" element={<CreatePost />} />
-              <Route path="/updatepost" element={<UpdatePost />} />
-              <Route path="/allposts" element={<Allposts />} />
-              <Route path="/userinfo/:userId" element={<Userinfo />} />
-              <Route path="/pagination" element={<Pagination />} />
-              <Route path="/allusers" element={<Allusers />} />
-              <Route path="/userpost/:userId" element={<UserPost />} />
-              <Route path="/myprofile" element={<MyProfile />} />
-              <Route path="/password" element={<Password />} />
-              <Route path="/follow" element={<Follow />} />
-              <Route path="/chatpage" element={<ChatPage />} />
-              <Route path="/footer" element={<Footer />} />
-              <Route path="/chatsidebar" element={<ChatSidebar />} />
-              <Route path="/videocall/:roomID" element={<Videocall />} />
+              <Route path="/editprofile" element={<ProtectedRoute token={token}><EditProfile /></ProtectedRoute>} />
+              <Route path="/createpost" element={<ProtectedRoute token={token}><CreatePost /></ProtectedRoute>} />
+              <Route path="/updatepost" element={<ProtectedRoute token={token}><UpdatePost /></ProtectedRoute>} />
+              <Route path="/allposts" element={<ProtectedRoute token={token}><Allposts /></ProtectedRoute>} />
+              <Route path="/userinfo/:userId" element={<ProtectedRoute token={token}><Userinfo /></ProtectedRoute>} />
+              <Route path="/pagination" element={<ProtectedRoute token={token}><Pagination /></ProtectedRoute>} />
+              <Route path="/allusers" element={<ProtectedRoute token={token}><Allusers /></ProtectedRoute>} />
+              <Route path="/userpost/:userId" element={<ProtectedRoute token={token}><UserPost /></ProtectedRoute>} />
+              <Route path="/myprofile" element={<ProtectedRoute token={token}><MyProfile /></ProtectedRoute>} />
+              <Route path="/password" element={<ProtectedRoute token={token}><Password /></ProtectedRoute>} />
+              <Route path="/follow" element={<ProtectedRoute token={token}><Follow /></ProtectedRoute>} />
+              <Route path="/chatpage" element={<ProtectedRoute token={token}><ChatPage /></ProtectedRoute>} />
+              <Route path="/footer" element={<ProtectedRoute token={token}><Footer /></ProtectedRoute>} />
+              <Route path="/chatsidebar" element={<ProtectedRoute token={token}><ChatSidebar /></ProtectedRoute>} />
+              <Route path="/videocall/:roomID" element={<ProtectedRoute token={token}><Videocall /></ProtectedRoute>} />
             </>
           )}
         </Routes>
-        {/* {token && <Footer />} */}
       </div>
     </div>
   );

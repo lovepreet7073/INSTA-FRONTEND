@@ -40,3 +40,12 @@ gap: 13px;
 .setfield input {
   padding: 0px 64px 0px 8px;
 }
+.cross-svg{
+    cursor: pointer;
+    position: absolute;
+    right: 8px;
+    color: white;
+    background: white;
+    top: 27px;
+    border-radius: 20px;
+}

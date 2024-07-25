@@ -157,22 +157,7 @@ const UpdatePost = ({ post }) => {
                     {formik.touched.title && formik.errors.title && (
                             <p className="err-msg-login">{formik.errors.title}</p>
                         )}
-                    <div className="input-control">
-                        <input
-                            type="text"
-                            className="form-control form-control-sm"
-                            id="exampleInputDescription"
-                            placeholder="Description"
-                            name="description"
-                            value={formik.values.description}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        />
                
-                    </div>
-                    {formik.touched.description && formik.errors.description && (
-                            <p className="err-msg-login">{formik.errors.description}</p>
-                        )}
                       <button type="submit" className="btn btn-primary mt-3" style={{width:"100%"}}>
                   
                         Save

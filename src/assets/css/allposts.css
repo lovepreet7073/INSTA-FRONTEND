@@ -12,6 +12,7 @@
     margin: 25px auto;
     border :1px solid rgb(173,173,173);
     border: none;
+    background: none;
     /* border-radius: 5px; */
 }
 .card-header{
@@ -19,6 +20,7 @@
     align-items: center;
 padding: 2px 3px;
 background-color: white;
+border: none;
 }
 .card-header>h5{
     margin: 0;
@@ -39,7 +41,8 @@ background-color: white;
     text-align: left;
     line-height: 4px;
     padding: 2px 10px;
-    border-bottom: 1px solid rgb(173,173,173);
+    background-color: white;
+    /* border-bottom: 1px solid rgb(173,173,173); */
 }
 .ww {
     width: 30%;
@@ -124,3 +127,7 @@ background-color: white;
     border-radius: 4px;
     margin-bottom: 10px;
   }
+  .div-card {
+    border: 1px solid #c5c0c09e;
+    margin-bottom: 22px;
+}

@@ -54,11 +54,11 @@ const Register = () => {
         }
         if (response.status === 201) {
           Swal.fire({
-            title: 'Registration Successful!',
+            title: 'Registration Successfully!',
             text: 'Check your inbox for verification of your email.',
             icon: 'success',
             confirmButtonText: 'OK'
-          }).then(()=>navigate("/login")
+          }).then(() => navigate("/login")
           )
         }
       } catch (error) {
@@ -73,7 +73,7 @@ const Register = () => {
   const continueWithGoogle = (credentialResponse) => {
     console.log(credentialResponse);
     const jwtDetail = jwtDecode(credentialResponse.credential);
-    console.log(jwtDetail.email_verified,"verufy");
+    console.log(jwtDetail.email_verified, "verufy");
 
     fetch("http://localhost:5000/googleLogin", {
       method: "POST",
@@ -99,7 +99,7 @@ const Register = () => {
 
           // Show success popup
           Swal.fire({
-            title: 'Login Successful!',
+            title: 'Login Successfully',
             text: 'You have successfully logged in.',
             icon: 'success',
             confirmButtonText: 'OK'
@@ -135,7 +135,7 @@ const Register = () => {
               <div className="input-control">
                 <input
                   type="text"
-                 className="form-control form-control-sm" 
+                  className="form-control form-control-sm"
                   id="exampleInputname"
                   autoComplete="off"
                   placeholder="Name"
@@ -144,7 +144,7 @@ const Register = () => {
                   onBlur={formik.handleBlur}
                   name="name"
                 />
-                
+
               </div>
               {formik.touched.name && formik.errors.name && (
                 <p className="err-msg-register">{formik.errors.name}</p>
@@ -153,7 +153,7 @@ const Register = () => {
               <div className="input-control">
                 <input
                   type="email"
-                  className="form-control form-control-sm" 
+                  className="form-control form-control-sm"
                   id="exampleInputEmail1"
                   autoComplete="off"
                   value={formik.values.email}
@@ -170,7 +170,7 @@ const Register = () => {
               <div className="input-control">
                 <input
                   type="text"
-                  className="form-control form-control-sm" 
+                  className="form-control form-control-sm"
                   id="exampleInputmobile"
                   autoComplete="off"
                   placeholder="Mobile Number"
@@ -184,10 +184,11 @@ const Register = () => {
                 <p className="err-msg-register">{formik.errors.mobile}</p>
               )}
 
-              <div className="input-control">
+              <div className="input-control passowrd-eye">
+
                 <input
                   type={visibility.showPassword ? "text" : "password"}
-                  className="form-control form-control-sm" 
+                  className="form-control form-control-sm"
                   id="exampleInputPassword1"
                   placeholder="Password"
                   autoComplete="off"
@@ -196,7 +197,7 @@ const Register = () => {
                   onBlur={formik.handleBlur}
                   name="password"
                 />
-                <span
+                <span className="eye-icon"
                   onClick={() => handleToggleVisibility("showPassword")}
                   style={{ cursor: "pointer" }}
                 >
@@ -216,10 +217,10 @@ const Register = () => {
                 <p className="err-msg-register">{formik.errors.password}</p>
               )}
 
-              <div className="input-control">
+              <div className="input-control passowrd-eye">
                 <input
                   type={visibility.showConfirmPassword ? "text" : "password"}
-                  className="form-control form-control-sm" 
+                  className="form-control form-control-sm"
                   id="exampleInputconfirm"
                   placeholder="Confirm Password"
                   autoComplete="off"
@@ -228,8 +229,8 @@ const Register = () => {
                   onBlur={formik.handleBlur}
                   name="confirmPassword"
                 />
+                <span className="eye-icon"
 
-                <span
                   onClick={() => handleToggleVisibility("showConfirmPassword")}
                   style={{ cursor: "pointer" }}
                 >
@@ -288,7 +289,7 @@ const Register = () => {
             </span>
 
           </div>
-  
+
         </div>
       </div>
     </>
