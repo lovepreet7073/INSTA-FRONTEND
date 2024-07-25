@@ -144,7 +144,6 @@ const Userinfo = () => {
           <p>{userData.following.length} following</p>
                   </div>
                  
-                   <div className="set-btn">
                     <div className="button-sec">
                       <button
                         className={`btn-part ${userData.followers.includes(loginUserId) ? 'following' : 'follow'}`}
@@ -172,7 +171,6 @@ const Userinfo = () => {
                       </button>
                     </div>
                   </div> 
-                </div>
 
              
 
@@ -182,7 +180,9 @@ const Userinfo = () => {
       </div>
 
       <div className="userpost-sec">
-        <UserPost userId={userId} />
+     {isFollow ? (
+        <UserPost userId={userId} isFollow={isFollow}/>):(<></>)
+      }
       </div>
     </>
   );

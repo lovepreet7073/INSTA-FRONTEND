@@ -54,13 +54,13 @@ const ForgotPassword = () => {
   return (
     <div className="signIn">
       <div>
-        <div className="login-form">
+        <div className="forgot-form">
           <img className="signUp-logo" src={logo} alt="" />
           <form onSubmit={formik.handleSubmit}>
-            <div>
+            <div className="input-control">
               <input
                 type="email"
-                className="form-control"
+                className="form-control form-control-sm"
                 id="exampleInputEmail1"
                 placeholder="Enter Email Address"
                 value={formik.values.email}
@@ -77,9 +77,10 @@ const ForgotPassword = () => {
             )}
 
             <button
+            style={{width:"100%"}}
               id="clk"
               type="submit"
-              className={`btn-login ${loading ? "disabled" : ""}`}
+              className={`btn btn-primary mt-2 ${loading ? "disabled" : ""}`}
               disabled={loading}
             >
               {loading ? "Sending..." : "Send"}

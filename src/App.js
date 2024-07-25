@@ -59,8 +59,6 @@ const App = () => {
         console.error(error);
         navigate('/login');
       }
-    } else {
-      navigate('/login');
     }
   };
 

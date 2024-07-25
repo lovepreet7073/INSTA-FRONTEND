@@ -11,6 +11,7 @@ import UpdateGroup from "./UpdateGroup";
 import { setVideoCall, setIncomingCall, endCall } from "../Reducer/callReducer";
 import { useNavigate } from "react-router-dom";
 import { closeChat, openChat } from "../Reducer/chatReducer";
+import { styled } from "@chakra-ui/react";
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare, selectedNotifications;
 const Chats = ({
@@ -40,7 +41,6 @@ const Chats = ({
   );
   const userData = useSelector((state) => state.user.userData);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
-  console.log(selectedChat, "select-chat");
   const videoCall = useSelector((state) => state.call.videoCall);
   const getSender = (loginuser, users) => {
     const otherUser = users?.find((user) => user?._id !== loginuser?._id);
@@ -67,10 +67,10 @@ const Chats = ({
         prevMessages.map((message) =>
           message._id === deletedMessageId
             ? {
-                ...message,
-                content: "This message has been deleted",
-                ImageUrl: null,
-              }
+              ...message,
+              content: "This message has been deleted",
+              ImageUrl: null,
+            }
             : message
         )
       );
@@ -117,6 +117,7 @@ const Chats = ({
       setNewMessage("");
       setMsgImg("");
       setImgPreview("");
+      setOpenPicker(false)
       if (inputref.current) {
         inputref.current.value = null;
       }
@@ -246,12 +247,12 @@ const Chats = ({
         setLastMsg(
           newLastMsg
             ? {
-                id: newLastMsg._id,
-                content: newLastMsg.content,
-                chatId: newLastMsg.chat._id,
-                time: formatTimestamp(newLastMsg.createdAt),
-                image: newLastMsg.ImageUrl,
-              }
+              id: newLastMsg._id,
+              content: newLastMsg.content,
+              chatId: newLastMsg.chat._id,
+              time: formatTimestamp(newLastMsg.createdAt),
+              image: newLastMsg.ImageUrl,
+            }
             : null
         );
       }
@@ -306,7 +307,6 @@ const Chats = ({
 
     socket.on("userRemoved", ({ chat, removedUserId }) => {
       fetchChats();
-      console.log("User removed from chat:", removedUserId);
 
       const currentUserId = userData._id;
 
@@ -318,6 +318,7 @@ const Chats = ({
     });
 
     socket.on("message received", (newMessageReceived) => {
+      console.log("new-message", newMessageReceived)
       if (
         !selectedChatCompare ||
         selectedChatCompare?._id !== newMessageReceived?.chat?._id
@@ -372,38 +373,37 @@ const Chats = ({
         <div className="col-md-12">
           <div
             className="d-flex justify-content-between align-items-center"
-            style={{ borderBottom: "1px solid grey",padding:"4px" }}
+            style={{ borderBottom: "1px solid grey", padding: "4px" }}
           >
-            <div className="d-flex align-items-center">
-              <i className="bi bi-arrow-left" onClick={handleback}></i>
+            <div className="d-flex align-items-center" style={{ gap: "13px" }}>
+              <i className="bi bi-arrow-left" style={{ cursor: "pointer" }} onClick={handleback}></i>
               {selectedChat.isGroupChat ? (
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rUNxcDVPjBBWCPMIg6sXnvEE95gmls5Jk62kM1de5nxhSttej5SlaTLWMkO9Cd2ZzGQ&usqp=CAU"
                   className="profile-image"
                   width="53px"
                   height="53px"
-                  style={{borderRadius:"50px"}}
+                  style={{ borderRadius: "50px" }}
                 />
               ) : (
                 <img
-                  src={`http://localhost:5000/images/${
-                    getSender(userData, selectedChat.users).image
-                  }`}
+                  src={`http://localhost:5000/images/${getSender(userData, selectedChat.users).image
+                    }`}
                   alt={`${selectedChat.users.name}'s profile`}
                   width="53px"
                   height="53px"
                   className="profile-image"
-                  style={{borderRadius:"50px"}}
+                  style={{ borderRadius: "50px" }}
                 />
               )}
               <div className="text">
                 {selectedChat && (
                   <div className="ms-2">
-                    <h4 style={{ margin: "2px 0px 2px 0px" }}>
+                    <h5 style={{ margin: "2px 0px 2px 0px" }}>
                       {selectedChat.isGroupChat
                         ? selectedChat.chatName
                         : getSender(userData, selectedChat.users).name}
-                    </h4>
+                    </h5>
                     {selectedChat.isGroupChat ? (
                       <span></span>
                     ) : (
@@ -432,32 +432,35 @@ const Chats = ({
                 )}
               </div>
             </div>
-            {selectedChat.isGroupChat ? (
+
+            <div className="set-head">
+              {selectedChat.isGroupChat ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  onClick={toggleModal}
+                  fill="#5f6368"
+                >
+                  <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
+                </svg>
+              ) : (
+                <></>
+              )}
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                height="24px"
+                style={{ marginRight: "22px" }}
+                height="34px"
+                onClick={handleVideocall}
                 viewBox="0 -960 960 960"
-                width="24px"
-                onClick={toggleModal}
+                width="34px"
                 fill="#5f6368"
               >
-                <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
+                <path d="M166.78-140.78q-44.3 0-75.15-30.85-30.85-30.85-30.85-75.15v-466.44q0-44.3 30.85-75.15 30.85-30.85 75.15-30.85h466.44q44.3 0 75.15 30.85 30.85 30.85 30.85 75.15V-540l160-160v440l-160-160v173.22q0 44.3-30.85 75.15-30.85 30.85-75.15 30.85H166.78Zm0-106h466.44v-466.44H166.78v466.44Zm0 0v-466.44 466.44Z" />
               </svg>
-            ) : (
-              <></>
-            )}
-
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ marginRight: "22px" }}
-              height="34px"
-              onClick={handleVideocall}
-              viewBox="0 -960 960 960"
-              width="34px"
-              fill="#5f6368"
-            >
-              <path d="M166.78-140.78q-44.3 0-75.15-30.85-30.85-30.85-30.85-75.15v-466.44q0-44.3 30.85-75.15 30.85-30.85 75.15-30.85h466.44q44.3 0 75.15 30.85 30.85 30.85 30.85 75.15V-540l160-160v440l-160-160v173.22q0 44.3-30.85 75.15-30.85 30.85-75.15 30.85H166.78Zm0-106h466.44v-466.44H166.78v466.44Zm0 0v-466.44 466.44Z" />
-            </svg>
+            </div>
           </div>
           <div className="chat-panel">
             <div className="row no-gutters">
@@ -485,16 +488,16 @@ const Chats = ({
                   {msgImg && (
                     <div
                       style={{
-                        marginLeft: "10px",
-                        width: "15%",
+                     
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
                         position: "absolute",
-                        top: "56%",
-                        left: "25%",
+                        top: "53%",
+                        left: "80%",
                       }}
                     >
+  
                       <svg
                         className="cross-svg"
                         xmlns="http://www.w3.org/2000/svg"
@@ -531,17 +534,19 @@ const Chats = ({
                   <Picker data={data} onEmojiSelect={handleEmojiSelect} />
                 </div>
                 <div className="setfield">
-                  <button
-                    onClick={() => inputref.current.click()}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      display: "flex",
-                      justifyContent: "space-evenly",
-                    }}
-                  >
-                    <form>
-                      <i class="bi bi-paperclip"></i>
+                  <div className="icon-form">
+                    <button
+                      onClick={() => inputref.current.click()}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                      }}
+                    >
+
+                      <i class="bi bi-paperclip"
+                        style={{ fontSize: "20px" }}></i>
                       <input
                         type="file"
                         id="uploadImg"
@@ -549,15 +554,18 @@ const Chats = ({
                         ref={inputref}
                         onChange={handleImg}
                       />
-                    </form>
-                  </button>
 
-                  <i
-                    class="bi bi-emoji-smile"
-                    onClick={() => setOpenPicker(!openPicker)}
-                  ></i>
+                    </button>
 
-                  <form className="" style={{display:"flex"}} onSubmit={sendMessage}>
+                    <i
+                      class="bi bi-emoji-smile"
+                      style={{ fontSize: "20px", cursor: "pointer" }}
+                      onClick={() => setOpenPicker(!openPicker)
+
+                      }
+                    ></i>
+                  </div>
+                  <form className="form-input" style={{ display: "flex", gap: "12px", justifyContent: 'space-around' }} onSubmit={sendMessage}>
                     <input
                       class="form-control form-control-lg"
                       onChange={typingHandler}

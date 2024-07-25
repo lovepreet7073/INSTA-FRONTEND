@@ -104,7 +104,7 @@ const handleImageChange = (event) => {
         typeof formik.values.profileImage === "object" ? (
             <img src={URL.createObjectURL(formik.values.profileImage)} alt="Selected Profile" />
         ) : (
-            <img src={`http://localhost:5000/images/${formik.values.profileImage}`} alt="Profile"style={{width:"100px",height:"100px",borderRadius:"50%"}} />
+            <img src={`http://localhost:5000/images/${formik.values.profileImage}`} alt="Profile"style={{width:"140px",height:"140px",borderRadius:"50%"}} />
         )
     ) : (
         <img

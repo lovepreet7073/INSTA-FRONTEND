@@ -74,29 +74,17 @@ const handleToggleVisibility = (field) => {
   };
   return (
     <>
-         <div className="backpage" style={{display:"flex",margin:"50px"}}>
-  <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="36"
-          height="36"
-          fill="#030303"
-          className="backpage-icon"
-          class="bi bi-arrow-left-circle-fill"
-          viewBox="0 0 16 16"
-          onClick={handleback}
-        >
-          <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
-        </svg>
+        
+ 
     <div className="password">
      
       <form onSubmit={formik.handleSubmit}>
         <div className="form-container">
-          <h2>Change Password</h2>
-
-          <div className="form-group">
+          <h3>Change Password</h3>
+          <div className="input-control mt-2">
             <input
               type={passwordVisibility.showPassword ? "text" : "password"}
-              className="form-control"
+              className="form-control form-control-sm" 
               id="password"
               placeholder="Password"
               name="password"
@@ -111,7 +99,7 @@ const handleToggleVisibility = (field) => {
             >
               {passwordVisibility.showPassword ? (
                 <svg viewBox="0 0 24 24" width="20" height="20">
-                  <path d="M23.8,11.478c-.13-.349-3.3-8.538-11.8-8.538S.326,11.129.2,11.478L0,12l.2.522c.13.349,3.3,8.538,11.8,8.538s11.674-8.189,11.8-8.538L24,12ZM12,18.085c-5.418,0-8.041-4.514-8.79-6.085C3.961,10.425,6.585,5.915,12,5.915S20.038,10.424,20.79,12C20.038,13.576,17.415,18.085,12,18.085Z" />
+                  <path d="M22.8,11.478c-.13-.349-3.3-8.538-11.8-8.538S.326,11.129.2,11.478L0,12l.2.522c.13.349,3.3,8.538,11.8,8.538s11.674-8.189,11.8-8.538L24,12ZM12,18.085c-5.418,0-8.041-4.514-8.79-6.085C3.961,10.425,6.585,5.915,12,5.915S20.038,10.424,20.79,12C20.038,13.576,17.415,18.085,12,18.085Z" />
                   <circle cx="12" cy="12" r="4" />
                 </svg>
               ) : (
@@ -123,13 +111,13 @@ const handleToggleVisibility = (field) => {
            
           </div>
           {formik.touched.password && formik.errors.password && (
-              <p className="err-msg-password">{formik.errors.password}</p>
+              <p className="err-msg-register">{formik.errors.password}</p>
             )}
           {/* New password input */}
-          <div className="form-group input-svg">
+          <div className="input-control mt-2">
             <input
               type={passwordVisibility.showNewPassword ? "text" : "password"}
-              className="form-control"
+              className="form-control form-control-sm" 
               id="newPassword"
               placeholder="New Password"
               name="newPassword"
@@ -156,13 +144,12 @@ const handleToggleVisibility = (field) => {
         
           </div>
           {formik.touched.newPassword && formik.errors.newPassword && (
-              <p className="err-msg-password">{formik.errors.newPassword}</p>
+              <p className="err-msg-register">{formik.errors.newPassword}</p>
             )}
-     
-          <div className="form-group input-svg">
+            <div className="input-control mt-2">
             <input
           type={passwordVisibility.showConfirmPassword ? 'text' : 'password'}
-              className="form-control"
+          className="form-control form-control-sm" 
               id="confirmPassword"
               placeholder="Confirm Password"
               name="confirmPassword"
@@ -188,14 +175,13 @@ const handleToggleVisibility = (field) => {
           
           </div>
           {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-              <p className="err-msg-password">{formik.errors.confirmPassword}</p>
+              <p className="err-msg-register">{formik.errors.confirmPassword}</p>
             )}
-          <button type="submit" className="btn-password">
+          <button type="submit" className="btn btn-primary" style={{width:"100%"}}>
             Save
           </button>
         </div>
       </form>
-    </div>
     </div>
     </>
   );

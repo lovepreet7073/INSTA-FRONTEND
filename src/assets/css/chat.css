@@ -1,8 +1,42 @@
 .messages{
   height: 73vh;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 
 .dropdown-toggle::after{
   display: none;
+}
+.close{
+  border: none;
+  background-color: red;
+  color: white;
+}
+.selected-user{
+    background: #edececad;
+    display: flex;
+    padding: 5px;
+    /* align-items: center; */
+    border-radius: 0.375rem;
+    gap: 8px;
+}
+.users-list{
+    display: flex;
+    gap: 10px;
+}
+.set-head{
+display: flex;
+align-items: center;
+gap: 13px;
+}
+.setfield {
+  position: relative;
+}
+.icon-form {
+  position: absolute;
+  right: 80px;
+  display: flex;
+  top: 15px;
+}
+.setfield input {
+  padding: 0px 64px 0px 8px;
 }

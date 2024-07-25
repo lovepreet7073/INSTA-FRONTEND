@@ -35,7 +35,6 @@ console.log(notifications,"notif")
         body: JSON.stringify({ userId }),
       });
       const responseData = await response.json();
-      console.log(responseData, "datares");
       dispatch(openChat(responseData));
 
       fetchChats();
@@ -140,7 +139,6 @@ console.log(notifications,"notif")
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-
   const toggleSearchBar = () => {
     setIsSearchVisible(!isSearchVisible);
   };
@@ -159,7 +157,7 @@ console.log(notifications,"notif")
   };
 
   return (
-    <div className="container" style={{width:"50%"}}>
+    <div className="container" style={{width:"50%",textAlign:"left"}}>
       <div className="d-flex justify-content-between align-items-center p-3">
         <h3>Chats</h3>
         <div className="d-flex">
@@ -176,7 +174,7 @@ console.log(notifications,"notif")
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" className="bi bi-bell-fill" viewBox="0 0 16 16">
                 <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
               </svg>
-              <span className="badge bg-danger">{notifications.length}</span>
+              <span className="badge bg-danger" style={{top:"-11px",right:"10px"}}>{notifications.length}</span>
             </button>
             <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
               {notifications.length === 0 ? (
@@ -193,7 +191,7 @@ console.log(notifications,"notif")
         </div>
       </div>
       {isSearchVisible && (
-        <div className="p-3">
+        <div className="pb-3">
           <input
             placeholder="Search here"
             type="text"
@@ -203,11 +201,12 @@ console.log(notifications,"notif")
           />
         </div>
       )}
-      <div className="overflow-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
+      <div className="" style={{ maxHeight: "calc(100vh - 200px)" }}>
         {search ? (
           searchResult.map((user) => (
             <div
               key={user._id}
+              style={{cursor:"pointer"}}
               className={`d-flex align-items-center p-2 ${activeChat && activeChat?.users[0]?._id === user?._id ? "bg-light" : ""}`}
               onClick={() => accessChat(user?._id)}
             >
@@ -237,6 +236,7 @@ console.log(notifications,"notif")
           users.map((user) => (
             <div
               key={user._id}
+              style={{cursor:"pointer",background:"white"}}
               className={`d-flex align-items-center p-2 border-bottom${activeChat && activeChat?._id === user?._id ? " bg-light" : ""}`}
               onClick={() => handleOpenChat(user)}
             >
@@ -259,7 +259,7 @@ console.log(notifications,"notif")
                   />
                 )}
                 {!user?.isGroupChat && OnlineUsers.some((OnlineUser) => OnlineUser.userId === user.users[1]?._id) && (
-                  <span className="position-absolute top-20 start-100 translate-middle p-1 bg-success border border-light rounded-circle"></span>
+                  <span className="online-dot"></span>
                 )}
               </div>
               <div className="flex-grow-1">

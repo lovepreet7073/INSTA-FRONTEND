@@ -5,13 +5,8 @@
 .profile-frame {
   display: flex;
   /* width: 39%; */
+  align-items: center;
   justify-content: center;
-  /* margin: 25px auto;
-  box-shadow: 0px 1px 3px 3px #f5eded4d;
-  transition: all 0.25s ease;
-  background: #f5f5f57d;
-  padding: 12px;
-  border-radius: 12px; */
 }
 .profile-pic{
   height: fit-content;
@@ -29,8 +24,11 @@
 .profile-pic{
   height: fit-content;
 }
-.profile-data{
+.profile-data {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  /* line-height: 0; */
 }
 .profile-info >p{
 padding: 0px 5px;
@@ -78,10 +76,10 @@ padding: 0px 5px;
   background-color: red;
   color: white;
 }
-.name-btnn {
+/* .name-btnn {
   display: flex;
   align-items: center;
   margin: 24px auto;
   gap: 40px;
   justify-content: space-around;
-}
+} */

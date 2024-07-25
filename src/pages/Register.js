@@ -260,7 +260,7 @@ const Register = () => {
               <button
                 id="clk"
                 type="submit"
-                className={`btn-register  btn btn-primary${loading ? "disabled" : ""}`}
+                className={`btn-register  btn btn-primary${loading ? "disabled btn-primary" : ""}`}
                 disabled={loading}
               >
                 {loading ? "loading.." : "Sign Up"}

@@ -76,21 +76,23 @@ const handlecreatepost = ()=>{
                 </div>
 
                 <div className="profile-data">
-                <span className="name-btnn">
+                
 
                   <h3>
                   {userData.name}
                   </h3>
-          
-                  <button className="btn btn-primary" onClick={handleEdit} style={{padding:'4px',fontSize:"14px",fontWeight:"500"}}>  Edit Profile </button>
-                  
-                  </span>
+                
        
                   <div className="profile-info" style={{display:"flex",padding:"20px 5px"}}>
           <p>{postLength} posts</p>
           <p>{followers} followers</p>
           <p>{userData.following.length} following</p>
                   </div>
+                  <span className="name-btnn">
+                  <button className="btn btn-primary" onClick={handleEdit} >  Edit Profile </button>
+                  <button className="btn btn-primary" style={{marginLeft:"10px"}}  onClick={()=>navigate("/password")}>Change Password</button>
+                  
+                  </span>
                   {/* <div className="all-btns" style={{display:"flex",justifyContent:"space-between",width:"110%",fontWeight:"bold"}}>
                   <button className="btn-edit" onClick={handleEdit}>  Edit <i className="bi bi-pencil"></i> </button>
                   <div></div>
@@ -98,7 +100,7 @@ const handlecreatepost = ()=>{
                 <button className="btn-create-sec" style={{marginLeft:"10px"}} onClick={handlecreatepost}>    Create Post  <i className="bi bi-pencil-square"></i> </button>
 
                   </div>  
-                  <button className="btn-passowrd-sec" style={{marginLeft:"10px"}}  onClick={()=>navigate("/password")}>    Change Password <i class="bi bi-key-fill"></i> </button>
+               
                   <div></div>
                 </div>  */}
                 </div>

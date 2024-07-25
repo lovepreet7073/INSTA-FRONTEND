@@ -4,7 +4,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  /* text-align: center; */
+  text-align: center;
     background-image: url("");
     /* background: rgb(168,118,201); */
 /* background: linear-gradient(130deg, rgba(168,118,201,1) 12%, rgba(255,118,118,1) 43%, rgba(226,190,77,1) 89%); */
@@ -75,7 +75,7 @@ body, html, #root {
   margin-left: 250px;
   padding: 20px;
   width: calc(100% - 250px);
-  overflow-y: auto;
+  /* overflow-y: auto; */
   height: 100vh;
 }
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
@@ -83,4 +83,7 @@ body, html, #root {
   background-color: white;
   font-weight: bold;
   /* background-color:lightgrey; */
+}
+img{
+  object-fit: cover;
 }

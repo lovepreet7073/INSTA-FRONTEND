@@ -71,3 +71,21 @@ svg{
     font-weight: 600;
     color: rgb(0,149,246);
 }
+.forgot-form {
+  padding: 42px;
+  /* padding-top: 45px; */
+  border-radius: 1px;
+  /* max-width: 410px; */
+  width: 436px;
+  border: 1px solid rgb(219, 219, 219);
+  background-color: rgb(255, 255, 255);
+}
+.resend-form{
+    padding: 30px;
+    /* padding-top: 1px; */
+    border-radius: 1px;
+    width: 397px;
+    /* max-width: 400px; */
+    border: 1px solid rgb(219, 219, 219);
+    background-color: rgb(255, 255, 255);
+}

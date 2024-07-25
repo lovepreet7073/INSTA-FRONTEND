@@ -150,7 +150,7 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
                 </div>
               )}
 
-              <br />
+          
               <span
                 className="setTime"
                 style={{ fontSize: "11px", textAlign: "right", color: "#fd0808" }}

@@ -6,7 +6,7 @@ import io from "socket.io-client";
 import { openChat } from "../Reducer/chatReducer";
 const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
   const [search, setSearch] = useState('');
-  const [serachResult, setSerachResult] = useState([]);
+  const [searchResult, setsearchResult] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const ENDPOINT = "http://localhost:5000";
   var socket = io(ENDPOINT);
@@ -25,7 +25,7 @@ const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
     const searchTerm = event.target.value;
     setSearch(searchTerm);
     if (searchTerm === '') {
-      setSerachResult([]);
+      setsearchResult([]);
       return;
     }
     try {
@@ -41,7 +41,7 @@ const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
       );
       if (response.ok) {
         const searchData = await response.json();
-        setSerachResult(searchData);
+        setsearchResult(searchData);
       } else {
         throw new Error('Failed to search users');
       }
@@ -99,11 +99,11 @@ const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
 
   };
 
-  const handleselectedusers = (userToAdd) => {
+  const handleSelectedUsers = (userToAdd) => {
     if (!selectedUsers.some((user) => user._id === userToAdd._id)) {
       setSelectedUsers([...selectedUsers, userToAdd]);
       setSearch('');
-      setSerachResult([]);
+      setsearchResult([]);
     } else {
       formik.setFieldError("users", "user already added!");
     }
@@ -111,85 +111,95 @@ const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
 
   return (
     <div>
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={toggleModal}>
-              &times;
-            </span>
-            <h2>Create New Group Chat</h2>
+    <div className={`modal fade ${isModalOpen ? 'show' : ''}`} style={{ display: isModalOpen ? 'block' : 'none' }} tabIndex="-1" role="dialog">
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header justify-content-center " style={{gap:"222px"}}>
+            <h5 className="modal-title">Create New Group Chat</h5>
+            <button type="button" className="close" aria-label="Close" onClick={toggleModal}>
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
             <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
               {selectedUsers.map((u) => (
                 <div key={u._id} className="selected-user">
                   <h6>{u.name}</h6>
-                  <span style={{ cursor: 'pointer' }} onClick={() => handleRemove(u)}>
-                    &times;
-                  </span>
+                  <span style={{ cursor: 'pointer' }} onClick={() => handleRemove(u)}>&times;</span>
                 </div>
               ))}
             </div>
             <form onSubmit={formik.handleSubmit}>
-              <input
-                type="text"
-                placeholder="Chat Name"
-                name="chatName"
-                value={formik.values.chatName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
+              
+              <div className="input-control">
+              
+                <input
+                  type="text"
+                  placeholder="Chat Name" 
+                  className="form-control form-control-sm"
+                  id="chatName"
+                  name="chatName"
+                  value={formik.values.chatName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+               
+              </div>
               {formik.touched.chatName && formik.errors.chatName && (
-                <p className="group-create-msg" >{formik.errors.chatName}</p>
-              )}
-              <input
-                type="text"
-                placeholder="Add users eg: John, Priya, Jane"
-                name="users"
-                value={search}
-                onChange={(e) => {
-                  formik.handleChange(e);
-                  handleSearch(e);
-                }}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.users && formik.errors.users && (
-                <p className="group-create-msg">{formik.errors.users}</p>
-              )}
-              <button type="submit" disabled={formik.isSubmitting}>
-                Create Chat
-              </button>
-            </form>
-            {serachResult.map((user) => (
-              <div
-                key={user._id}
-                className="nav-link-chatpage"
-                onClick={() => handleselectedusers(user)}
-              >
-                {user.profileImage ? (
-                  <img
-                    src={`http://localhost:5000/images/${user.profileImage}`}
-                    alt={`${user.name}'s profile`}
-                    width="53px"
-                    height="53px"
-                  />
-                ) : (
-                  <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU"
-                    width="53px"
-                    height="53px"
-                    alt="Default Profile"
-                  />
+                  <p className="err-msg-register">{formik.errors.chatName}</p>
                 )}
+              <div className="input-control">
+            
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  placeholder="Add users e.g. jane,john" 
+                  id="users"
+                  name="users"
+                  value={search}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    handleSearch(e);
+                  }}
+                  onBlur={formik.handleBlur}
+                />
+            
+            
+              </div>
+              {formik.touched.users && formik.errors.users && (
+                  <p className="err-msg-register">{formik.errors.users}</p>
+                )}
+                   {searchResult.map((user) => (
+              <div key={user._id} className="nav-link-chatpage" onClick={() => handleSelectedUsers(user)} style={{
+              display:"flex",
+              alignItems:"center",
+              gap:"12px",
+              marginTop:"12px",
+              cursor:"pointer"
+              }}>
+                <img
+                  src={user.profileImage ? `http://localhost:5000/images/${user.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU" }
+                  alt={`${user.name}'s profile`}
+                  width="40px"
+                  height="40px"
+                  style={{borderRadius:"50px"}}
+                />
                 <div className="text">
-                  <span>
-                    <h6>{user.name}</h6>
-                  </span>
+                  <h6>{user.name}</h6>
                 </div>
               </div>
             ))}
+              <button type="submit" className="btn btn-primary mt-2" disabled={formik.isSubmitting}>
+                Create Chat
+              </button>
+            </form>
+         
           </div>
         </div>
-      )}
+      </div>
     </div>
+    <div className={`modal-backdrop fade ${isModalOpen ? 'show' : ''}`} style={{ display: isModalOpen ? 'block' : 'none' }}></div>
+  </div>
   );
 };
 
