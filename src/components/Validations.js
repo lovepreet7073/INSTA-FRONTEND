@@ -11,6 +11,7 @@ export const RegisterSchema = Yup.object().shape({
     .required("Email is required!")
     .email("Invalid email format!"),
   mobile: Yup.string()
+  .required("Mobile is required!")
     .matches(/^\d{10}$/, "Mobile should contain 10 digits!"),
   password: Yup.string()
     .required("Password is required!")
@@ -20,6 +21,7 @@ export const RegisterSchema = Yup.object().shape({
       "Password should contain at least one uppercase letter, one lowercase letter, one digit, and one special character!"
     ),
   confirmPassword: Yup.string()
+  .required("Confirm Password is required!")
     .oneOf([Yup.ref("password")], "Passwords must match!"),
 });
 

@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
-import ReactPaginate from "react-paginate";
-import "../assets/css/allusers.css";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import "../assets/css/allusers.css";
+
 const Allusers = () => {
   useEffect(() => {
-    document.title = "All Users"
-  }, [])
+    document.title = "All Users";
+  }, []);
+
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true); // Added loading state
   const itemsPerPage = 6;
   const userData = useSelector((state) => state.user.userData);
   const loginUserId = userData?._id;
@@ -35,7 +39,6 @@ const Allusers = () => {
           const filteredUsers = data.users.filter(
             (user) => user._id !== loginUserId
           );
-
           setUsers(filteredUsers);
         }
       } else {
@@ -69,7 +72,6 @@ const Allusers = () => {
             const filteredUsers = data.users.filter(
               (user) => user._id !== loginUserId
             );
-
             setUsers(filteredUsers);
           }
         } else {
@@ -83,8 +85,9 @@ const Allusers = () => {
       }
     }
   };
-  const fetchUsers = async () => {
 
+  const fetchUsers = async () => {
+    setLoading(true); // Set loading to true when fetching starts
     try {
       const response = await fetch(`http://localhost:5000/user/allusers`, {
         method: "GET",
@@ -99,29 +102,32 @@ const Allusers = () => {
         const filteredUsers = userData.filter(
           (user) => user._id !== loginUserId
         );
-
         setUsers(filteredUsers);
+        setLoading(false); // Set loading to false once data is fetched
       } else {
         throw new Error("Failed to fetch users");
       }
     } catch (error) {
       setError(error.message);
+      setLoading(false); // Set loading to false in case of an error
     }
   };
 
   useEffect(() => {
     fetchUsers();
   }, [loginUserId]);
-  const indexOfLastUser = (currentPage) * itemsPerPage;
+
+  const indexOfLastUser = currentPage * itemsPerPage;
   const indexOfFirstUser = indexOfLastUser - itemsPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
   const handlePageChange = (data) => {
     setCurrentPage(data.selected + 1);
   };
-  const handleSerach = (e) => {
+
+  const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
-    if (query == "") {
+    if (query === "") {
       fetchUsers();
       return;
     }
@@ -130,31 +136,45 @@ const Allusers = () => {
     );
 
     setUsers(filtered);
-
     setCurrentPage(1);
     if (filtered.length === 0) {
       setError("No user found!❌");
     }
   };
+
   return (
     <div>
       <h3 className="allusers-head"></h3>
 
       <div className="section-allusers">
-        <div className="search-bar" style={{}} >
+        <div className="search-bar">
+          <i className="bi bi-search"></i>
           <input
-            className="input-sec-allusers"
+            className="form-control form-control-sm"
             type="search"
-            placeholder="Search by name"
+            placeholder="Search"
             aria-label="Search"
-            onChange={handleSerach}
-            style={{background:"none"}}
+            onChange={handleSearch}
+            style={{ background: "none", border: "none" }}
           />
-          <span class="material-symbols-outlined">
-            search
-          </span>
         </div>
-        {users.length === 0 ? (
+
+        {loading ? (
+          // Skeleton loader while loading
+          <div className="user-list">
+            {[...Array(itemsPerPage)].map((_, index) => (
+              <div key={index} className="user-part">
+                <div className="img-name">
+                  <Skeleton circle={true} height={53} width={53} />
+                  <Skeleton height={20} width={100} />
+                </div>
+                <div className="btn-sec">
+                  <Skeleton height={30} width={80} />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : users.length === 0 ? (
           <div className="err-msg">{error}</div>
         ) : (
           <div className="user-list">
@@ -168,10 +188,11 @@ const Allusers = () => {
                         alt={`${user.name}'s profile`}
                         width="53px"
                         height="53px"
+                        style={{objectFit:"cover"}}
                       />
                     ) : (
                       <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU"
+                        src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-image-gray-blank-silhouette-vector-illustration-305504015.jpg"
                         width="53px"
                         height="53px"
                         alt="Default Profile"
@@ -189,7 +210,6 @@ const Allusers = () => {
                 <div className="btn-sec">
                   <button
                     className={`btn-part ${user.followers.includes(loginUserId) ? 'following' : 'follow'}`}
-
                     onClick={() => {
                       if (user.followers.includes(loginUserId)) {
                         unfollowUser(user._id, loginUserId);
@@ -207,19 +227,7 @@ const Allusers = () => {
             ))}
           </div>
         )}
-        {currentUsers.length > 6 && (
-          <ReactPaginate
-            previousLabel={"<<"}
-            nextLabel={">>"}
-            breakLabel={"..."}
-            pageCount={Math.ceil(users.length / itemsPerPage)}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={handlePageChange}
-            containerClassName={"pagination"}
-            activeClassName={"active"}
-          />
-        )}
+       
       </div>
     </div>
   );

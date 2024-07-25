@@ -1,366 +1,42 @@
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+.messages{
+  height: 73vh;
+  /* overflow-y: scroll; */
 }
 
-.container {
-  background: url("https://img.freepik.com/free-photo/concrete-surface-with-chat-bubble_23-2148734130.jpg");
-  padding: 0;
-  width: 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  object-fit: contain;
-  background-color: white;
+.dropdown-toggle::after{
+  display: none;
 }
-
-.profile-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 40px;
-}
-
-.settings-tray {
-  background: #eee;
-  padding: 0px 0px 7px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.settings-tray .no-gutters {
-  padding: 0;
-}
-
-.settings-tray--right {
-  float: right;
-}
-
-.settings-tray--right i {
-  margin-top: 10px;
-  font-size: 25px;
-  color: grey;
-  margin-left: 14px;
-  transition: 0.3s;
-}
-
-.settings-tray--right i:hover {
-  color: #74b9ff;
-  cursor: pointer;
-}
-
-.search-box {
-  background: #fafafa;
-  padding: 10px 13px;
-}
-
-.search-box .input-wrapper {
-  background: #fff;
-  border-radius: 40px;
-}
-
-.search-box .input-wrapper i {
-  color: grey;
-  margin-left: 7px;
-  vertical-align: middle;
-}
-
-.chtinput {
+.close{
   border: none;
-  border-radius: 30px;
+  background-color: red;
+  color: white;
 }
-
-input::placeholder {
-  color: #e3e3e3;
-  font-weight: 300;
-  margin-left: 20px;
+.selected-user{
+    background: #edececad;
+    display: flex;
+    padding: 5px;
+    /* align-items: center; */
+    border-radius: 0.375rem;
+    gap: 8px;
 }
-
-input:focus {
-  outline: none;
+.users-list{
+    display: flex;
+    gap: 10px;
 }
-
-.friend-drawer {
-  padding: 10px 15px;
-  display: flex;
-  vertical-align: baseline;
-  background: #fff;
-  transition: 0.3s ease;
+.set-head{
+display: flex;
+align-items: center;
+gap: 13px;
 }
-
-.friend-drawer--grey {
-  background: #eee;
-}
-
-.friend-drawer .text h6 {
-  margin-top: 6px;
-  margin-bottom: 0;
-}
-
-.friend-drawer .text p {
-  margin: 0;
-}
-
-.friend-drawer .time {
-  color: grey;
-}
-
-.friend-drawer--onhover:hover {
-  background: #74b9ff;
-  cursor: pointer;
-}
-
-.friend-drawer--onhover:hover p,
-.friend-drawer--onhover:hover h6,
-.friend-drawer--onhover:hover .time {
-  color: #fff !important;
-}
-
-hr {
-  margin: 5px auto;
-  width: 60%;
-}
-
-.chat-bubble {
-  padding: 10px 14px;
-  background: #e3c289;
-  margin: 10px 30px;
-  border-radius: 9px;
+.setfield {
   position: relative;
-  animation: fadeIn 1s ease-in;
 }
-
-.chat-bubble:after {
-  content: "";
+.icon-form {
   position: absolute;
-  top: 50%;
-  width: 0;
-  height: 0;
-  border: 20px solid transparent;
-  border-bottom: 0;
-  margin-top: -10px;
-}
-
-.chat-bubble--left:after {
-  left: 0;
-  border-right-color: #e3c289;
-  border-left: 0;
-  margin-left: -20px;
-}
-
-.chat-bubble--right:after {
-  right: 0;
-  border-left-color: #22333B;
-  border-right: 0;
-  margin-right: -20px;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-.offset-md-9 .chat-bubble {
-  background: #22333B;
-  color: #fff;
-}
-
-.chat-box-tray {
+  right: 80px;
   display: flex;
-  align-items: baseline;
-  padding: 10px 15px;
-  align-items: center;
-  bottom: 0;
-  width: 93%;
+  top: 15px;
 }
-
-.chat-box-tray input {
-  margin: 0 10px;
-  padding: 16px;
-  width: 100%;
-}
-
-.chat-box-tray i {
-  color: grey;
-  font-size: 30px;
-  vertical-align: middle;
-}
-
-.chat-box-tray i:last-of-type {
-  margin-left: 25px;
-}
-
-.setscrool {
-  height: 62vh;
-}
-
-.input-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chatpage {
-
-  margin: 0px auto;
-  display: flex;
-  box-shadow: 0px 5px 14px -3px grey;
-
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-/* height: 120vh; */
-
-}
-
-
-
-
-.text-noselec {
-  text-align: center;
-  margin-top: 40%;
-
-}
-
-.messages {
-  display: flex;
-  flex-direction: column;
-  height: 65vh;
-  overflow-y: scroll;
-  padding: 12px 12px;
-}
-
-.typing-indicator {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 10px;
-  padding-left: 10px;
-}
-
-
-
-.set-dot>img {
-  border: 1px solid #eb1377cc;
-}
-
-.set-send {
-  border: none;
-  color: #eb1377cc;
-}
-
-.text {
-  margin-left: 12px;
-
-}
-
-.text-head {
-
-  margin-top: 12px;
-  margin-bottom: 0px;
-
-}
-
-img {
-  max-width: 100%;
-  border-radius: 8px;
-  /* margin-top: 10px; */
-}
-
-.messages {
-  overflow-y: auto;
-  padding: 10px;
-  height: 450px;
-  border: 1px solid #ddd;
-  background: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0VJFFV_YeQj3ECv-ju4RbMzfmrhd5WA_syA&s);
-}
-
-.cross-svg {
-  position: absolute;
-  cursor: pointer;
-  transition: 0.25s all ease;
-}
-
-.cross-svg:hover {
-  color: red;
-
-
-}
-
-.attachment-icon:hover::before {
-  content: "Upload Image";
-  position: absolute;
-  bottom: 90px;
-  left: 40%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 1;
-  transition: 1s all ease;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 10px;
-  right: 100px;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-}
-
-.dropdown-menu button {
-  background: none;
-  border: none;
-  padding: 10px;
-  text-align: left;
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-  width: 100%;
-}
-
-.dropdown-menu button:hover {
-  background-color: #f0f0f0;
-}
-
-.dropdown-other {
-  right: 0;
-  left: 91px;
-  top: -45px;
-}
-.lineUp {
-  animation: 2s anim-lineUp ease-out ;
-  
-}
-
-
-@keyframes anim-lineUp {
-  0% {
-    opacity: 0;
-    transform: translateY(80%);
-  }
-  20% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(0%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0%);
-  }
+.setfield input {
+  padding: 0px 64px 0px 8px;
 }

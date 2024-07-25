@@ -62,13 +62,13 @@ const ResendConfirmation = () => {
   return (
     <div className="signIn">
       <div>
-        <div className="login-form">
+        <div className="resend-form">
           <img className="signUp-logo" src={logo} alt="Logo" />
           <form onSubmit={formik.handleSubmit}>
             <div>
               <input
                 type="email"
-                className={`form-control ${formik.errors.email && formik.touched.email ? "is-invalid" : ""}`}
+                className="form-control form-control-sm" 
                 placeholder="Enter Email Address"
                 value={formik.values.email}
                 onChange={formik.handleChange}
@@ -86,7 +86,7 @@ const ResendConfirmation = () => {
             <button
               id="clk"
               type="submit"
-              className={`btn-login ${loading ? "disabled" : ""}`}
+              className={`btn-register  btn btn-primary mt-2${loading ? "disabled btn-primary" : ""}`}
               disabled={loading}
             >
               {loading ? "Sending..." : "Send"}

@@ -135,7 +135,7 @@ const Register = () => {
               <div className="input-control">
                 <input
                   type="text"
-                  // className="form-control"
+                 className="form-control form-control-sm" 
                   id="exampleInputname"
                   autoComplete="off"
                   placeholder="Name"
@@ -144,6 +144,7 @@ const Register = () => {
                   onBlur={formik.handleBlur}
                   name="name"
                 />
+                
               </div>
               {formik.touched.name && formik.errors.name && (
                 <p className="err-msg-register">{formik.errors.name}</p>
@@ -152,7 +153,7 @@ const Register = () => {
               <div className="input-control">
                 <input
                   type="email"
-                  // className="form-control"
+                  className="form-control form-control-sm" 
                   id="exampleInputEmail1"
                   autoComplete="off"
                   value={formik.values.email}
@@ -169,7 +170,7 @@ const Register = () => {
               <div className="input-control">
                 <input
                   type="text"
-                  // className="form-control"
+                  className="form-control form-control-sm" 
                   id="exampleInputmobile"
                   autoComplete="off"
                   placeholder="Mobile Number"
@@ -186,7 +187,7 @@ const Register = () => {
               <div className="input-control">
                 <input
                   type={visibility.showPassword ? "text" : "password"}
-                  // className="form-control"
+                  className="form-control form-control-sm" 
                   id="exampleInputPassword1"
                   placeholder="Password"
                   autoComplete="off"
@@ -218,7 +219,7 @@ const Register = () => {
               <div className="input-control">
                 <input
                   type={visibility.showConfirmPassword ? "text" : "password"}
-                  // className="form-control"
+                  className="form-control form-control-sm" 
                   id="exampleInputconfirm"
                   placeholder="Confirm Password"
                   autoComplete="off"
@@ -259,7 +260,7 @@ const Register = () => {
               <button
                 id="clk"
                 type="submit"
-                className={`btn-login ${loading ? "disabled" : ""}`}
+                className={`btn-register  btn btn-primary${loading ? "disabled btn-primary" : ""}`}
                 disabled={loading}
               >
                 {loading ? "loading.." : "Sign Up"}
@@ -280,7 +281,7 @@ const Register = () => {
             Already have an Account?
             <span style={{ color: "blue", cursor: "pointer", textDecoration: "none" }}>
 
-              <NavLink to="/login" className="link-login">
+              <NavLink to="/login" className="login-link">
                 Log in
               </NavLink>
 

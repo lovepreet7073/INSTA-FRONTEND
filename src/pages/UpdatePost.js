@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-
+  import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 import "../assets/css/post.css";
 import { useFormik } from "formik";
 import { CreatePostSchema } from "../components/Validations";
@@ -110,15 +111,15 @@ const UpdatePost = ({ post }) => {
 
     return (
         <>
-            <div className="postpage">
-                <div className="heading-part-editpost mt-4">
-                    <div className="profile-head-editpost">
-                        <h2>Update Post</h2>
+            <div className="postpage-create">
+                <div className="heading-part mt-4">
+                    <div className="profile-head-head">
+                        <h3>Update Post</h3>
                     </div>
                 </div>
 
                 <form method="POST" onSubmit={formik.handleSubmit}>
-                    <div className="edit-btn-post" onClick={() => inputRef.current.click()}>
+                    <div className="image-part" onClick={() => inputRef.current.click()}>
                         <input
                             type="file"
                             className="edit-btn-profile"
@@ -127,33 +128,23 @@ const UpdatePost = ({ post }) => {
                             ref={inputRef}
                             onChange={handleFileChange}
                         />
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            fill="currentColor"
-                            className="bi bi-pencil-square"
-                            viewBox="0 0 16 16"
-                        >
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                            <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                        </svg>
+                <i class="bi bi-pencil-square" style={{position:"absolute",left:"72%",cursor:"pointer"}}></i>
                     </div>
 
                     <div className="image-part-edit-post">
                         {formik.values.postImg && typeof formik.values.postImg === "string" ? (
                             // Display existing image if it is a URL
-                            <img src={formik.values.postImg} alt="Existing Post" />
+                            <img src={formik.values.postImg} alt="Existing Post" style={{width:"100%",marginLeft:"2px",marginRight:"6px"}} />
                         ) : formik.values.postImg && typeof formik.values.postImg !== "string" ? (
                             // Display selected image if it is a file
                             <img src={URL.createObjectURL(formik.values.postImg)} alt="Selected Post" />
                         ) : null}
                     </div>
 
-                    <div className="form-group input-svg">
+                    <div className="input-control">
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control form-control-sm"
                             id="exampleInputTitle"
                             placeholder="Title"
                             name="title"
@@ -164,12 +155,12 @@ const UpdatePost = ({ post }) => {
                    
                     </div>
                     {formik.touched.title && formik.errors.title && (
-                            <p className="err-msg">{formik.errors.title}</p>
+                            <p className="err-msg-login">{formik.errors.title}</p>
                         )}
-                    <div className="form-group input-svg">
+                    <div className="input-control">
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control form-control-sm"
                             id="exampleInputDescription"
                             placeholder="Description"
                             name="description"
@@ -180,9 +171,10 @@ const UpdatePost = ({ post }) => {
                
                     </div>
                     {formik.touched.description && formik.errors.description && (
-                            <p className="err-msg">{formik.errors.description}</p>
+                            <p className="err-msg-login">{formik.errors.description}</p>
                         )}
-                    <button type="submit" className="btn-createpost">
+                      <button type="submit" className="btn btn-primary mt-3" style={{width:"100%"}}>
+                  
                         Save
                     </button>
                 </form>

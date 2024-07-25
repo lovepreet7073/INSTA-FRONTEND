@@ -18,6 +18,7 @@ const Emailverify = () => {
               "Content-Type": "application/json",
             }
           });
+          console.log(res,"response")
           setLoading(false)
           if (res.status === 200) {
             setValidUrl(true);
@@ -41,21 +42,21 @@ const Emailverify = () => {
     )
   }
   return (
-    <div className='section'>
+    <div className='section bg-light'>
       {validUrl ? (
         <div className='email-container'>
           <img src={Img} alt='Email Verification Success' />
           <h1>Email verified successfully</h1>
           <NavLink to="/login">
-            <button className='login-btn'>Log In</button>
+            <button className='btn-register  btn btn-primary'>Log In</button>
           </NavLink>
         </div>
       ) : (
         <div className='invalid-sec'>
           <h1>Invalid token </h1>
-          <p className="resend-part">
+          <p className="">
          <NavLink to="/resend-confirmation" className="link">
-              Resend
+         <button className='btn-register  btn btn-primary'>Resend</button>
             </NavLink>
           </p>
         </div>

@@ -1,6 +1,6 @@
 
 .signIn{
-  background-image: url("https://img.freepik.com/free-vector/purple-background-design_1117-49.jpg?size=338&ext=jpg&ga=GA1.1.2116175301.1717977600&semt=ais_user");
+  /* background-image: url("https://img.freepik.com/free-vector/purple-background-design_1117-49.jpg?size=338&ext=jpg&ga=GA1.1.2116175301.1717977600&semt=ais_user"); */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -11,42 +11,81 @@
   
 }
 .login-form{
-  background-color: #fff;
-  padding: 30px;
-  border:1px rgba(129, 121, 121);
+  padding: 17px;
+  padding-top: 1px;
   border-radius: 1px;
-  width: 100%;
-  max-width: 300px;
+  max-width: 400px;
+  border: 1px solid rgb(219, 219, 219);
+  background-color: rgb(255, 255, 255);
+  
 }
+.login-section{
+    display: flex;
+    flex-direction: column;
+    width: 325px;
+    /* line-height: 30px; */
+    gap: 5px;
+}
+
 .loginForm2{
-  background-color: #fff;
-  padding: 30px;
+  padding: 10px 0px;
   margin-top: 5px;
-  border:1px rgba(129, 121, 121);
+  border:1px solid rgb(219, 219, 219);
+  background-color: rgb(255, 255, 255);
   border-radius: 1px;
-  width: 100%;
+  font-size: 14px;
 }
-.btn-login{
-  background-color: #1773ea;
+.btn-login {
+  width: 98%;
+  color: #ffffff;
+  background-color: #007bff;
   border: none;
-  border-radius: 3px;
-  color: white;
-  font-weight: 750;
-  padding: 7px 10px;
-  width: 100%;
+  border-radius: 8px;
   cursor: pointer;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 .err-msg-login{
   text-align: left;
-    color: red;
-    /* margin-left: 17px; */
-    margin: 0px;
-    margin-left: 4px;
+  color: red;
+  margin: 0px;
+  margin-left: 4px;
+  font-size: 13px;
 }
 .form-control{
 width: 100%;
 }
 svg{
   cursor: pointer;
+}
+.forgot-pass{
+    /* color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1)); */
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 12px;
+    color: rgb(0,55,107);
+}
+.login-link{
+    text-decoration: underline;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(0,149,246);
+}
+.forgot-form {
+  padding: 42px;
+  /* padding-top: 45px; */
+  border-radius: 1px;
+  /* max-width: 410px; */
+  width: 436px;
+  border: 1px solid rgb(219, 219, 219);
+  background-color: rgb(255, 255, 255);
+}
+.resend-form{
+    padding: 30px;
+    /* padding-top: 1px; */
+    border-radius: 1px;
+    width: 397px;
+    /* max-width: 400px; */
+    border: 1px solid rgb(219, 219, 219);
+    background-color: rgb(255, 255, 255);
 }

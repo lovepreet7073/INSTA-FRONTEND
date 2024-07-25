@@ -1,17 +1,15 @@
 .profilePage{
-  /* max-width: 600px; */
+  max-width: 600px;
   margin: 10px auto;
 }
 .profile-frame {
   display: flex;
-  width: 39%;
-  justify-content: space-evenly;
-  margin: 25px auto;
-  box-shadow: 0px 1px 3px 3px #f5eded4d;
-  transition: all 0.25s ease;
-  background: #f5f5f57d;
-  padding: 12px;
-  border-radius: 12px;
+  /* width: 39%; */
+  align-items: center;
+  justify-content: center;
+}
+.profile-pic{
+  height: fit-content;
 }
 .profile-pic>img {
   width: 160px;
@@ -19,21 +17,24 @@
   object-fit: cover;
   object-position: center;
   border-radius: 100px;
-  margin: 18px;
+  /* margin: 18px; */
   padding: 4px;
   /* box-shadow: 0 2px 10px -1px #949df7; */
 }
 .profile-pic{
   height: fit-content;
 }
-.profile-data{
-  text-align: left;
+.profile-data {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  /* line-height: 0; */
 }
 .profile-info >p{
 padding: 0px 5px;
 
 }
-.btn-edit{
+/* .btn-edit{
   border: 1px solid blue;
   color: blue;
   transition: 1s all ease;
@@ -42,7 +43,7 @@ padding: 0px 5px;
   cursor: pointer;
   width: 17%;
   background: transparent;
-}
+} */
 .btn-edit:hover{
   background-color: blue;
   color: white;
@@ -75,3 +76,10 @@ padding: 0px 5px;
   background-color: red;
   color: white;
 }
+/* .name-btnn {
+  display: flex;
+  align-items: center;
+  margin: 24px auto;
+  gap: 40px;
+  justify-content: space-around;
+} */

@@ -78,3 +78,8 @@ transition: all 0.25 ease;
   transform: scale(1.1);
   box-shadow: 0 10px 20px -10px #0115eb ;
 }
+.btn-part.following {
+  background-color: #fafafa;
+  color: #000;
+  border: 1px solid #ddd;
+}
