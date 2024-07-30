@@ -5,14 +5,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../assets/css/allposts.css';
-
+import moment from 'moment';
 const AllPosts = () => {
-  useEffect(() => {
+  useEffect(() => { 
     document.title = "All Posts";
   }, []);
 
   const [posts, setPosts] = useState([]);
-  console.log(posts.length,"posts")
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState("");
@@ -33,14 +32,16 @@ const AllPosts = () => {
           },
         }
       );
-  
+
       if (response.ok) {
         const { posts: newPosts, hasMore } = await response.json();
+
         setTimeout(() => {
           setPosts((prevPosts) => [...prevPosts, ...newPosts]);
           setHasMore(hasMore);
         }, 1500);
-     
+
+
       } else {
         console.error("Failed to fetch posts");
       }
@@ -53,9 +54,8 @@ const AllPosts = () => {
   };
 
   useEffect(() => {
-    console.log("Fetching posts for page:", page);
     if (userData?._id) {
-  fetchPosts(userData._id, page);
+      fetchPosts(userData._id, page);
     }
   }, [userData, page]);
 
@@ -106,8 +106,30 @@ const AllPosts = () => {
       setError("");
     }
   };
+  const formatShortDate = (date) => {
+    if (!date) {
+      return "weeks ago"; // Default message if no date is provided
+    }
+    const now = moment();
+    const duration = moment.duration(now.diff(moment(date)));
 
-console.log(posts.length,page,'check')
+    if (duration.asSeconds() < 60) {
+      return `${Math.floor(duration.asSeconds())}s`; // Show seconds
+    } else if (duration.asMinutes() < 60) {
+      return `${Math.floor(duration.asMinutes())}m`; // Show minutes
+    } else if (duration.asHours() < 24) {
+      return `${Math.floor(duration.asHours())}h`; // Show hours
+    } else if (duration.asDays() < 7) {
+      return `${Math.floor(duration.asDays())}d`; // Show days
+    } else if (duration.asDays() < 30) {
+      return `${Math.floor(duration.asDays() / 7)}w`; // Show weeks
+    } else if (duration.asDays() < 365) {
+      return `${Math.floor(duration.asDays() / 30)}m`; // Show months
+    } else {
+      return `${Math.floor(duration.asDays() / 365)}y`; // Show years
+    }
+  };
+
   return (
     <div className="home">
       <div className="card">
@@ -121,7 +143,7 @@ console.log(posts.length,page,'check')
           next={() => setPage((prevPage) => prevPage + 1)}
           hasMore={hasMore}
           loader={
-            <div className="skeleton-wrapper"  style={{textAlign:"left"}}>
+            <div className="skeleton-wrapper" style={{ textAlign: "left" }}>
               {Array.from({ length: postsPerPage }).map((_, index) => (
                 <div key={index} className="skeleton-card">
                   <Skeleton height={35} width={35} circle={true} />
@@ -133,8 +155,8 @@ console.log(posts.length,page,'check')
               ))}
             </div>
           }
-          endMessage={<span style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}><p style={{ textAlign: "center" }}>You're All Caught Up</p>
-        <i class="bi bi-check-circle" style={{fontSize:"49px",fontWeight:"800",color:"green"}}></i></span>}
+          endMessage={<span style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}><p style={{ textAlign: "center" }}>You're All Caught Up</p>
+            <i class="bi bi-check-circle" style={{ fontSize: "49px", fontWeight: "800", color: "green" }}></i></span>}
         >
           {posts.length > 0 ? (
             posts.map((post) => (
@@ -161,11 +183,13 @@ console.log(posts.length,page,'check')
                     style={{ textDecoration: "none" }}
                     to={post.userId ? `/userinfo/${post.userId._id}` : "#"}
                   >
-                    <p className="name-of-user" style={{ marginTop: "10px" }}>
+                    <p className="name-of-user" style={{ margin: "0px" }}>
                       {post.userId ? post.userId.name : "Unknown User"}
                     </p>
+                    <span style={{ fontSize: "11px", color: "#403131bf" }}>{formatShortDate(post.createdAt)}</span>
                   </NavLink>
                 </div>
+
                 <div className="card-image">
                   <img
                     className="post-img"
@@ -174,7 +198,7 @@ console.log(posts.length,page,'check')
                   />
                 </div>
                 <div className="card-content">
-                  <span style={{ display: "flex", alignItems: "center",gap:"5px" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                     {post?.likedBy?.includes(userData?._id) ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -204,10 +228,11 @@ console.log(posts.length,page,'check')
                     )}
                     <p style={{ margin: "0px" }}>{post.likes}</p>
                   </span>
-                  <span style={{ marginTop: "6px" }}>
-                    <h6 className="card-title">{post.title}</h6>
-                    
-                  </span>
+                  <div className="des-title">
+                    <p className="post-title" style={{ marginTop: "6px" }}
+                    >{post.title}</p>
+
+                  </div>
                 </div>
               </div>
             ))

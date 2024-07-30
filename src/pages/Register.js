@@ -54,7 +54,7 @@ const Register = () => {
         }
         if (response.status === 201) {
           Swal.fire({
-            title: 'Registration Successfully!',
+            title: 'Registration Successfully',
             text: 'Check your inbox for verification of your email.',
             icon: 'success',
             confirmButtonText: 'OK'

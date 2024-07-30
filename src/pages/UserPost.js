@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { deletePost } from "../Reducer/postReducer";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
-
+import moment from 'moment';
 const UserPost = ({ userId, setPostLength, postLength ,isFollow}) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true); 
@@ -15,7 +15,6 @@ const UserPost = ({ userId, setPostLength, postLength ,isFollow}) => {
   const userData = useSelector((state) => state.user.userData);
   const loginUserId = userData?._id;
   const dispatch = useDispatch();
-console.log(posts,"posts")
   useEffect(() => {
     const fetchPosts = async () => {
       if (userId) {
@@ -34,7 +33,6 @@ console.log(posts,"posts")
           );
           if (response.ok) {
             const postData = await response.json();
-            console.log(postData,"data")
          
      
               setPosts(postData);
@@ -128,6 +126,29 @@ console.log(posts,"posts")
     navigate("/updatepost", { state: { postId: post } });
   };
 
+  const formatShortDate = (date) => {
+    if (!date) {
+      return "weeks ago";
+    }
+    const now = moment();
+    const duration = moment.duration(now.diff(moment(date)));
+
+    if (duration.asSeconds() < 60) {
+      return `${Math.floor(duration.asSeconds())}s`; 
+    } else if (duration.asMinutes() < 60) {
+      return `${Math.floor(duration.asMinutes())}m`;
+    } else if (duration.asHours() < 24) {
+      return `${Math.floor(duration.asHours())}h`; 
+    } else if (duration.asDays() < 7) {
+      return `${Math.floor(duration.asDays())}d`;
+    } else if (duration.asDays() < 30) {
+      return `${Math.floor(duration.asDays() / 7)}w`;
+    } else if (duration.asDays() < 365) {
+      return `${Math.floor(duration.asDays() / 30)}m`; 
+    } else {
+      return `${Math.floor(duration.asDays() / 365)}y`; 
+    }
+  };
   return (
     <div>
     <div className="home">
@@ -228,9 +249,10 @@ console.log(posts,"posts")
                   </div>
                 </div>
                 <div className="des-title">
+                <span style={{ fontSize: "11px", color: "#403131bf" }}>{formatShortDate(post.createdAt)} ago</span>
+
                   <p className="post-title" style={{marginTop:"6px"}}
                   >{post.title}</p>
-             
                 </div>
               </div>
             </div>

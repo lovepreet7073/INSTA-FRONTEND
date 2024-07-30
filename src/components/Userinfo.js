@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "../assets/css/userinfo.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
@@ -73,7 +73,6 @@ const Userinfo = () => {
   const [error, setError] = useState(null);
   const [isFollow, setIsFollow] = useState(false);
   const [followers, setFollowers] = useState();
-  const navigate = useNavigate();
   const loginUserId = useSelector((state) => state.user.userData._id);
   const fetchUserData = async () => {
     try {
@@ -131,48 +130,48 @@ const Userinfo = () => {
                     height="130px"
                   />
                 )}
-                </div>
-                <div className="profile-data">
+              </div>
+              <div className="profile-data">
                 <h1>
-                    <strong>{userData.name}</strong>{" "}
-                  </h1>
+                  <strong>{userData.name}</strong>{" "}
+                </h1>
 
-                  <div className="profile-info" style={{display:"flex"}}>
-          <p> {userData.posts.length}  posts</p>
-          <p >{followers} followers</p>
-          
-          <p>{userData.following.length} following</p>
-                  </div>
-                 
-                    <div className="button-sec">
-                      <button
-                        className={`btn-part ${userData.followers.includes(loginUserId) ? 'following' : 'follow'}`}
-                        onClick={() => {
-                          if (userData.followers.includes(loginUserId)) {
-                            unfollowUser(
-                              userData._id,
-                              loginUserId,
-                              setFollowers,
-                              setIsFollow
-                            );
-                          } else {
-                            followUser(
-                              userData._id,
-                              loginUserId,
-                              setFollowers,
-                              setIsFollow
-                            );
-                          }
-                        }}
-                      >
-                        {userData.followers.includes(loginUserId)
-                          ? "Following"
-                          : "Follow"}
-                      </button>
-                    </div>
-                  </div> 
+                <div className="profile-info" style={{ display: "flex" }}>
+                  <p> {userData.posts.length}  posts</p>
+                  <p >{followers} followers</p>
 
-             
+                  <p>{userData.following.length} following</p>
+                </div>
+
+                <div className="button-sec">
+                  <button
+                    className={`btn-part ${userData.followers.includes(loginUserId) ? 'following' : 'follow'}`}
+                    onClick={() => {
+                      if (userData.followers.includes(loginUserId)) {
+                        unfollowUser(
+                          userData._id,
+                          loginUserId,
+                          setFollowers,
+                          setIsFollow
+                        );
+                      } else {
+                        followUser(
+                          userData._id,
+                          loginUserId,
+                          setFollowers,
+                          setIsFollow
+                        );
+                      }
+                    }}
+                  >
+                    {userData.followers.includes(loginUserId)
+                      ? "Following"
+                      : "Follow"}
+                  </button>
+                </div>
+              </div>
+
+
 
             </>
           )}
@@ -180,9 +179,9 @@ const Userinfo = () => {
       </div>
 
       <div className="userpost-sec">
-     {isFollow ? (
-        <UserPost userId={userId} isFollow={isFollow}/>):(<></>)
-      }
+        {isFollow ? (
+          <UserPost userId={userId} isFollow={isFollow} />) : (<></>)
+        }
       </div>
     </>
   );

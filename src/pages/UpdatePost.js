@@ -128,7 +128,7 @@ const UpdatePost = ({ post }) => {
                             ref={inputRef}
                             onChange={handleFileChange}
                         />
-                <i class="bi bi-pencil-square" style={{position:"absolute",left:"72%",cursor:"pointer"}}></i>
+                <i class="bi bi-pencil-square" style={{position:"absolute",left:"72%",top:"16%",cursor:"pointer"}}></i>
                     </div>
 
                     <div className="image-part-edit-post">
@@ -137,7 +137,7 @@ const UpdatePost = ({ post }) => {
                             <img src={formik.values.postImg} alt="Existing Post" style={{width:"100%",marginLeft:"2px",marginRight:"6px"}} />
                         ) : formik.values.postImg && typeof formik.values.postImg !== "string" ? (
                             // Display selected image if it is a file
-                            <img src={URL.createObjectURL(formik.values.postImg)} alt="Selected Post" />
+                            <img src={URL.createObjectURL(formik.values.postImg)}  style={{width:"100%"}} alt="Selected Post" />
                         ) : null}
                     </div>
 

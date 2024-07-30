@@ -21,6 +21,6 @@
 .des-title {
         display: flex;
         flex-direction: column;
-        line-height: 6px;
+        line-height: 24px;
         margin-top: 6px;
-}
+    }

@@ -1,4 +1,7 @@
 import * as Yup from 'yup';
+const emailRegex = /^[^\s@]+@[^\s@]+\.(com)$/;
+
+
 
 export const RegisterSchema = Yup.object().shape({
   name: Yup.string()
@@ -9,7 +12,7 @@ export const RegisterSchema = Yup.object().shape({
     ),
   email: Yup.string()
     .required("Email is required")
-    .email("Invalid email format"),
+    .matches(emailRegex, "Invalid email format"),
   mobile: Yup.string()
   .required("Mobile is required")
     .matches(/^\d{10}$/, "Mobile should contain 10 digits"),
@@ -92,13 +95,7 @@ export const EditProfileSchema = Yup.object().shape({
 });
 export const CreatePostSchema = Yup.object().shape({
   title: Yup.string()
-    .min(5, "Title must be at least 5 characters")
-    .max(100, "Title must be less than or equal to 100 characters"),
-
-
-  // description: Yup.string()
-  //   .required("Description is required!")
-  //   .max(150, "Description must be less than or equal to 150 characters"),
+    .max(200, "Title must be less than or equal to 200 characters"),
 
 
   postImg: Yup.mixed()

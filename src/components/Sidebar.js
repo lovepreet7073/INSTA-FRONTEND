@@ -49,8 +49,8 @@ const Sidebar = () => {
     };
     return (
         <div className='sidebar d-flex flex-column justify-content-space-between text-white p-4 ' style={{ width: "250px" }}>
-            <a className='text-decoration-none text-black d-flex align-items-center'>
-                <img id="insta-logo" className="logo" src={logo} alt="logo" style={{ cursor: "pointer" }} onClick={() => navigate("/allposts")} />
+            <a className='text-decoration-none text-black'>
+                <img id="insta-logo" className="logo" src={logo} alt="logo" style={{ cursor: "pointer",width:"65%",marginRight:"38px" }} onClick={() => navigate("/allposts")} />
             </a>
             <ul className='nav nav-pills flex-column mt-3'>
                 <li className='nav-item py-1'>

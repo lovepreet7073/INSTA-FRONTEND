@@ -1,51 +1,51 @@
 import React, { useEffect, useState, useRef } from "react";
+import { closeChat, openChat } from "../Reducer/chatReducer";
+
+
 import "../assets/css/chat.css";
 import { useSelector, useDispatch } from "react-redux";
 import ScrollableChat from "../components/ScrollableChat";
 import io from "socket.io-client";
-import { addNotification } from "../Reducer/notification";
+import { removeNotification } from "../Reducer/notification";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import moment from "moment";
 import UpdateGroup from "./UpdateGroup";
-import { setVideoCall, setIncomingCall, endCall } from "../Reducer/callReducer";
-import { useNavigate } from "react-router-dom";
-import { closeChat, openChat } from "../Reducer/chatReducer";
-import { styled } from "@chakra-ui/react";
-const ENDPOINT = "http://localhost:5000";
+import { useNavigate } from "react-router-dom";;
 var socket, selectedChatCompare, selectedNotifications;
+
 const Chats = ({
   fetchChats,
-  setOnlineUsers,
+  OnlineUsers,
   setLastMsg,
   fetchAgain,
   setFetchAgain,
   setSelectedUser,
 }) => {
+
   useEffect(() => {
     document.title = "Chats";
   }, []);
   const inputref = useRef(null);
+
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [msgImg, setMsgImg] = useState("");
   const [imgPreview, setImgPreview] = useState("");
-  const [online, setOnline] = useState([]);
   const [openPicker, setOpenPicker] = useState(false);
-  const [socketConnected, setsocketConeected] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [currentCall, setCureentCall] = useState("");
+  const ENDPOINT = "http://localhost:5000";
   const notifications = useSelector(
     (state) => state.notifications.notifications
   );
-  console.log(notifications,"test")
   const userData = useSelector((state) => state.user.userData);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
   const videoCall = useSelector((state) => state.call.videoCall);
   const getSender = (loginuser, users) => {
     const otherUser = users?.find((user) => user?._id !== loginuser?._id);
     return {
+      id: otherUser?._id,
       name: otherUser.name,
       image: otherUser.profileImage,
     };
@@ -57,12 +57,7 @@ const Chats = ({
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", userData);
-    socket.on("connection", () => setsocketConeected(true));
-    socket.on("getUsers", (users) => {
-      setOnlineUsers(users);
-      setOnline(users);
-      fetchChats();
-    });
+    socket.on("connection", () => socket.emit("join", userData._id));
     socket.on("messageDeleted", (deletedMessageId) => {
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
@@ -80,17 +75,14 @@ const Chats = ({
     socket.on("last message", (lastMsgData) => {
       setLastMsg(lastMsgData);
     });
+ 
   }, [userData]);
 
-  useEffect(() => {
-    if (socket && userData?._id) {
-      socket.emit("addUser", userData._id);
-    }
-  }, [userData]);
 
   const formatTimestamp = (timestamp) => {
     return moment(timestamp).format("LT");
   };
+
   const sendMessage = async (event) => {
     event.preventDefault();
     if (!newMessage && !msgImg) {
@@ -265,32 +257,25 @@ const Chats = ({
   const handleVideocall = () => {
     const roomID = Date.now().toString();
     navigate(`/videocall/${roomID}`);
-    // const selectedUser = selectedChat.isGroupChat
-    //   ? null
-    //   : getSender(userData, selectedChat.users);
 
-    //   dispatch(setVideoCall({
-    //     type: 'outgoing',
-    //     user: selectedUser,
-    //     roomId: Date.now()
+    
+    if (selectedChat && !selectedChat.isGroupChat) {
+      const otherUser = getSender(userData, selectedChat.users);
+      console.log(otherUser, "jim");
 
-    //   }));
+      socket.emit("startVideoCall", {
+        to: otherUser.id,
+        roomID: roomID,
+        from: {
+          id: userData._id,
+          name: userData.name,
+          profileImage: userData.profileImage,
+        },
+      });
+    }
   };
 
-  // useEffect(()=>{
-  // if(videoCall?.type=== 'outgoing'){
-  //   socket.current.emit("outgoing-video-call",{
-  //     to:videoCall.id,
-  //     from:{
-  //       id:userData._id,
-  //       profileImage:userData.profileImage,
-  //       name:userData.name,
-  //     },
-  //     roomId:videoCall.roomId,
-  //   });
-  // }
 
-  // },[videoCall]);
 
   useEffect(() => {
     socket.on("group created", () => {
@@ -318,47 +303,19 @@ const Chats = ({
       }
     });
 
-    socket.on("message received", (newMessageReceived) => {
-      console.log("new-message", newMessageReceived)
-      if (
-        !selectedChatCompare ||
-        selectedChatCompare?._id !== newMessageReceived?.chat?._id
-      ) {
-        if (
-          !selectedNotifications.some(
-            (notification) => notification._id === newMessageReceived._id
-          )
-        ) {
-          fetchChats();
-          fetchMessages();
-          dispatch(addNotification(newMessageReceived));
-          console.log('Notification dispatched:', newMessageReceived);
-        }
-      } else {
-        fetchMessages();
-        setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
-      }
-    });
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
     selectedNotifications = notifications;
+    notifications.forEach(notification => {
+      if (notification.chat._id === selectedChat._id) {
+        dispatch(removeNotification(notification._id));
+      }
+    });
   }, [selectedChat, notifications]);
 
-  if (!selectedChat) {
-    return (
-      <div className="container">
-        <div className="text-chat" style={{ marginTop: "20%" }}>
-          <h1 style={{ fontSize: "29px" }} className="lineUp">
-            Click on a user to <br /> start a new chat
-          </h1>
-          {/* <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZMXPxjiVSbkndmj8b7oOwoTWpYRTy_0JZZQ&s" alt="" /> */}
-        </div>
-      </div>
-    );
-  }
 
   const handleEmojiSelect = (emoji) => {
     setNewMessage(newMessage + emoji.native);
@@ -410,23 +367,12 @@ const Chats = ({
                       <span></span>
                     ) : (
                       <>
-                        {online.some(
-                          (OnlineUser) =>
-                            OnlineUser.userId === selectedChat.users[1]._id
-                        ) ? (
-                          <span
-                            className=""
-                            style={{ color: "green", fontSize: "12px" }}
-                          >
-                            Online
-                          </span>
-                        ) : (
-                          <span
-                            className=""
-                            style={{ color: "red", fontSize: "12px" }}
-                          >
-                            Offline
-                          </span>
+                        {!selectedChat?.isGroupChat && (
+                          OnlineUsers.some((OnlineUser) => OnlineUser.userId === selectedChat.users[1]?._id) ? (
+                            <span className="text-green">Online</span>
+                          ) : (
+                            <span className="text-red">Offline</span>
+                          )
                         )}
                       </>
                     )}
@@ -437,31 +383,12 @@ const Chats = ({
 
             <div className="set-head">
               {selectedChat.isGroupChat ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                  onClick={toggleModal}
-                  fill="#5f6368"
-                >
-                  <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" />
-                </svg>
+                <i class="bi bi-eye-fill" onClick={toggleModal} style={{ fontSize: "26px", cursor: "pointer" }}></i>
               ) : (
                 <></>
               )}
 
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ marginRight: "22px" }}
-                height="34px"
-                onClick={handleVideocall}
-                viewBox="0 -960 960 960"
-                width="34px"
-                fill="#5f6368"
-              >
-                <path d="M166.78-140.78q-44.3 0-75.15-30.85-30.85-30.85-30.85-75.15v-466.44q0-44.3 30.85-75.15 30.85-30.85 75.15-30.85h466.44q44.3 0 75.15 30.85 30.85 30.85 30.85 75.15V-540l160-160v440l-160-160v173.22q0 44.3-30.85 75.15-30.85 30.85-75.15 30.85H166.78Zm0-106h466.44v-466.44H166.78v466.44Zm0 0v-466.44 466.44Z" />
-              </svg>
+              <i class="bi bi-camera-video" onClick={handleVideocall} style={{ fontSize: "26px", cursor: "pointer" }}></i>
             </div>
           </div>
           <div className="chat-panel">
@@ -490,16 +417,16 @@ const Chats = ({
                   {msgImg && (
                     <div
                       style={{
-                     
+
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
                         position: "absolute",
                         top: "55%",
-                      
+
                       }}
                     >
-  
+
                       <svg
                         className="cross-svg"
                         xmlns="http://www.w3.org/2000/svg"
@@ -558,13 +485,10 @@ const Chats = ({
                       />
 
                     </button>
-
                     <i
                       class="bi bi-emoji-smile"
                       style={{ fontSize: "20px", cursor: "pointer" }}
-                      onClick={() => setOpenPicker(!openPicker)
-
-                      }
+                      onClick={() => setOpenPicker(!openPicker)}
                     ></i>
                   </div>
                   <form className="form-input" style={{ display: "flex", gap: "12px", justifyContent: 'space-around' }} onSubmit={sendMessage}>
