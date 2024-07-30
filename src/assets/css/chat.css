@@ -49,3 +49,16 @@ gap: 13px;
     top: 27px;
     border-radius: 20px;
 }
+.text-green {
+  color: green;
+  font-size: 12px;
+}
+
+.text-red {
+  color: red;
+  font-size: 12px;
+}
+.dropdown-item:focus, .dropdown-item:hover {
+  color: black;
+  background-color: lightgray;
+}

@@ -88,9 +88,7 @@ const handleImageChange = (event) => {
         setImg(file);
     }
 };
-  const handleback = () => {
-    navigate("/myprofile");
-  };
+ 
 
   return (
     <>

@@ -2,11 +2,9 @@ import React, { createContext, useEffect } from "react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserData } from "./Reducer/UseReducer";
-import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
 import CreatePost from "./pages/CreatePost";
-import Home from "./pages/Home";
 import EditProfile from "./pages/EditProfile";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -26,6 +24,7 @@ import Emailverify from "./pages/Emailverify";
 import ResendConfirmation from "./components/ResendConfirmation";
 import Videocall from "./components/Videocall";
 import ChatSidebar from "./components/chatSidebar";
+import IncomingVideoCall from "./components/IncomingVideoCall"
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
@@ -68,26 +67,27 @@ const App = () => {
 
   return (
     <div className="app-container d-flex">
+      
       {token && <Sidebar />}
       <div
         className={`${
-          token ? "content flex-grow-1 " : "flex-grow-1 "
+          token ? "content flex-grow-1" : "flex-grow-1"
         }`}
       >
-        <Routes>
-          <Route path="/" element={token ? <Navigate to="/allposts" /> : <Register />} />
-          {!token && (
+      <Routes>
+          {!token ? (
             <>
-              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Navigate to="/register" />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/resetpassword/:token" element={<ResetPassword />} />
               <Route path="/verifyaccount/:id/:token" element={<Emailverify />} />
               <Route path="/resend-confirmation" element={<ResendConfirmation />} />
               <Route path="/forgotpassword" element={<ForgotPassword />} />
             </>
-          )}
-          {token && (
+          ) : (
             <>
+              <Route path="/" element={<Navigate to="/allposts" />} />
               <Route path="/editprofile" element={<ProtectedRoute token={token}><EditProfile /></ProtectedRoute>} />
               <Route path="/createpost" element={<ProtectedRoute token={token}><CreatePost /></ProtectedRoute>} />
               <Route path="/updatepost" element={<ProtectedRoute token={token}><UpdatePost /></ProtectedRoute>} />
@@ -106,6 +106,7 @@ const App = () => {
             </>
           )}
         </Routes>
+        {token && <IncomingVideoCall />}
       </div>
     </div>
   );

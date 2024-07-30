@@ -6,6 +6,7 @@ import {
   openChat,
   fetchChatsFailure,
 } from "../Reducer/chatReducer";
+
 import { removeNotification } from "../Reducer/notification";
 import moment from "moment";
 
@@ -19,7 +20,6 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
   const activeChat = useSelector((state) => state.chat.selectedChat);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const notifications = useSelector((state) => state.notifications.notifications);
-console.log(notifications,"notif")
   const accessChat = async (userId) => {
     const existingUser = users.find((user) => user._id === userId);
     if (existingUser) {
@@ -93,11 +93,11 @@ console.log(notifications,"notif")
 
       if (response.ok) {
         const data = await response.json();
-        const sortedChats = data.sort((a, b) =>{ 
+        const sortedChats = data.sort((a, b) => {
           if (!a.latestMessage || !b.latestMessage) return 0;
           return new Date(b.latestMessage.createdAt) - new Date(a.latestMessage.createdAt);
         });
-        
+
         setUsers(sortedChats);
       } else {
         throw new Error("Failed to fetch chats");
@@ -110,6 +110,8 @@ console.log(notifications,"notif")
   useEffect(() => {
     fetchChats();
   }, [lastMsg, fetchAgain]);
+
+
 
   const getSender = (loginuser, users) => {
     return users[0]?._id === loginuser?._id
@@ -128,7 +130,7 @@ console.log(notifications,"notif")
     sameSenderNotifications.forEach((notification) => {
       dispatch(removeNotification(notification._id));
     });
- 
+
     dispatch(openChat(chat));
   };
 
@@ -157,7 +159,7 @@ console.log(notifications,"notif")
   };
 
   return (
-    <div className="container" style={{width:"50%",textAlign:"left"}}>
+    <div className="container" style={{ width: "50%", textAlign: "left" }}>
       <div className="d-flex justify-content-between align-items-center p-3">
         <h3>Chats</h3>
         <div className="d-flex">
@@ -167,14 +169,14 @@ console.log(notifications,"notif")
             </svg>
           </button>
           <button onClick={toggleSearchBar} className="btn btn-light ms-2">
-          <i class="bi bi-search"></i>
+            <i class="bi bi-search"></i>
           </button>
           <div className="dropdown ms-2">
             <button className="btn btn-light dropdown-toggle" onClick={toggleDropdown}>
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" className="bi bi-bell-fill" viewBox="0 0 16 16">
                 <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
               </svg>
-              <span className="badge bg-danger" style={{top:"-11px",right:"10px"}}>{notifications.length}</span>
+              <span className="badge bg-danger" style={{ top: "-11px", right: "10px" }}>{notifications.length}</span>
             </button>
             <ul className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}>
               {notifications.length === 0 ? (
@@ -206,7 +208,7 @@ console.log(notifications,"notif")
           searchResult.map((user) => (
             <div
               key={user._id}
-              style={{cursor:"pointer"}}
+              style={{ cursor: "pointer" }}
               className={`d-flex align-items-center p-2 ${activeChat && activeChat?.users[0]?._id === user?._id ? "bg-light" : ""}`}
               onClick={() => accessChat(user?._id)}
             >
@@ -236,7 +238,7 @@ console.log(notifications,"notif")
           users.map((user) => (
             <div
               key={user._id}
-              style={{cursor:"pointer",background:"white"}}
+              style={{ cursor: "pointer", background: "white" }}
               className={`d-flex align-items-center p-2 border-bottom${activeChat && activeChat?._id === user?._id ? " bg-light" : ""}`}
               onClick={() => handleOpenChat(user)}
             >

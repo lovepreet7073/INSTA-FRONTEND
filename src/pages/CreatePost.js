@@ -4,31 +4,28 @@ import { addPost } from "../Reducer/postReducer";
 import Swal from "sweetalert2";
 import "../assets/css/createpost.css";
 import { useFormik } from "formik";
-
 import { useNavigate } from "react-router-dom";
 import { CreatePostSchema } from "../components/Validations";
 const CreatePost = () => {
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const userData = useSelector((state) => state.user.userData);
+  const dispatch = useDispatch();
+
   useEffect(()=>{
     document.title="Create Post"  
     },[])
-  const userData = useSelector((state) => state.user.userData);
-
-  const dispatch = useDispatch();
 
 
 
   const formik = useFormik({
     initialValues: {
       title: "",
-      description: "",
       postImg: null,
     },   validationSchema: CreatePostSchema,
     onSubmit: async (values) => {
       const formData = new FormData();
       formData.append("title", values.title);
-      formData.append("description", values.description);
       formData.append("image", values.postImg);
   
       try {
@@ -71,24 +68,11 @@ const CreatePost = () => {
     const file = e.target.files[0];
     formik.setFieldValue("postImg", file); // Set file to formik state
   };
-  const handleback = () => {
-    navigate("/myprofile");
-  };
+
   return (
     <>
      <div className="backpage" style={{display:"flex",margin:"20px"}}>
-        {/* <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="36"
-          height="36"
-          fill="#030303"
-          className="backpage-icon"
-          class="bi bi-arrow-left-circle-fill"
-          viewBox="0 0 16 16"
-          onClick={handleback}
-        >
-          <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
-        </svg> */}
+       
         <div className="postpage-create">
           <div className="heading-part mt-4">
             <div className="profile-head-head">
@@ -147,21 +131,7 @@ const CreatePost = () => {
               {formik.touched.title && formik.errors.title && (
                   <p className="err-msg-login">{formik.errors.title}</p>
                 )}
-              {/* <div className="input-control">
-                <input
-                  type="text"
-                  className="form-control form-control-sm" 
-                  id="exampleInputDescription"
-                  placeholder="Description"
-                  name="description"
-                  value={formik.values.description}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
-              </div>
-              {formik.touched.description && formik.errors.description && (
-                  <p className="err-msg-login">{formik.errors.description}</p>
-                )} */}
+           
               <button type="submit" className="btn btn-primary mt-3" style={{width:"100%"}}>
                 Submit
               </button>
