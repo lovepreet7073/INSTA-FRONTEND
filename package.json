@@ -46,7 +46,7 @@
     "vite": "^5.3.1",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0",
-    "zego-express-engine-webrtc": "^2.24.5"
+    "zego-express-engine-webrtc": "^3.5.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -11,7 +11,7 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import moment from "moment";
 import UpdateGroup from "./UpdateGroup";
-import { useNavigate } from "react-router-dom";;
+import { useNavigate } from "react-router-dom";
 var socket, selectedChatCompare, selectedNotifications;
 
 const Chats = ({
@@ -327,7 +327,7 @@ const Chats = ({
   };
 
   return (
-    <div className="container ">
+    <div className="container">
       <div className="row no-gutters">
         <div className="col-md-12" >
           <div

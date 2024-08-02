@@ -143,32 +143,34 @@ const Userinfo = () => {
                   <p>{userData.following.length} following</p>
                 </div>
 
-                <div className="button-sec">
-                  <button
-                    className={`btn-part ${userData.followers.includes(loginUserId) ? 'following' : 'follow'}`}
-                    onClick={() => {
-                      if (userData.followers.includes(loginUserId)) {
-                        unfollowUser(
-                          userData._id,
-                          loginUserId,
-                          setFollowers,
-                          setIsFollow
-                        );
-                      } else {
-                        followUser(
-                          userData._id,
-                          loginUserId,
-                          setFollowers,
-                          setIsFollow
-                        );
-                      }
-                    }}
-                  >
-                    {userData.followers.includes(loginUserId)
-                      ? "Following"
-                      : "Follow"}
-                  </button>
-                </div>
+                {loginUserId !== userId && (
+                  <div className="button-sec">
+                    <button
+                      className={`btn-part ${userData.followers.includes(loginUserId) ? 'following' : 'follow'}`}
+                      onClick={() => {
+                        if (userData.followers.includes(loginUserId)) {
+                          unfollowUser(
+                            userData._id,
+                            loginUserId,
+                            setFollowers,
+                            setIsFollow
+                          );
+                        } else {
+                          followUser(
+                            userData._id,
+                            loginUserId,
+                            setFollowers,
+                            setIsFollow
+                          );
+                        }
+                      }}
+                    >
+                      {userData.followers.includes(loginUserId)
+                        ? "Following"
+                        : "Follow"}
+                    </button>
+                  </div>
+                )}
               </div>
 
 

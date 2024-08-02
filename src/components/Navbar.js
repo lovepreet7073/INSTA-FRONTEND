@@ -167,3 +167,25 @@ export const Navbar = () => {
 
 };
 
+
+const handleSearch = (e) => {
+  const query = e.target.value.toLowerCase();
+  if (query === "") {
+    // setPage(1);
+    setPosts([]);
+    // setHasMore(true);
+    fetchPosts(userData?._id, 1);
+    return;
+  }
+  const filtered = posts.filter((post) =>
+    post.title.toLowerCase().includes(query)
+  );
+
+  setError("");
+  setPosts(filtered);
+  if (filtered.length === 0) {
+    setError("");
+  } else {
+    setError("");
+  }
+};

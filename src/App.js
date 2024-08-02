@@ -27,6 +27,7 @@ import ChatSidebar from "./components/chatSidebar";
 import IncomingVideoCall from "./components/IncomingVideoCall"
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
+import Comments from "./components/Comments";
 
 export const UserContext = createContext();
 
@@ -101,6 +102,7 @@ const App = () => {
               <Route path="/follow" element={<ProtectedRoute token={token}><Follow /></ProtectedRoute>} />
               <Route path="/chatpage" element={<ProtectedRoute token={token}><ChatPage /></ProtectedRoute>} />
               <Route path="/footer" element={<ProtectedRoute token={token}><Footer /></ProtectedRoute>} />
+              <Route path="/comments" element={<ProtectedRoute token={token}><Comments /></ProtectedRoute>} />
               <Route path="/chatsidebar" element={<ProtectedRoute token={token}><ChatSidebar /></ProtectedRoute>} />
               <Route path="/videocall/:roomID" element={<ProtectedRoute token={token}><Videocall /></ProtectedRoute>} />
             </>
