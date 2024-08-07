@@ -5,8 +5,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../assets/css/allposts.css';
-import moment from 'moment';
+import Reply from "../components/Reply";
+import formatShortDate from "../functions/formatDate";
 const AllPosts = () => {
+
   useEffect(() => {
     document.title = "All Posts";
   }, []);
@@ -40,10 +42,10 @@ const AllPosts = () => {
 
       if (response.ok) {
         const { posts: newPosts, hasMore } = await response.json();
-
+        console.log(newPosts, 'newPosts')
         setTimeout(() => {
           setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-          
+
           setHasMore(hasMore);
         }, 1500);
 
@@ -95,36 +97,6 @@ const AllPosts = () => {
   };
 
 
-  const formatShortDate = (date) => {
-    if (!date) {
-      return "weeks ago"; // Default message if no date is provided
-    }
-    const now = moment();
-    const duration = moment.duration(now.diff(moment(date)));
-
-    if (duration.asSeconds() < 60) {
-      return `${Math.floor(duration.asSeconds())}s`; // Show seconds
-    } else if (duration.asMinutes() < 60) {
-      return `${Math.floor(duration.asMinutes())}m`; // Show minutes
-    } else if (duration.asHours() < 24) {
-      return `${Math.floor(duration.asHours())}h`; // Show hours
-    } else if (duration.asDays() < 7) {
-      return `${Math.floor(duration.asDays())}d`; // Show days
-    } else if (duration.asDays() < 30) {
-      return `${Math.floor(duration.asDays() / 7)}w`; // Show weeks
-    } else if (duration.asDays() < 365) {
-      return `${Math.floor(duration.asDays() / 30)}m`; // Show months
-    } else {
-      return `${Math.floor(duration.asDays() / 365)}y`; // Show years
-    }
-  };
-
-  const toggleExpand = (postId) => {
-    setExpandedPosts((prevExpandedPosts) => ({
-      ...prevExpandedPosts,
-      [postId]: !prevExpandedPosts[postId],
-    }));
-  };
 
   const truncateTitle = (title, postId) => {
     const isExpanded = expandedPosts[postId];
@@ -158,33 +130,43 @@ const AllPosts = () => {
     }
   };
 
+  const toggleExpand = (postId) => {
+    setExpandedPosts((prevExpandedPosts) => ({
+      ...prevExpandedPosts,
+      [postId]: !prevExpandedPosts[postId],
+    }));
+  };
+
+
+
   const createComment = async (text, id) => {
-    if(comment){
-    try {
-      const response = await fetch(
-        `http://localhost:5000/user/api/comment`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
-          },
-          body: JSON.stringify({
-            text: text,
-            postId: id,
-          })
-        }
-      );
-      const updatedPost = await response.json();
-      setPosts((prevPosts) =>
-        prevPosts.map((post) => (post._id === id ? updatedPost : post))
-      );
-      setComment("")
-    } catch (error) {
-      console.error("Error liking post:", error);
+    if (comment) {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/user/api/comment`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
+            },
+            body: JSON.stringify({
+              text: text,
+              postId: id,
+            })
+          }
+        );
+        const updatedPost = await response.json();
+        setPosts((prevPosts) =>
+          prevPosts.map((post) => (post._id === id ? updatedPost : post))
+        );
+        setComment("")
+      } catch (error) {
+        console.error("Error liking post:", error);
+      }
     }
   }
-  }
+
   const replyComment = async (postId, commentId, replyText) => {
     try {
       const response = await fetch(
@@ -196,21 +178,48 @@ const AllPosts = () => {
             Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
           },
           body: JSON.stringify({
-            reply: replyText
+            reply: replyText,
+
           })
         }
       );
       const updatedPost = await response.json();
-      
       setPosts((prevPosts) =>
         prevPosts.map((post) => (post._id === postId ? updatedPost : post))
       );
-
-      console.log(updatedPost, "reply-comment--.>")
     } catch (error) {
       console.error("Error reply on comment:", error);
     }
   }
+
+  const replyOnReply = async (postId, commentId, replytext, parentReplyId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/user/api/replyonComment/${commentId}/${postId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
+          },
+          body: JSON.stringify({
+            replytext: replytext,
+            parentReplyId: parentReplyId,
+
+          })
+
+        }
+      );
+
+      const updatedPost = await response.json();
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => (post._id === postId ? updatedPost : post))
+      );
+    } catch (error) {
+      console.error("Error reply on comment:", error);
+    }
+  }
+
   const toggleComment = (post) => {
     setItem(post); // Set the selected post
     setShow(!show); // Toggle the show state
@@ -218,22 +227,36 @@ const AllPosts = () => {
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
-  const handleReply = (comment) => {
-    setReplyingTo(comment);
-    setComment(`@${comment.postedBy.name} `); // optionally pre-fill with username
+
+
+  const handleReply = (reply, commentId) => {
+    setReplyingTo({
+      ...reply,
+      parentReplyId: reply._id,
+      commentId: commentId
+    });
+    setComment(`@${reply.postedBy.name} `); // Optionally pre-fill with username
   };
 
+  const handlereplyclick = (comment) => {
+    setReplyingTo(comment)
+    setComment(`@${comment.postedBy.name} `);
+  }
   const handleCreateComment = () => {
     if (replyingTo) {
-      replyComment(item._id, replyingTo._id, comment);
+      if (replyingTo.parentReplyId) {
+        replyOnReply(item._id, replyingTo.commentId, comment, replyingTo._id);
+      } else {
+        replyComment(item._id, replyingTo._id, comment)
+      }
     } else {
       createComment(comment, item._id);
     }
     setComment("");
     setReplyingTo(null);
   };
-
-  console.log('item-->', item)
+  console.log(replyingTo, "to")
+  console.log('item', item)
   return (
     <div className="home">
       <div className="card">
@@ -364,7 +387,7 @@ const AllPosts = () => {
 
                 <div className="add-comment">
                   <i class="bi bi-emoji-smile" style={{ fontSize: "20px" }}></i>
-                  <input type='text' value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add a comment" />
+                  <input type='text' value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add a comment" required />
                   <button className="btn btn-primary-sm" style={{ color: "blue" }} onClick={() => createComment(comment, post._id)}>Post</button>
                 </div>
               </div>
@@ -408,47 +431,24 @@ const AllPosts = () => {
                         style={{
                           width: "37px", height: "37px", borderRadius: "100px", objectFit: "cover"
                         }}></img>
-
                       <div className='upper-part' >
                         <span className="commenter" style={{ fontWeight: "bold", fontSize: "14px", display: "flex", gap: "4px" }}>{comment.postedBy.name}
                           <p style={{ fontSize: "11px", color: "#403131bf" }}>{formatShortDate(comment.createdAt)} </p></span>
                         <span style={{ display: "flex", alignItems: "center" }}>
                           <p className="comment-text">{comment.comment}</p>
-                          <button style={{ fontSize: "12px", color: "blue", marginTop: "-17px" }} className="btn btn-primary-sm" onClick={() => handleReply(comment)}>Reply</button></span>
-
-
+                          <button style={{ fontSize: "12px", color: "blue", marginTop: "-17px" }} className="btn btn-primary-sm" onClick={() => handlereplyclick(comment)}>Reply</button></span>
                         {comment.replies && comment.replies.map(reply => (
-                          <div key={reply._id} className="reply" style={{ marginLeft: "70px", textAlign: "right" }}>
-                            <div className="comm" style={{ marginBottom: "4px", marginTop: "10px" }}>
-                              <img
-                                src={`http://localhost:5000/images/${reply.postedBy.profileImage}`}
-                                style={{ width: "37px", height: "37px", borderRadius: "100px", objectFit: "cover" }}
-                              />
-                              <div style={{ lineHeight: "4px", display: "flex", flexDirection: "column" }}>
-                                <span className="commenter" style={{ fontWeight: "bold", fontSize: "14px", display: "flex", gap: "3px" }}>
-                                  {reply.postedBy.name}
-
-
-                                  <p style={{ fontSize: "11px", color: "#403131bf" }}>
-                                    {formatShortDate(reply.createdAt)}
-                                  </p>
-                                </span>
-                                <span style={{ display: "flex", gap: "4px", fontSize: "14px" }}>
-                                  {/* <p className="comment-text"> {`@${comment.postedBy.name}`}</p> */}
-                                  <p className="comment-text"> {reply.reply}</p>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                          <Reply key={reply._id} reply={reply} handleReply={handleReply} commentId={comment._id} />
                         ))}
                       </div>
                     </div>
                   )
-
                 })}
               </div>
               {replyingTo && (
+
                 <div className="reply-box">
+
                   <img
                     src={`http://localhost:5000/images/${replyingTo.postedBy.profileImage}`}
                     style={{ width: "30px", height: "30px", borderRadius: "100px", objectFit: "cover" }}
