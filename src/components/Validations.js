@@ -95,7 +95,7 @@ export const EditProfileSchema = Yup.object().shape({
 });
 export const CreatePostSchema = Yup.object().shape({
   title: Yup.string()
-    .max(200, "Title must be less than or equal to 200 characters"),
+    .max(1500, "Title must be less than or equal to 1500 characters"),
 
 
   postImg: Yup.mixed()

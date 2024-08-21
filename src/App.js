@@ -11,12 +11,10 @@ import Login from "./pages/Login";
 import UpdatePost from "./pages/UpdatePost";
 import Allposts from "./pages/Allposts";
 import Userinfo from "./components/Userinfo";
-import Pagination from "./components/Pagination";
 import Allusers from "./pages/Allusers";
 import UserPost from "./pages/UserPost";
 import MyProfile from "./pages/MyProfile";
 import Password from "./pages/Password";
-import Follow from "./pages/Follow";
 import ForgotPassword from "./components/forgotpassword";
 import ChatPage from "./pages/ChatPage";
 import ResetPassword from "./components/resetPassword";
@@ -75,36 +73,28 @@ const App = () => {
         }`}
       >
       <Routes>
-          {!token ? (
-            <>
               <Route path="/" element={<Navigate to="/register" />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={token ? <Navigate to="/myprofile" />:<Login />} />
               <Route path="/resetpassword/:token" element={<ResetPassword />} />
               <Route path="/verifyaccount/:id/:token" element={<Emailverify />} />
               <Route path="/resend-confirmation" element={<ResendConfirmation />} />
               <Route path="/forgotpassword" element={<ForgotPassword />} />
-            </>
-          ) : (
-            <>
               <Route path="/" element={<Navigate to="/allposts" />} />
-              <Route path="/editprofile" element={<ProtectedRoute token={token}><EditProfile /></ProtectedRoute>} />
-              <Route path="/createpost" element={<ProtectedRoute token={token}><CreatePost /></ProtectedRoute>} />
-              <Route path="/updatepost" element={<ProtectedRoute token={token}><UpdatePost /></ProtectedRoute>} />
-              <Route path="/allposts" element={<ProtectedRoute token={token}><Allposts /></ProtectedRoute>} />
-              <Route path="/userinfo/:userId" element={<ProtectedRoute token={token}><Userinfo /></ProtectedRoute>} />
-              <Route path="/pagination" element={<ProtectedRoute token={token}><Pagination /></ProtectedRoute>} />
-              <Route path="/allusers" element={<ProtectedRoute token={token}><Allusers /></ProtectedRoute>} />
-              <Route path="/userpost/:userId" element={<ProtectedRoute token={token}><UserPost /></ProtectedRoute>} />
-              <Route path="/myprofile" element={<ProtectedRoute token={token}><MyProfile /></ProtectedRoute>} />
-              <Route path="/password" element={<ProtectedRoute token={token}><Password /></ProtectedRoute>} />
-              <Route path="/follow" element={<ProtectedRoute token={token}><Follow /></ProtectedRoute>} />
-              <Route path="/chatpage" element={<ProtectedRoute token={token}><ChatPage /></ProtectedRoute>} />
-              <Route path="/footer" element={<ProtectedRoute token={token}><Footer /></ProtectedRoute>} />
-              <Route path="/chatsidebar" element={<ProtectedRoute token={token}><ChatSidebar /></ProtectedRoute>} />
-              <Route path="/videocall/:roomID" element={<ProtectedRoute token={token}><Videocall /></ProtectedRoute>} />
-            </>
-          )}
+              <Route path="/editprofile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+              <Route path="/createpost" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
+              <Route path="/updatepost" element={<ProtectedRoute><UpdatePost /></ProtectedRoute>} />
+              <Route path="/allposts" element={<ProtectedRoute><Allposts /></ProtectedRoute>} />
+              <Route path="/userinfo/:userId" element={<ProtectedRoute><Userinfo /></ProtectedRoute>} />
+      
+              <Route path="/allusers" element={<ProtectedRoute><Allusers /></ProtectedRoute>} />
+              <Route path="/userpost/:userId" element={<ProtectedRoute><UserPost /></ProtectedRoute>} />
+              <Route path="/myprofile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
+              <Route path="/password" element={<ProtectedRoute><Password /></ProtectedRoute>} />
+              <Route path="/chatpage" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+              <Route path="/footer" element={<ProtectedRoute><Footer /></ProtectedRoute>} />
+              <Route path="/chatsidebar" element={<ProtectedRoute><ChatSidebar /></ProtectedRoute>} />
+              <Route path="/videocall/:roomID" element={<ProtectedRoute><Videocall /></ProtectedRoute>} />
         </Routes>
         {token && <IncomingVideoCall />}
       </div>

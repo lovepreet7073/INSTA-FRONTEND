@@ -5,16 +5,27 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../assets/css/allposts.css';
-import moment from 'moment';
+import Reply from "../components/Reply";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
+import formatShortDate from "../functions/formatDate";
+import Story from "../components/Story";
 const AllPosts = () => {
-  useEffect(() => { 
+
+  useEffect(() => {
     document.title = "All Posts";
   }, []);
-
+  const [openPicker, setOpenPicker] = useState(false);
+  const [mainPicker, setmainPicker] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [show, setShow] = useState(false);
   const [page, setPage] = useState(1);
+  const [comment, setComment] = useState('');
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [item, setItem] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState("");
+  const [expandedPosts, setExpandedPosts] = useState({});
   const [loading, setLoading] = useState(true);
   const userData = useSelector((state) => state.user.userData);
   const postsPerPage = 7;
@@ -35,9 +46,9 @@ const AllPosts = () => {
 
       if (response.ok) {
         const { posts: newPosts, hasMore } = await response.json();
-
         setTimeout(() => {
           setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+
           setHasMore(hasMore);
         }, 1500);
 
@@ -51,6 +62,11 @@ const AllPosts = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+
+  const handleEmojiSelect = (emoji) => {
+    setComment(comment + emoji.native);
   };
 
   useEffect(() => {
@@ -85,59 +101,175 @@ const AllPosts = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    if (query === "") {
-      // setPage(1);
-      setPosts([]);
-      // setHasMore(true);
-      fetchPosts(userData?._id, 1);
-      return;
-    }
-    const filtered = posts.filter((post) =>
-      post.title.toLowerCase().includes(query)
-    );
 
-    setError("");
-    setPosts(filtered);
-    if (filtered.length === 0) {
-      setError("");
+
+  const truncateTitle = (title, postId) => {
+    const isExpanded = expandedPosts[postId];
+    const limit = 30; // Adjust the character limit as needed
+    if (isExpanded) {
+      return (
+        <>
+          {title}
+          <span
+            onClick={() => toggleExpand(postId)}
+            style={{ color: "blue", cursor: "pointer", fontSize: "12px" }}
+          >
+            show less
+          </span>
+        </>
+      );
+    } else if (title.length > limit) {
+      return (
+        <>
+          {title.substring(0, limit)}...
+          <span
+            onClick={() => toggleExpand(postId)}
+            style={{ color: "blue", cursor: "pointer", fontSize: "12px" }}
+          >
+            more
+          </span>
+        </>
+      );
     } else {
-      setError("");
+      return title;
     }
   };
-  const formatShortDate = (date) => {
-    if (!date) {
-      return "weeks ago"; // Default message if no date is provided
-    }
-    const now = moment();
-    const duration = moment.duration(now.diff(moment(date)));
 
-    if (duration.asSeconds() < 60) {
-      return `${Math.floor(duration.asSeconds())}s`; // Show seconds
-    } else if (duration.asMinutes() < 60) {
-      return `${Math.floor(duration.asMinutes())}m`; // Show minutes
-    } else if (duration.asHours() < 24) {
-      return `${Math.floor(duration.asHours())}h`; // Show hours
-    } else if (duration.asDays() < 7) {
-      return `${Math.floor(duration.asDays())}d`; // Show days
-    } else if (duration.asDays() < 30) {
-      return `${Math.floor(duration.asDays() / 7)}w`; // Show weeks
-    } else if (duration.asDays() < 365) {
-      return `${Math.floor(duration.asDays() / 30)}m`; // Show months
-    } else {
-      return `${Math.floor(duration.asDays() / 365)}y`; // Show years
+  const toggleExpand = (postId) => {
+    setExpandedPosts((prevExpandedPosts) => ({
+      ...prevExpandedPosts,
+      [postId]: !prevExpandedPosts[postId],
+    }));
+  };
+
+
+
+  const createComment = async (text, id) => {
+    if (comment) {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/user/api/comment`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
+            },
+            body: JSON.stringify({
+              text: text,
+              postId: id,
+            })
+          }
+        );
+        const updatedPost = await response.json();
+        setPosts((prevPosts) =>
+          prevPosts.map((post) => (post._id === id ? updatedPost : post))
+        );
+        setComment("")
+        setmainPicker(false)
+      } catch (error) {
+        console.error("Error liking post:", error);
+      }
     }
+  }
+
+  const replyComment = async (postId, commentId, replyText) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/user/api/comment/${commentId}/${postId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
+          },
+          body: JSON.stringify({
+            reply: replyText,
+
+          })
+        }
+      );
+      const updatedPost = await response.json();
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => (post._id === postId ? updatedPost : post))
+      );
+      setOpenPicker(false);
+    } catch (error) {
+      console.error("Error reply on comment:", error);
+    }
+  }
+
+  const replyOnReply = async (postId, commentId, replytext, parentReplyId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/user/api/replyonComment/${commentId}/${postId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
+          },
+          body: JSON.stringify({
+            replytext: replytext,
+            parentReplyId: parentReplyId,
+
+          })
+
+        }
+      );
+
+      const updatedPost = await response.json();
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => (post._id === postId ? updatedPost : post))
+      );
+      setOpenPicker(false);
+    } catch (error) {
+      console.error("Error reply on comment:", error);
+    }
+  }
+
+  const toggleComment = (post) => {
+    setItem(post); // Set the selected post
+    setShow(!show); // Toggle the show state
+    setmainPicker(false)
+  }
+  const handleCommentChange = (e) => {
+    setComment(e.target.value);
+  };
+
+
+  const handleReply = (reply, commentId) => {
+    setReplyingTo({
+      ...reply,
+      parentReplyId: reply._id,
+      commentId: commentId
+    });
+    setComment(`@${reply.postedBy.name} `); // Optionally pre-fill with username
+  };
+
+  const handlereplyclick = (comment) => {
+    setReplyingTo(comment)
+    setComment(`@${comment.postedBy.name} `);
+  }
+  const handleCreateComment = () => {
+    if (replyingTo) {
+      if (replyingTo.parentReplyId) {
+        replyOnReply(item._id, replyingTo.commentId, comment, replyingTo._id);
+      } else {
+        replyComment(item._id, replyingTo._id, comment)
+      }
+    } else {
+      createComment(comment, item._id);
+    }
+    setComment("");
+    setReplyingTo(null);
   };
 
   return (
     <div className="home">
+      <Story/>
       <div className="card">
-        {/* <input
-          type="text"
-          placeholder="Search posts..."
-          onChange={handleSearch}
-        /> */}
+
         <InfiniteScroll
           dataLength={posts.length}
           next={() => setPage((prevPage) => prevPage + 1)}
@@ -160,7 +292,7 @@ const AllPosts = () => {
         >
           {posts.length > 0 ? (
             posts.map((post) => (
-              <div key={post._id} className="div-card">
+              <div key={post._id} className="div-card" style={{ position: "relative" }}>
                 <div className="card-header">
                   <div className="card-pic">
                     {post.userId && post.userId.profileImage ? (
@@ -181,24 +313,29 @@ const AllPosts = () => {
                   <NavLink
                     className="info-user-content"
                     style={{ textDecoration: "none" }}
-                    to={post.userId ? `/userinfo/${post.userId._id}` : "#"}
+                    to={post.userId && post.userId._id === userData._id
+                      ? `/myprofile` // Redirect to current user's profile
+                      : `/userinfo/${post.userId ? post.userId._id : "#"}` // Redirect to user info page
+                    }
                   >
                     <p className="name-of-user" style={{ margin: "0px" }}>
                       {post.userId ? post.userId.name : "Unknown User"}
                     </p>
-                    <span style={{ fontSize: "11px", color: "#403131bf" }}>{formatShortDate(post.createdAt)}</span>
+                    <span style={{ fontSize: "11px", color: "#403131bf" }}>
+                      {formatShortDate(post.createdAt)}
+                    </span>
                   </NavLink>
                 </div>
 
                 <div className="card-image">
                   <img
                     className="post-img"
-                    src={`http://localhost:5000/images/${post.image.filename}`}
+                    src={`http://localhost:5000/images/${post.image}`}
                     alt="Post"
                   />
                 </div>
                 <div className="card-content">
-                  <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <span style={{ display: "flex", gap: "8px" }}>
                     {post?.likedBy?.includes(userData?._id) ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -221,18 +358,62 @@ const AllPosts = () => {
                           likePost(post._id, userData?._id);
                         }}
                         width="24px"
-                        fill="#0000F5"
+                        fill=""
                       >
                         <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
                       </svg>
                     )}
-                    <p style={{ margin: "0px" }}>{post.likes}</p>
-                  </span>
-                  <div className="des-title">
-                    <p className="post-title" style={{ marginTop: "6px" }}
-                    >{post.title}</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" onClick={() => toggleComment(post)} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></svg>
 
+                  </span>
+                  <p style={{ margin: "13px 0px 3px 1px" }}>
+                    {post.likes} {post.likes > 1 ? 'likes' : 'like'}
+                  </p>
+
+                  <div className="des-title">
+                    <p className="title">{truncateTitle(post.title, post._id)}</p>
+                    {post.comments.length === 0 ? (
+                      <p onClick={() => toggleComment(post)} style={{ cursor: "pointer", fontSize: "14px", color: "#a99d9dc2" }}
+                      >No comments yet</p>
+                    ) : (
+                      <p
+                        style={{ cursor: "pointer", fontSize: "14px", color: "#a99d9dc2" }}
+                        onClick={() => toggleComment(post)}
+                      >
+                        View all {post.comments.length} comments
+                      </p>
+                    )}
                   </div>
+
+
+
+                </div>
+                <div
+                  style={{
+                    zIndex: "10",
+                    display: mainPicker ? "inline" : "none",
+                    position: "absolute",
+                    bottom: "75px",
+                    right: "90px",
+                  }}
+                >
+                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+
+                </div>
+
+                <div className="add-comment">
+
+                  <i
+                    class="bi bi-emoji-smile"
+                    style={{ fontSize: "20px", cursor: "pointer" }}
+                    onClick={() => setmainPicker(!mainPicker)
+
+                    }
+                  ></i>
+
+
+                  <input type='text' value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add a comment" required />
+                  <button className="btn btn-primary-sm" style={{ color: "blue" }} onClick={() => createComment(comment, post._id)}>Post</button>
                 </div>
               </div>
             ))
@@ -243,6 +424,120 @@ const AllPosts = () => {
           )}
         </InfiniteScroll>
       </div>
+      {show && item && (
+        <div className="show-comment" style={{ width: "100%" }}>
+          <div className="container comment">
+          
+            <div
+              className="post-pic-div"
+              style={{
+                backgroundImage: item?.image ? `url(http://localhost:5000/images/${item?.image})` : "none",
+                backgroundSize: "cover", 
+                backgroundPosition: "center", 
+                width: "100%",
+                height: "inherit"
+              }}
+            >
+           
+            </div>
+            <div className="details">
+              <div className="card-header" style={{ borderBottom: "1px solid #00000029" }}>
+                <div className="card-pic">
+                  <img
+                    src={`http://localhost:5000/images/${item.userId.profileImage}`}
+                    alt=""
+                    height="42px"
+                    width="42px"
+                    style={{ borderRadius: "100px" }}
+                  />
+                </div>
+                <h5>{item.userId.name}</h5>
+              </div>
+
+              <div className="comment-section" style={{ borderBottom: "1px solid #00000029" }}>
+                {item.comments.map((comment) => {
+                  return (
+                    <div className="comm" >
+                      <img src={`http://localhost:5000/images/${comment.postedBy.profileImage}`
+                      }
+                        style={{
+                          width: "37px", height: "37px", borderRadius: "100px", objectFit: "cover"
+                        }}></img>
+                      <div className='upper-part' >
+                        <span className="commenter" style={{ fontWeight: "bold", fontSize: "14px", display: "flex", gap: "4px" }}>{comment.postedBy.name}
+                          <p style={{ fontSize: "11px", color: "#403131bf" }}>{formatShortDate(comment.createdAt)} </p></span>
+                        <span style={{ display: "flex", alignItems: "center" }}>
+                          <p className="comment-text">{comment.comment}</p>
+                          <button style={{ fontSize: "12px", color: "blue", marginTop: "-17px" }} className="btn btn-primary-sm" onClick={() => handlereplyclick(comment)}>Reply</button></span>
+                        {comment.replies && comment.replies.map(reply => (
+                          <Reply key={reply._id} reply={reply} handleReply={handleReply} commentId={comment._id} />
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+              {replyingTo && (
+
+                <div className="reply-box">
+
+                  <img
+                    src={`http://localhost:5000/images/${replyingTo.postedBy.profileImage}`}
+                    style={{ width: "30px", height: "30px", borderRadius: "100px", objectFit: "cover" }}
+                  ></img>
+                  <p style={{ margin: "0px" }}>Replying to <strong>{replyingTo.postedBy.name}</strong></p>
+                  <button onClick={() => {
+                    setReplyingTo(null)
+                    setComment("")
+                  }}><i class="bi bi-x"></i></button>
+                </div>
+              )}
+
+              <div className="add-comment">
+                <div
+                  style={{
+                    zIndex: "10",
+                    display: openPicker ? "inline" : "none",
+                    position: "absolute",
+                    bottom: "75px",
+                    right: "90px",
+                  }}
+                >
+                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+
+                </div>
+                <i
+                  class="bi bi-emoji-smile"
+                  style={{ fontSize: "20px", cursor: "pointer" }}
+                  onClick={() => setOpenPicker(!openPicker)
+
+                  }
+                ></i>
+
+                <input
+                  type="text"
+                  value={comment}
+                  onChange={handleCommentChange}
+                  placeholder={replyingTo ? `${replyingTo.postedBy.name}` : "Add a comment"}
+                  required
+                />
+                <button
+                  className="btn btn-primary-sm"
+                  style={{ color: "blue" }}
+                  onClick={() => {
+                    handleCreateComment()
+                    toggleComment(item)
+                  }}
+                >
+                  {replyingTo ? "Reply" : "Post"}
+                </button>
+              </div>
+
+            </div>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" onClick={toggleComment} style={{ position: "fixed", top: "4%", right: "10%", color: "white" }} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+        </div>
+      )}
     </div>
   );
 };

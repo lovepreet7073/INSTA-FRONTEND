@@ -27,7 +27,6 @@ const Register = () => {
   };
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [msg, setMsg] = useState("");
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -128,8 +127,6 @@ const Register = () => {
             <p className="loginPara">
               Sign up to see photos and videos <br /> from your friends
             </p>
-            {msg && <div className="sucess-message">{msg}</div>}
-            {/* <h2 className="form-title">Sign Up</h2> */}
 
             <form onSubmit={formik.handleSubmit}>
               <div className="input-control">

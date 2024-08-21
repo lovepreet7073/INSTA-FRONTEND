@@ -12,9 +12,7 @@ const Allusers = () => {
 
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true); 
-  const itemsPerPage = 6;
   const userData = useSelector((state) => state.user.userData);
   const loginUserId = userData?._id;
 
@@ -117,13 +115,7 @@ const Allusers = () => {
     fetchUsers();
   }, [loginUserId]);
 
-  const indexOfLastUser = currentPage * itemsPerPage;
-  const indexOfFirstUser = indexOfLastUser - itemsPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-
-  const handlePageChange = (data) => {
-    setCurrentPage(data.selected + 1);
-  };
+ 
 
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
@@ -136,7 +128,6 @@ const Allusers = () => {
     );
 
     setUsers(filtered);
-    setCurrentPage(1);
     if (filtered.length === 0) {
       setError("No user found!❌");
     }
@@ -162,7 +153,7 @@ const Allusers = () => {
         {loading ? (
           // Skeleton loader while loading
           <div className="user-list">
-            {[...Array(itemsPerPage)].map((_, index) => (
+            {[...Array(users.length)].map((_, index) => (
               <div key={index} className="user-part">
                 <div className="img-name">
                   <Skeleton circle={true} height={53} width={53} />
@@ -178,7 +169,7 @@ const Allusers = () => {
           <div className="err-msg">{error}</div>
         ) : (
           <div className="user-list">
-            {currentUsers.map((user) => (
+            {users.map((user) => (
               <div key={user._id} className="user-part">
                 <div className="img-name">
                   <div className="imgg">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../assets/css/chatsidebar.css";
 import { useSelector, useDispatch } from "react-redux";
+import Skeleton from 'react-loading-skeleton';
 import {
   fetchChatsRequest,
   openChat,
@@ -16,8 +17,10 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const itemsPerPage = 3;
   const userData = useSelector((state) => state.user.userData);
   const activeChat = useSelector((state) => state.chat.selectedChat);
+  const [loading, setLoading] = useState(true); 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const notifications = useSelector((state) => state.notifications.notifications);
   const accessChat = async (userId) => {
@@ -46,6 +49,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
   };
 
   const handleSearch = async (event) => {
+    setLoading(true)
     const searchTerm = event.target.value;
     setSearch(searchTerm);
 
@@ -67,12 +71,18 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
       );
       if (response.ok) {
         const searchData = await response.json();
-        setSearchResult(searchData);
+        setTimeout(()=>{
+          setSearchResult(searchData);
+        },1000)
+        setLoading(false)
+        
       } else {
         throw new Error("Failed to search users");
       }
     } catch (error) {
       console.error("Error searching users:", error.message);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -99,11 +109,14 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
         });
 
         setUsers(sortedChats);
+        setLoading(false);
       } else {
         throw new Error("Failed to fetch chats");
       }
     } catch (error) {
       dispatch(fetchChatsFailure(error.message));
+    }finally{
+       setLoading(false);
     }
   };
 
@@ -169,7 +182,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
             </svg>
           </button>
           <button onClick={toggleSearchBar} className="btn btn-light ms-2">
-            <i class="bi bi-search"></i>
+            <i className="bi bi-search"></i>
           </button>
           <div className="dropdown ms-2">
             <button className="btn btn-light dropdown-toggle" onClick={toggleDropdown}>
@@ -203,74 +216,108 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
           />
         </div>
       )}
-      <div className="" style={{ maxHeight: "calc(100vh - 200px)" }}>
-        {search ? (
-          searchResult.map((user) => (
-            <div
-              key={user._id}
-              style={{ cursor: "pointer" }}
-              className={`d-flex align-items-center p-2 ${activeChat && activeChat?.users[0]?._id === user?._id ? "bg-light" : ""}`}
-              onClick={() => accessChat(user?._id)}
-            >
-              {user.profileImage ? (
-                <img
-                  src={`http://localhost:5000/images/${user.profileImage}`}
-                  alt={`${user.name}'s profile`}
-                  className="rounded-circle me-2"
-                  width="53"
-                  height="53"
-                />
-              ) : (
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU"
-                  className="rounded-circle me-2"
-                  width="53"
-                  height="53"
-                  alt="Default Profile"
-                />
-              )}
-              <div>
-                <h6 className="mb-0">{user.name}</h6>
+  <div>
+      {loading ? (
+        // Skeleton loader while searching
+        <div className="user-list">
+          {[...Array(itemsPerPage)].map((_, index) => (
+            <div key={index} className="user-part">
+              <div className="img-name">
+                <Skeleton circle={true} height={53} width={53} />
+                <Skeleton height={20} width={100} />
+              </div>
+              <div className="btn-sec">
+                <Skeleton height={30} width={80} />
               </div>
             </div>
-          ))
+          ))}
+        </div>
+      ) : search ? (
+        searchResult.map((user) => (
+          <div
+            key={user._id}
+            style={{ cursor: "pointer" }}
+            className={`d-flex align-items-center p-2 ${activeChat && activeChat?.users[0]?._id === user?._id ? "bg-light" : ""}`}
+            onClick={() => accessChat(user?._id)}
+          >
+            {user.profileImage ? (
+              <img
+                src={`http://localhost:5000/images/${user.profileImage}`}
+                alt={`${user.name}'s profile`}
+                className="rounded-circle me-2"
+                width="53"
+                height="53"
+              />
+            ) : (
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU"
+                className="rounded-circle me-2"
+                width="53"
+                height="53"
+                alt="Default Profile"
+              />
+            )}
+            <div>
+              <h6 className="mb-0">{user.name}</h6>
+            </div>
+          </div>
+        ))
         ) : (
-          users.map((user) => (
-            <div
-              key={user._id}
-              style={{ cursor: "pointer", background: "white" }}
-              className={`d-flex align-items-center p-2 border-bottom${activeChat && activeChat?._id === user?._id ? " bg-light" : ""}`}
-              onClick={() => handleOpenChat(user)}
-            >
-              <div className="position-relative">
-                {user.isGroupChat ? (
-                  <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rUNxcDVPjBBWCPMIg6sXnvEE95gmls5Jk62kM1de5nxhSttej5SlaTLWMkO9Cd2ZzGQ&usqp=CAU"
-                    className="rounded-circle me-2"
-                    width="53"
-                    height="53"
-                    alt="Group Chat"
-                  />
-                ) : (
-                  <img
-                    src={`http://localhost:5000/images/${getSender(userData, user.users).image}`}
-                    alt={`${getSender(userData, user.users).name}'s profile`}
-                    className="rounded-circle me-2"
-                    width="53"
-                    height="53"
-                  />
-                )}
-                {!user?.isGroupChat && OnlineUsers.some((OnlineUser) => OnlineUser.userId === user.users[1]?._id) && (
-                  <span className="online-dot"></span>
-                )}
+          <>
+            {loading ? (
+              // Skeleton loader while loading
+              <div className="user-list">
+                {[...Array(itemsPerPage)].map((_, index) => (
+                  <div key={index} className="user-part">
+                    <div className="img-name">
+                      <Skeleton circle={true} height={53} width={53} />
+                      <Skeleton height={20} width={100} />
+                    </div>
+                    <div className="btn-sec">
+                      <Skeleton height={30} width={80} />
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex-grow-1">
-                <h6 className="mb-0">{user.isGroupChat ? user.chatName : getSender(userData, user.users).name}</h6>
-                <small className="text-muted">{user._id === lastMsg.chatId ? (lastMsg.content ? lastMsg.content : lastMsg.image ? "Photo" : "") : renderLastMessage(user).content}</small>
-              </div>
-              <small className="text-muted ms-auto">{user._id === lastMsg.chatId ? lastMsg.time : renderLastMessage(user).time}</small>
-            </div>
-          ))
+            ) : (
+              users.map((user) => (
+                <div
+                  key={user._id}
+                  style={{ cursor: "pointer", background: "white" }}
+                  className={`d-flex align-items-center p-2 border-bottom${activeChat && activeChat?._id === user?._id ? " bg-light" : ""}`}
+                  onClick={() => handleOpenChat(user)}
+                >
+                  <div className="position-relative">
+                    {user.isGroupChat ? (
+                      <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rUNxcDVPjBBWCPMIg6sXnvEE95gmls5Jk62kM1de5nxhSttej5SlaTLWMkO9Cd2ZzGQ&usqp=CAU"
+                        className="rounded-circle me-2"
+                        width="53"
+                        height="53"
+                        alt="Group Chat"
+                      />
+                    ) : (
+                      <img
+                        src={`http://localhost:5000/images/${getSender(userData, user.users).image}`}
+                        alt={`${getSender(userData, user.users).name}'s profile`}
+                        className="rounded-circle me-2"
+                        width="53"
+                        height="53"
+                      />
+                    )}
+                    {!user?.isGroupChat && OnlineUsers.some((OnlineUser) => OnlineUser.userId === user.users[1]?._id) && (
+                      <span className="online-dot"></span>
+                    )}
+                  </div>
+                  <div className="flex-grow-1">
+                    <h6 className="mb-0">{user.isGroupChat ? user.chatName : getSender(userData, user.users).name}</h6>
+                    <small className="text-muted">{user._id === lastMsg.chatId ? (lastMsg.content ? lastMsg.content : lastMsg.image ? "Photo" : "") : renderLastMessage(user).content}</small>
+                  </div>
+                  <small className="text-muted ms-auto">{user._id === lastMsg.chatId ? lastMsg.time : renderLastMessage(user).time}</small>
+                </div>
+              ))
+            )}
+          </>
         )}
       </div>
     </div>

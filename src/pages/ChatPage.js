@@ -7,16 +7,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { setIncomingCall } from "../Reducer/callReducer";
 import { addNotification } from "../Reducer/notification";
 import { fetchChatsSuccess } from "../Reducer/chatReducer";
+import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
+import { endCall } from '../Reducer/callReducer';
 const ChatPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [lastMsg, setLastMsg] = useState('');
+  const navigate = useNavigate();
   const [OnlineUsers, setOnlineUsers] = useState([]);
   const [fetchAgain, setFetchAgain] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
   const dispatch = useDispatch();
   const ENDPOINT = "http://localhost:5000";
+  
   const userData = useSelector((state) => state.user.userData);
   var socket;
   useEffect(() => {
@@ -64,7 +68,6 @@ const fetchChats = async () => {
       dispatch(setIncomingCall({ roomID, from }));
       console.log("inside-incoming");
     })
-
 
   }, [userData]);
 

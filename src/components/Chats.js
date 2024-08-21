@@ -11,7 +11,7 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import moment from "moment";
 import UpdateGroup from "./UpdateGroup";
-import { useNavigate } from "react-router-dom";;
+import { useNavigate } from "react-router-dom";
 var socket, selectedChatCompare, selectedNotifications;
 
 const Chats = ({
@@ -41,9 +41,10 @@ const Chats = ({
   );
   const userData = useSelector((state) => state.user.userData);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
-  const videoCall = useSelector((state) => state.call.videoCall);
+  console.log(selectedChat,"select-chat")
   const getSender = (loginuser, users) => {
     const otherUser = users?.find((user) => user?._id !== loginuser?._id);
+    console.log(loginuser,users,"test")
     return {
       id: otherUser?._id,
       name: otherUser.name,
@@ -327,7 +328,7 @@ const Chats = ({
   };
 
   return (
-    <div className="container ">
+    <div className="container">
       <div className="row no-gutters">
         <div className="col-md-12" >
           <div
@@ -336,7 +337,7 @@ const Chats = ({
           >
             <div className="d-flex align-items-center" style={{ gap: "13px" }}>
               <i className="bi bi-arrow-left" style={{ cursor: "pointer" }} onClick={handleback}></i>
-              {selectedChat.isGroupChat ? (
+              {selectedChat?.isGroupChat ? (
                 <img
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rUNxcDVPjBBWCPMIg6sXnvEE95gmls5Jk62kM1de5nxhSttej5SlaTLWMkO9Cd2ZzGQ&usqp=CAU"
                   className="profile-image"
@@ -346,7 +347,7 @@ const Chats = ({
                 />
               ) : (
                 <img
-                  src={`http://localhost:5000/images/${getSender(userData, selectedChat.users).image
+                  src={`http://localhost:5000/images/${getSender(userData, selectedChat?.users).image
                     }`}
                   alt={`${selectedChat.users.name}'s profile`}
                   width="53px"
@@ -361,7 +362,7 @@ const Chats = ({
                     <h5 style={{ margin: "2px 0px 2px 0px" }}>
                       {selectedChat.isGroupChat
                         ? selectedChat.chatName
-                        : getSender(userData, selectedChat.users).name}
+                        : getSender(userData, selectedChat?.users).name}
                     </h5>
                     {selectedChat.isGroupChat ? (
                       <span></span>
