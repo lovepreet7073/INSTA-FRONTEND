@@ -74,13 +74,9 @@ const MyProfile = () => {
               </div>
 
               <div className="profile-data">
-
-
                 <h3>
                   {userData.name}
                 </h3>
-
-
                 <div className="profile-info" style={{ display: "flex", padding: "20px 5px" }}>
                   <p>{postLength} posts</p>
                   <p>{followers} followers</p>
@@ -89,14 +85,8 @@ const MyProfile = () => {
                 <span className="name-btnn">
                   <button className="btn btn-primary" onClick={handleEdit} >  Edit Profile </button>
                   <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={() => navigate("/password")}>Change Password</button>
-
                 </span>
-
               </div>
-
-
-
-
             </>
           )}
         </div>

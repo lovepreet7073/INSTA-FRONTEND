@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 const Sidebar = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const userData = useSelector((state) => state.user.userData);
     const logoutUser = async () => {
       try {
         const result = await Swal.fire({
@@ -48,6 +49,7 @@ const Sidebar = () => {
       }
     };
     return (
+      <>
         <div className='sidebar d-flex flex-column justify-content-space-between text-white p-4 ' style={{ width: "250px" }}>
             <a className='text-decoration-none text-black'>
                 <img id="insta-logo" className="logo" src={logo} alt="logo" style={{ cursor: "pointer",width:"65%",marginRight:"38px" }} onClick={() => navigate("/allposts")} />
@@ -77,12 +79,26 @@ const Sidebar = () => {
                         <span className='fs-5 ps-3'>Create</span>
                     </NavLink>
                 </li>
-                <li className='nav-item py-1'>
-                    <NavLink to='/myprofile' className='nav-link text-black fs-5' aria-current="page">
-                        <i className="bi bi-person-circle"></i>
-                        <span className='fs-5 ps-3'>Profile</span>
-                    </NavLink>
-                </li>
+                
+                <li className='nav-item py-0'>
+      <NavLink to='/myprofile' className='nav-link text-black fs-5' aria-current="page">
+        {userData?.profileImage ? (
+          <img
+            src={`http://localhost:5000/images/${userData?.profileImage}`}
+            alt="Profile"
+            style={{
+              width: '30px',
+              height: '30px',
+              borderRadius: '50%',
+              objectFit: 'cover'
+            }}
+          />
+        ) : (
+          <i className="bi bi-person-circle"></i>
+        )}
+        <span className='fs-5 ps-2'>Profile</span>
+      </NavLink>
+    </li>
                 <li onClick={logoutUser} className='nav-item py-1'>
                 <a  className='nav-link text-black fs-5' style={{ cursor: 'pointer' }}>
                     <i className="bi bi-box-arrow-right"></i>
@@ -94,6 +110,7 @@ const Sidebar = () => {
             </ul>
             
         </div>
+        </>
     );
 };
 

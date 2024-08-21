@@ -1,10 +1,10 @@
 import React from 'react';
 import formatShortDate from '../functions/formatDate';
-const Reply = ({ reply, handleReply,commentId }) => {
 
+const Reply = ({ reply, handleReply, commentId, isLastReply }) => {
   return (
     <div className="reply" style={{ textAlign: 'right' }}>
-      <div className="comm" style={{ marginBottom: '4px', marginTop: '10px' }}>
+      <div className="comm" style={{ marginBottom: '4px', marginTop: '10px', marginLeft: '40px' }}>
         <img
           src={`http://localhost:5000/images/${reply.postedBy.profileImage}`}
           style={{ width: '37px', height: '37px', borderRadius: '100px', objectFit: 'cover' }}
@@ -18,20 +18,29 @@ const Reply = ({ reply, handleReply,commentId }) => {
             </p>
           </span>
           <span style={{ display: 'flex', gap: '4px', fontSize: '14px' }}>
-            <p className="comment-text"> {reply.reply}</p>
-            <button
-              style={{ fontSize: '12px', color: 'blue', marginTop: '-17px' }}
-              className="btn btn-primary-sm"
-              onClick={() => handleReply(reply,commentId)}
-            >
-              Reply
-            </button>
+            <p className="comment-text">{reply.reply}</p>
+            {!isLastReply && (
+              <button
+                style={{ fontSize: '12px', color: 'blue', marginTop: '-17px' }}
+                className="btn btn-primary-sm"
+                onClick={() => handleReply(reply, commentId)}
+              >
+                Reply
+              </button>
+            )}
           </span>
         </div>
       </div>
-      {reply.replies && reply.replies.map(subReply => (
-        <Reply key={subReply._id} reply={subReply} handleReply={handleReply} commentId={commentId} />
-      ))}
+      {reply.replies &&
+        reply.replies.map((subReply, index) => (
+          <Reply
+            key={subReply._id}
+            reply={subReply}
+            handleReply={handleReply}
+            commentId={commentId}
+            isLastReply={index === reply.replies.length - 1}
+          />
+        ))}
     </div>
   );
 };

@@ -7,12 +7,14 @@ import Swal from "sweetalert2";
 import Skeleton from "react-loading-skeleton";
 import InfiniteScroll from "react-infinite-scroll-component";
 import 'react-loading-skeleton/dist/skeleton.css';
-import moment from 'moment';
+import formatShortDate from "../functions/formatDate"
 
 const UserPost = ({ userId, setPostLength, postLength, isFollow }) => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+const [expandedPosts, setExpandedPosts] = useState({});
+
   const postsPerPage = 4;
   const [loading, setLoading] = useState(true); 
   const [initialLoad, setInitialLoad] = useState(true); // New state for initial load
@@ -134,30 +136,46 @@ const UserPost = ({ userId, setPostLength, postLength, isFollow }) => {
     navigate("/updatepost", { state: { postId: post } });
   };
 
-  const formatShortDate = (date) => {
-    if (!date) {
-      return "weeks ago";
-    }
-    const now = moment();
-    const duration = moment.duration(now.diff(moment(date)));
-
-    if (duration.asSeconds() < 60) {
-      return `${Math.floor(duration.asSeconds())}s`; 
-    } else if (duration.asMinutes() < 60) {
-      return `${Math.floor(duration.asMinutes())}m`;
-    } else if (duration.asHours() < 24) {
-      return `${Math.floor(duration.asHours())}h`; 
-    } else if (duration.asDays() < 7) {
-      return `${Math.floor(duration.asDays())}d`;
-    } else if (duration.asDays() < 30) {
-      return `${Math.floor(duration.asDays() / 7)}w`;
-    } else if (duration.asDays() < 365) {
-      return `${Math.floor(duration.asDays() / 30)}m`; 
+  const truncateTitle = (title, postId) => {
+    const isExpanded = expandedPosts[postId];
+    const limit = 30; // Adjust the character limit as needed
+    if (isExpanded) {
+      return (
+        <>
+          {title}
+          <span
+            onClick={() => toggleExpand(postId)}
+            style={{ color: "blue", cursor: "pointer", fontSize: "12px" }}
+          >
+            show less
+          </span>
+        </>
+      );
+    } else if (title.length > limit) {
+      return (
+        <>
+          {title.substring(0, limit)}...
+          <span
+            onClick={() => toggleExpand(postId)}
+            style={{ color: "blue", cursor: "pointer", fontSize: "12px" }}
+          >
+            more
+          </span>
+        </>
+      );
     } else {
-      return `${Math.floor(duration.asDays() / 365)}y`; 
+      return title;
     }
   };
 
+  const toggleExpand = (postId) => {
+    setExpandedPosts((prevExpandedPosts) => ({
+      ...prevExpandedPosts,
+      [postId]: !prevExpandedPosts[postId],
+    }));
+  };
+
+  
   return (
     <div>
       <div className="home">
@@ -206,7 +224,7 @@ const UserPost = ({ userId, setPostLength, postLength, isFollow }) => {
                 <div className="card-image div-card" key={index}>
                   {post.image && (
                     <img
-                      src={`http://localhost:5000/${post.image.path}`}
+                      src={`http://localhost:5000/images/${post.image}`}
                       alt="Post"
                       className="profile-post-img"
                     />
@@ -229,56 +247,19 @@ const UserPost = ({ userId, setPostLength, postLength, isFollow }) => {
                         )}
                         <p style={{ margin: "0px" }}>{post.likes}</p>
                       </span>
-                      <div className="set-btns">
+                      <div className="set-btns" style={{display:"flex",gap:"12px"}}>
                         {loginUserId === post.userId._id && (
                           <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              onClick={() => handleUpdateLink(post._id)}
-                              style={{ marginRight: "15px" }}
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="#2d39e6"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="icon icon-tabler icons-tabler-outline icon-tabler-edit"
-                            >
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                              <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                              <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                              <path d="M16 5l3 3" />
-                            </svg>
+                        <i class="bi bi-pen-fill" onClick={()=>handleUpdateLink(post._id)}style={{cursor:"pointer",fontSize:"20px"}}></i>
 
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              onClick={() => handleDelete(post._id)}
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="#ed0c0c"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="icon icon-tabler icons-tabler-outline icon-tabler-trash"
-                            >
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                              <path d="M4 7l16 0" />
-                              <path d="M10 11l0 6" />
-                              <path d="M14 11l0 6" />
-                              <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                              <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                            </svg>
+                            <i class="bi bi-trash3-fill" onClick={()=>handleDelete(post._id)} style={{cursor:"pointer",fontSize:"20px"}}></i>
                           </>
                         )}
                       </div>
                     </div>
                     <div className="des-title">
                       <span style={{ fontSize: "11px", color: "#403131bf" }}>{formatShortDate(post.createdAt)} </span>
-                      <p className="post-title" style={{ marginTop: "6px" }}>{post.title}</p>
+                      <p className="title">{truncateTitle(post.title, post._id)}</p>
                     </div>
                   </div>
                 </div>

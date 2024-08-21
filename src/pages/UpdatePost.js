@@ -1,28 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-  import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from "react-redux";
+import 'react-toastify/dist/ReactToastify.css';
 import "../assets/css/post.css";
 import { useFormik } from "formik";
 import { CreatePostSchema } from "../components/Validations";
 import { addPost } from "../Reducer/postReducer";
 
 const UpdatePost = ({ post }) => {
-    useEffect(()=>{
-        document.title="Update Post"  
-        },[])
+    useEffect(() => {
+        document.title = "Update Post"
+    }, [])
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
     const inputRef = useRef(null);
-    
     const [loading, setLoading] = useState(true);
     const [postData, setPostData] = useState(null);
-
     const postId = location.state?.postId || "";
-
+    console.log(postData, "daat")
     useEffect(() => {
         async function fetchPostData() {
             try {
@@ -55,7 +52,7 @@ const UpdatePost = ({ post }) => {
         initialValues: {
             title: postData ? postData.title : "",
             description: postData ? postData.description : "",
-            postImg: postData && postData.image ? postData.image.path : null,
+            postImg: postData && postData.image ? postData.image : null,
         },
         validationSchema: CreatePostSchema,
         enableReinitialize: true,
@@ -74,9 +71,9 @@ const UpdatePost = ({ post }) => {
                 const response = await fetch(`http://localhost:5000/user/updatepost/${postId}`, {
                     method: "POST",
                     body: formData,
-                  headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
-          },
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
+                    },
                 });
 
                 if (response.ok) {
@@ -98,14 +95,12 @@ const UpdatePost = ({ post }) => {
         },
     });
 
-    // Custom file change handler
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         formik.setFieldValue("postImg", file);
     };
 
     if (loading) {
-        // Show a loading indicator while fetching data
         return <div>Loading...</div>;
     }
 
@@ -128,18 +123,25 @@ const UpdatePost = ({ post }) => {
                             ref={inputRef}
                             onChange={handleFileChange}
                         />
-                <i class="bi bi-pencil-square" style={{position:"absolute",left:"72%",top:"16%",cursor:"pointer"}}></i>
+                        <i class="bi bi-pencil-square" style={{ position: "absolute", left: "72%", top: "16%", cursor: "pointer" }}></i>
                     </div>
 
                     <div className="image-part-edit-post">
                         {formik.values.postImg && typeof formik.values.postImg === "string" ? (
-                            // Display existing image if it is a URL
-                            <img src={formik.values.postImg} alt="Existing Post" style={{width:"100%",marginLeft:"2px",marginRight:"6px"}} />
+                            <img
+                                src={`http://localhost:5000/images/${formik.values.postImg}`}
+                                alt="Existing Post"
+                                style={{ width: "100%", marginLeft: "2px", marginRight: "6px" }}
+                            />
                         ) : formik.values.postImg && typeof formik.values.postImg !== "string" ? (
-                            // Display selected image if it is a file
-                            <img src={URL.createObjectURL(formik.values.postImg)}  style={{width:"100%"}} alt="Selected Post" />
+                            <img
+                                src={URL.createObjectURL(formik.values.postImg)}
+                                style={{ width: "100%" }}
+                                alt="Selected Post"
+                            />
                         ) : null}
                     </div>
+
 
                     <div className="input-control">
                         <input
@@ -152,14 +154,14 @@ const UpdatePost = ({ post }) => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         />
-                   
+
                     </div>
                     {formik.touched.title && formik.errors.title && (
-                            <p className="err-msg-login">{formik.errors.title}</p>
-                        )}
-               
-                      <button type="submit" className="btn btn-primary mt-3" style={{width:"100%"}}>
-                  
+                        <p className="err-msg-login">{formik.errors.title}</p>
+                    )}
+
+                    <button type="submit" className="btn btn-primary mt-3" style={{ width: "100%" }}>
+
                         Save
                     </button>
                 </form>

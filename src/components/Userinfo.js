@@ -1,78 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../assets/css/userinfo.css";
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector } from "react-redux";
+import { useSelector ,useDispatch} from "react-redux";
 import UserPost from "../pages/UserPost";
-
-const followUser = async (userId, loginUserId, setFollowers, setIsFollow) => {
-  try {
-    const response = await fetch(
-      `http://localhost:5000/user/follow/${userId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
-        },
-        body: JSON.stringify({
-          loginUserId: loginUserId,
-        }),
-      }
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data.success) {
-        setFollowers((prevFollowers) => prevFollowers + 1);
-        setIsFollow(true);
-      }
-    } else {
-      console.error("Failed to follow user");
-    }
-  } catch (error) {
-    console.error("An error occurred while trying to follow the user", error);
-  }
-};
-
-const unfollowUser = async (userId, loginUserId, setFollowers, setIsFollow) => {
-  try {
-    const response = await fetch(
-      `http://localhost:5000/user/unfollow/${userId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
-        },
-        body: JSON.stringify({
-          loginUserId: loginUserId,
-        }),
-      }
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data.success) {
-        setFollowers((prevFollowers) => prevFollowers - 1);
-        setIsFollow(false);
-      }
-    } else {
-      console.error("Failed to unfollow user");
-    }
-  } catch (error) {
-    console.error("An error occurred while trying to unfollow the user", error);
-  }
-};
-
-export { followUser, unfollowUser };
+import { followUser, unfollowUser } from "../functions/followFunction";
+import {
+  openChat,
+} from "../Reducer/chatReducer";
 
 const Userinfo = () => {
+  const dispatch = useDispatch();
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const [isFollow, setIsFollow] = useState(false);
   const [followers, setFollowers] = useState();
+  
+  const navigate = useNavigate()
+  const activeChat = useSelector((state) => state.chat.selectedChat);
+  console.log(activeChat,"chat")
   const loginUserId = useSelector((state) => state.user.userData._id);
   const fetchUserData = async () => {
     try {
@@ -86,6 +33,7 @@ const Userinfo = () => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data,"ereeee")
         setUserData(data);
 
         setFollowers(data.followers.length);
@@ -103,11 +51,37 @@ const Userinfo = () => {
   useEffect(() => {
     fetchUserData();
   }, [userId, isFollow]);
+  const accessChat = async (userId) => {
+    
+    try {
+      const response = await fetch(`http://localhost:5000/api/user/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
+        },
+        body: JSON.stringify({ userId }),
+      });
+      const responseData = await response.json();
+      console.log(responseData,"repldata")
+      dispatch(openChat(responseData));
 
+    } catch (error) {
+      console.error("Error accessing chat:", error);
+    }
+  };
+  const handleOpenChat = (chat) => {
+    accessChat(userData._id);
+  };
   if (error) {
     return <div>{error}</div>;
   }
 
+if(activeChat){
+  navigate('/chatpage')
+}else{
+  <></>
+}
   return (
     <>
       <div className="profile">
@@ -144,7 +118,7 @@ const Userinfo = () => {
                 </div>
 
                 {loginUserId !== userId && (
-                  <div className="button-sec">
+                  <div className="button-sec" style={{display:"flex",gap:"12px",justifyContent:"center"}}>
                     <button
                       className={`btn-part ${userData.followers.includes(loginUserId) ? 'following' : 'follow'}`}
                       onClick={() => {
@@ -169,6 +143,11 @@ const Userinfo = () => {
                         ? "Following"
                         : "Follow"}
                     </button>
+                    {userData.followers.includes(loginUserId) && (
+      <button style={{ fontSize: "14px" }} onClick={handleOpenChat} className="btn btn-primary">
+        Message
+      </button>
+    )}
                   </div>
                 )}
               </div>

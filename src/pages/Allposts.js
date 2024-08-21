@@ -6,13 +6,17 @@ import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../assets/css/allposts.css';
 import Reply from "../components/Reply";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import formatShortDate from "../functions/formatDate";
+import Story from "../components/Story";
 const AllPosts = () => {
 
   useEffect(() => {
     document.title = "All Posts";
   }, []);
-
+  const [openPicker, setOpenPicker] = useState(false);
+  const [mainPicker, setmainPicker] = useState(false);
   const [posts, setPosts] = useState([]);
   const [show, setShow] = useState(false);
   const [page, setPage] = useState(1);
@@ -42,7 +46,6 @@ const AllPosts = () => {
 
       if (response.ok) {
         const { posts: newPosts, hasMore } = await response.json();
-        console.log(newPosts, 'newPosts')
         setTimeout(() => {
           setPosts((prevPosts) => [...prevPosts, ...newPosts]);
 
@@ -62,7 +65,9 @@ const AllPosts = () => {
   };
 
 
-
+  const handleEmojiSelect = (emoji) => {
+    setComment(comment + emoji.native);
+  };
 
   useEffect(() => {
     if (userData?._id) {
@@ -161,6 +166,7 @@ const AllPosts = () => {
           prevPosts.map((post) => (post._id === id ? updatedPost : post))
         );
         setComment("")
+        setmainPicker(false)
       } catch (error) {
         console.error("Error liking post:", error);
       }
@@ -187,6 +193,7 @@ const AllPosts = () => {
       setPosts((prevPosts) =>
         prevPosts.map((post) => (post._id === postId ? updatedPost : post))
       );
+      setOpenPicker(false);
     } catch (error) {
       console.error("Error reply on comment:", error);
     }
@@ -215,6 +222,7 @@ const AllPosts = () => {
       setPosts((prevPosts) =>
         prevPosts.map((post) => (post._id === postId ? updatedPost : post))
       );
+      setOpenPicker(false);
     } catch (error) {
       console.error("Error reply on comment:", error);
     }
@@ -223,6 +231,7 @@ const AllPosts = () => {
   const toggleComment = (post) => {
     setItem(post); // Set the selected post
     setShow(!show); // Toggle the show state
+    setmainPicker(false)
   }
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -255,16 +264,12 @@ const AllPosts = () => {
     setComment("");
     setReplyingTo(null);
   };
-  console.log(replyingTo, "to")
-  console.log('item', item)
+
   return (
     <div className="home">
+      <Story/>
       <div className="card">
-        {/* <input
-          type="text"
-          placeholder="Search posts..."
-          onChange={handleSearch}
-        /> */}
+
         <InfiniteScroll
           dataLength={posts.length}
           next={() => setPage((prevPage) => prevPage + 1)}
@@ -287,7 +292,7 @@ const AllPosts = () => {
         >
           {posts.length > 0 ? (
             posts.map((post) => (
-              <div key={post._id} className="div-card">
+              <div key={post._id} className="div-card" style={{ position: "relative" }}>
                 <div className="card-header">
                   <div className="card-pic">
                     {post.userId && post.userId.profileImage ? (
@@ -325,7 +330,7 @@ const AllPosts = () => {
                 <div className="card-image">
                   <img
                     className="post-img"
-                    src={`http://localhost:5000/images/${post.image.filename}`}
+                    src={`http://localhost:5000/images/${post.image}`}
                     alt="Post"
                   />
                 </div>
@@ -383,10 +388,30 @@ const AllPosts = () => {
 
 
                 </div>
+                <div
+                  style={{
+                    zIndex: "10",
+                    display: mainPicker ? "inline" : "none",
+                    position: "absolute",
+                    bottom: "75px",
+                    right: "90px",
+                  }}
+                >
+                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
 
+                </div>
 
                 <div className="add-comment">
-                  <i class="bi bi-emoji-smile" style={{ fontSize: "20px" }}></i>
+
+                  <i
+                    class="bi bi-emoji-smile"
+                    style={{ fontSize: "20px", cursor: "pointer" }}
+                    onClick={() => setmainPicker(!mainPicker)
+
+                    }
+                  ></i>
+
+
                   <input type='text' value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add a comment" required />
                   <button className="btn btn-primary-sm" style={{ color: "blue" }} onClick={() => createComment(comment, post._id)}>Post</button>
                 </div>
@@ -402,11 +427,18 @@ const AllPosts = () => {
       {show && item && (
         <div className="show-comment" style={{ width: "100%" }}>
           <div className="container comment">
-            <div className="post-pic">
-              {item.image.filename && (
-                <img
-                  src={`http://localhost:5000/images/${item.image.filename}`} style={{ width: "100%", objectFit: "contain" }}></img>
-              )}
+          
+            <div
+              className="post-pic-div"
+              style={{
+                backgroundImage: item?.image ? `url(http://localhost:5000/images/${item?.image})` : "none",
+                backgroundSize: "cover", 
+                backgroundPosition: "center", 
+                width: "100%",
+                height: "inherit"
+              }}
+            >
+           
             </div>
             <div className="details">
               <div className="card-header" style={{ borderBottom: "1px solid #00000029" }}>
@@ -425,7 +457,7 @@ const AllPosts = () => {
               <div className="comment-section" style={{ borderBottom: "1px solid #00000029" }}>
                 {item.comments.map((comment) => {
                   return (
-                    <div className="comm">
+                    <div className="comm" >
                       <img src={`http://localhost:5000/images/${comment.postedBy.profileImage}`
                       }
                         style={{
@@ -462,7 +494,26 @@ const AllPosts = () => {
               )}
 
               <div className="add-comment">
-                <i class="bi bi-emoji-smile" style={{ fontSize: "20px" }}></i>
+                <div
+                  style={{
+                    zIndex: "10",
+                    display: openPicker ? "inline" : "none",
+                    position: "absolute",
+                    bottom: "75px",
+                    right: "90px",
+                  }}
+                >
+                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+
+                </div>
+                <i
+                  class="bi bi-emoji-smile"
+                  style={{ fontSize: "20px", cursor: "pointer" }}
+                  onClick={() => setOpenPicker(!openPicker)
+
+                  }
+                ></i>
+
                 <input
                   type="text"
                   value={comment}

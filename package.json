@@ -31,6 +31,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-insta-stories": "^2.7.0",
     "react-loading-skeleton": "^3.4.0",
     "react-notification-badge": "^1.5.1",
     "react-paginate": "^8.2.0",
