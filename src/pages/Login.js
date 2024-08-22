@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUserData } from "../Reducer/UseReducer";
+import { setUserData } from "../reducer/useReducer";
 import { useFormik } from "formik";
 import { LoginSchema } from "../components/Validations";
 import logo from "../assets/images/instalogo.jpg";
@@ -30,7 +30,7 @@ const Login = () => {
     onSubmit: async (values) => {
       setLoading(true)
       try {
-        const res = await fetch("http://localhost:5000/login", {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

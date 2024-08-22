@@ -12,7 +12,7 @@ const Emailverify = () => {
       const verifyEmailUrl = async () => {
 
         try {
-          const res = await fetch(`http://localhost:5000/verifyaccount/${id}/${token}`, {
+          const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/verifyaccount/${id}/${token}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

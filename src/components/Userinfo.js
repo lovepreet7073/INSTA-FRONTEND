@@ -7,7 +7,7 @@ import UserPost from "../pages/UserPost";
 import { followUser, unfollowUser } from "../functions/followFunction";
 import {
   openChat,
-} from "../Reducer/chatReducer";
+} from "../reducer/chatReducer";
 
 const Userinfo = () => {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const Userinfo = () => {
   const loginUserId = useSelector((state) => state.user.userData._id);
   const fetchUserData = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/user/${userId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +54,7 @@ const Userinfo = () => {
   const accessChat = async (userId) => {
     
     try {
-      const response = await fetch(`http://localhost:5000/api/user/chat`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/user/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ if(activeChat){
               <div className="profile-pic">
                 {userData.profileImage ? (
                   <img
-                    src={`http://localhost:5000/images/${userData.profileImage}`}
+                    src={`${process.env.REACT_APP_API_BASE_URL}/images/${userData.profileImage}`}
                     alt={`${userData.name}'s profile`}
                     width="130px"
                     height="130px"

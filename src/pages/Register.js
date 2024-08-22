@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import logo from "../assets/images/instalogo.jpg";
 import { GoogleLogin } from '@react-oauth/google';
 import { RegisterSchema } from "../components/Validations";
-import { setUserData } from "../Reducer/UseReducer";
+import { setUserData } from "../reducer/useReducer";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 const Register = () => {
@@ -39,7 +39,7 @@ const Register = () => {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:5000/register", {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/register`, {
           method: "POST",
           headers: {
             "Content-type": "application/json",
@@ -74,7 +74,7 @@ const Register = () => {
     const jwtDetail = jwtDecode(credentialResponse.credential);
     console.log(jwtDetail.email_verified, "verufy");
 
-    fetch("http://localhost:5000/googleLogin", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/googleLogin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

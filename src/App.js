@@ -1,7 +1,7 @@
 import React, { createContext, useEffect } from "react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUserData } from "./Reducer/UseReducer";
+import { setUserData } from "./reducer/useReducer";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
 import CreatePost from "./pages/CreatePost";
@@ -9,19 +9,19 @@ import EditProfile from "./pages/EditProfile";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import UpdatePost from "./pages/UpdatePost";
-import Allposts from "./pages/Allposts";
-import Userinfo from "./components/Userinfo";
-import Allusers from "./pages/Allusers";
+import Allposts from "./pages/AllPosts";
+import Userinfo from "./components/UserInfo";
+import Allusers from "./pages/AllUsers";
 import UserPost from "./pages/UserPost";
 import MyProfile from "./pages/MyProfile";
 import Password from "./pages/Password";
-import ForgotPassword from "./components/forgotpassword";
+import ForgotPassword from "./components/ForgotPassword";
 import ChatPage from "./pages/ChatPage";
-import ResetPassword from "./components/resetPassword";
+import ResetPassword from "./components/ResetPassword";
 import Emailverify from "./pages/Emailverify";
 import ResendConfirmation from "./components/ResendConfirmation";
 import Videocall from "./components/Videocall";
-import ChatSidebar from "./components/chatSidebar";
+import ChatSidebar from "./components/ChatSidebar";
 import IncomingVideoCall from "./components/IncomingVideoCall"
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
@@ -36,7 +36,7 @@ const App = () => {
   const getUser = async () => {
     if (token) {
       try {
-        const res = await fetch("http://localhost:5000/user", {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

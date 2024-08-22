@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { endCall } from '../Reducer/callReducer'; // Import endCall action
+import { endCall } from '../reducer/callReducer'; // Import endCall action
 import { io } from 'socket.io-client';
 const Videocall = () => {
   const { roomID } = useParams();
@@ -12,7 +12,7 @@ const Videocall = () => {
   const userID = userData._id;
   const socketRef = useRef(); 
   useEffect(() => {
-    const socket = io('http://localhost:5000');
+    const socket = io(process.env.REACT_APP_API_BASE_URL);
     socketRef.current = socket;
     socket.on('endCall', () => {
     dispatch(endCall()); 

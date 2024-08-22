@@ -4,7 +4,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import logo from "../assets/images/instalogo.jpg";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from '../Reducer/UseReducer';
+import { logout } from '../reducer/useReducer';
 import Swal from "sweetalert2";
 const Sidebar = () => {
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ const Sidebar = () => {
         });
   
         if (result.isConfirmed) {
-          const res = await fetch(`http://localhost:5000/logout`, {
+          const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/logout`, {
             method: "GET",
             headers: {
               Accept: "application/json",
@@ -84,7 +84,7 @@ const Sidebar = () => {
       <NavLink to='/myprofile' className='nav-link text-black fs-5' aria-current="page">
         {userData?.profileImage ? (
           <img
-            src={`http://localhost:5000/images/${userData?.profileImage}`}
+            src={`${process.env.REACT_APP_API_BASE_URL}/images/${userData?.profileImage}`}
             alt="Profile"
             style={{
               width: '30px',

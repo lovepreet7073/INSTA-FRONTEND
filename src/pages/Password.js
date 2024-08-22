@@ -34,7 +34,7 @@ const Password = () => {
     onSubmit: async (values) => {
       try {
         const response = await fetch(
-          `http://localhost:5000/user/password/${userId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/user/password/${userId}`,
           {
             method: "POST",
             headers: {

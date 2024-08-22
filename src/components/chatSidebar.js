@@ -6,9 +6,9 @@ import {
   fetchChatsRequest,
   openChat,
   fetchChatsFailure,
-} from "../Reducer/chatReducer";
+} from "../reducer/chatReducer";
 
-import { removeNotification } from "../Reducer/notification";
+import { removeNotification } from "../reducer/notification";
 import moment from "moment";
 
 const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalOpen, setIsModalOpen }) => {
@@ -29,7 +29,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
       return;
     }
     try {
-      const response = await fetch(`http://localhost:5000/api/user/chat`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/user/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/users?search=${searchTerm}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/users?search=${searchTerm}`,
         {
           method: "GET",
           headers: {
@@ -91,7 +91,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
       dispatch(fetchChatsRequest());
 
       const response = await fetch(
-        "http://localhost:5000/api/user/fetchchats",
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/fetchchats`,
         {
           method: "GET",
           headers: {
@@ -109,6 +109,8 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
         });
 
         setUsers(sortedChats);
+        console.log('Sorted chats:', sortedChats);
+
         setLoading(false);
       } else {
         throw new Error("Failed to fetch chats");
@@ -242,7 +244,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
           >
             {user.profileImage ? (
               <img
-                src={`http://localhost:5000/images/${user.profileImage}`}
+                src={`${process.env.REACT_APP_API_BASE_URL}/images/${user.profileImage}`}
                 alt={`${user.name}'s profile`}
                 className="rounded-circle me-2"
                 width="53"
@@ -298,7 +300,7 @@ const ChatSidebar = ({ OnlineUsers, lastMsg, fetchAgain, setFetchAgain, isModalO
                       />
                     ) : (
                       <img
-                        src={`http://localhost:5000/images/${getSender(userData, user.users).image}`}
+                        src={`${process.env.REACT_APP_API_BASE_URL}/images/${getSender(userData, user.users).image}`}
                         alt={`${getSender(userData, user.users).name}'s profile`}
                         className="rounded-circle me-2"
                         width="53"

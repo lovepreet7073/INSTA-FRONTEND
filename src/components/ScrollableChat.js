@@ -47,7 +47,7 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
     try {
       const formattedImageUrl = encodeURIComponent(imageUrl.startsWith('/') ? imageUrl.substring(1) : imageUrl);
 
-      const response = await fetch(`http://localhost:5000/user/download/${formattedImageUrl}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/download/${formattedImageUrl}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
         },
@@ -109,7 +109,7 @@ const ScrollableChat = ({ messages, handleDeleteForMe, handleDeleteForEveryone }
                 <div style={{ position: "relative" }}>
                   <div onClick={() => handleDownload(message.ImageUrl)}>
                     <img
-                      src={`http://localhost:5000${message.ImageUrl}`}
+                      src={`${process.env.REACT_APP_API_BASE_URL}${message.ImageUrl}`}
                       alt="Message"
                       style={{
                         width: "233px",

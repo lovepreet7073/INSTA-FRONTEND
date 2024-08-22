@@ -8,11 +8,11 @@ const ViewStoryModal = ({ setviewStory,viewStory, stories, profileImage, usernam
   const userData = useSelector((state) => state.user.userData);
   const [viewersListVisible, setViewersListVisible] = useState(false);
   const storyItems = stories && stories.map(storyItem => ({
-    url: `http://localhost:5000/images/${storyItem.image}`,
+    url: `${process.env.REACT_APP_API_BASE_URL}/images/${storyItem.image}`,
     header: {
       heading: username,
       subheading: `${formatShortDate(storyItem.createdAt)}`,
-      profileImage: `http://localhost:5000/images/${profileImage}`,
+      profileImage: `${process.env.REACT_APP_API_BASE_URL}/images/${profileImage}`,
     },
 
   }))
@@ -72,7 +72,7 @@ const ViewStoryModal = ({ setviewStory,viewStory, stories, profileImage, usernam
                               .map((viewer, index) => (
                                 <li className="list-group-item" key={index} style={{color:"white",background:"#37323257",border:"none"}}>
                                   <img
-                                    src={`http://localhost:5000/images/${viewer.profileImage}`}
+                                    src={`${process.env.REACT_APP_API_BASE_URL}/images/${viewer.profileImage}`}
                                     alt={viewer.username}
                                     className="rounded-circle"
                                     style={{ width: '30px', height: '30px', marginRight: '10px' }}

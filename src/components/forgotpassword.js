@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import logo from "../assets/images/instalogo.jpg";
 import Swal from "sweetalert2";
-import { forgotPassSchema } from "../components/Validations";
+import { forgotPassSchema } from "./Validations";
 import "../assets/css/forgotpass.css"
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:5000/forgetpassword", {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/forgetpassword`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

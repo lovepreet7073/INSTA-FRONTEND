@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearIncomingCall } from "../Reducer/callReducer";
+// import { clearIncomingCall } from "../reducer/callReducer";
 
 const IncomingVideoCall = () => {
   const dispatch = useDispatch();
@@ -13,12 +13,12 @@ const IncomingVideoCall = () => {
   }
 
   const acceptCall = () => {
-    dispatch(clearIncomingCall());
+    // dispatch(clearIncomingCall());
     navigate(`/videocall/${incomingCall.roomID}`);
   };
 
   const rejectCall = () => {
-    dispatch(clearIncomingCall());
+    // dispatch(clearIncomingCall());
   };
 
   return (
@@ -34,7 +34,7 @@ const IncomingVideoCall = () => {
         }}
       >
         {incomingCall.profileImage ? (
-             <img   src={`http://localhost:5000/images/${incomingCall.profileImage}`}style={{ width: "200px" }} />
+             <img   src={`${process.env.REACT_APP_API_BASE_URL}/images/${incomingCall.profileImage}`}style={{ width: "200px" }} />
         ) : (
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfJOBAjQ_afGxSZJSGrwQxg-tPfSaOP7igrlhwdRbqiresPfdoq_YoDSzWu90PH4Mw-Pw&usqp=CAU"

@@ -19,7 +19,7 @@ const Allusers = () => {
   const followUser = async (userId, loginUserId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/follow/${userId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/user/follow/${userId}`,
         {
           method: "PUT",
           headers: {
@@ -51,7 +51,7 @@ const Allusers = () => {
     if (userId) {
       try {
         const response = await fetch(
-          `http://localhost:5000/user/unfollow/${userId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/user/unfollow/${userId}`,
           {
             method: "PUT",
             headers: {
@@ -87,7 +87,7 @@ const Allusers = () => {
   const fetchUsers = async () => {
     setLoading(true); // Set loading to true when fetching starts
     try {
-      const response = await fetch(`http://localhost:5000/user/allusers`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/allusers`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -175,7 +175,7 @@ const Allusers = () => {
                   <div className="imgg">
                     {user.profileImage ? (
                       <img
-                        src={`http://localhost:5000/images/${user.profileImage}`}
+                        src={`${process.env.REACT_APP_API_BASE_URL}/images/${user.profileImage}`}
                         // alt={`${user.name}'s profile`}
                         width="53px"
                         height="53px"
