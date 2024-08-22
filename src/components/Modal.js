@@ -3,12 +3,12 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from "react-redux";
 import io from "socket.io-client";
-import { openChat } from "../Reducer/chatReducer";
+import { openChat } from "../reducer/chatReducer";
 const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
   const [search, setSearch] = useState('');
   const [searchResult, setsearchResult] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const ENDPOINT = "http://localhost:5000";
+  const ENDPOINT = process.env.REACT_APP_API_BASE_URL;
   var socket = io(ENDPOINT);
   const dispatch = useDispatch();
 
@@ -30,7 +30,7 @@ const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
     }
     try {
       const response = await fetch(
-        `http://localhost:5000/api/users?search=${searchTerm}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/users?search=${searchTerm}`,
         {
           method: 'GET',
           headers: {
@@ -69,7 +69,7 @@ const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
       };
 
       try {
-        const response = await fetch('http://localhost:5000/user/api/creategroup', {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/api/creategroup`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ const Modal = ({ fetchChats, isModalOpen, setIsModalOpen, setFetchAgain }) => {
               cursor:"pointer"
               }}>
                 <img
-                  src={user.profileImage ? `http://localhost:5000/images/${user.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU" }
+                  src={user.profileImage ? `${process.env.REACT_APP_API_BASE_URL}/images/${user.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU" }
                   alt={`${user.name}'s profile`}
                   width="40px"
                   height="40px"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../assets/css/about.css";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "../Reducer/UseReducer";
+import { setUserData } from "../reducer/useReducer";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -37,7 +37,7 @@ const EditProfile = () => {
           formData.append("oldProfileImage", userData.profileImage);
         }
         const res = await fetch(
-          `http://localhost:5000/user/update/${userData._id}`,
+          `${process.env.REACT_APP_API_BASE_URL}/user/update/${userData._id}`,
           {
             method: "POST",
             headers: {
@@ -102,7 +102,7 @@ const EditProfile = () => {
                   typeof formik.values.profileImage === "object" ? (
                     <img src={URL.createObjectURL(formik.values.profileImage)} alt="Selected Profile" />
                   ) : (
-                    <img src={`http://localhost:5000/images/${formik.values.profileImage}`} alt="Profile" style={{ width: "140px", height: "140px", borderRadius: "50%" }} />
+                    <img src={`${process.env.REACT_APP_API_BASE_URL}/images/${formik.values.profileImage}`} alt="Profile" style={{ width: "140px", height: "140px", borderRadius: "50%" }} />
                   )
                 ) : (
                   <img

@@ -14,11 +14,11 @@ const MyProfile = () => {
   const [postLength, setPostLength] = useState();
   const [error, setError] = useState(null);
   const userId = useSelector((state) => state.user.userData._id);
-
+console.log(userData,"user")
   const fetchUserData = async () => {
     if (userId) {
       try {
-        const response = await fetch(`http://localhost:5000/user/${userId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/${userId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -28,6 +28,7 @@ const MyProfile = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log(data,"data")
           setPostLength(data.posts.length)
           setFollowers(data.followers.length);
           setUserData(data);
@@ -58,7 +59,7 @@ const MyProfile = () => {
               <div className="profile-pic">
                 {userData.profileImage ? (
                   <img
-                    src={`http://localhost:5000/images/${userData.profileImage}`}
+                    src={`${process.env.REACT_APP_API_BASE_URL}/images/${userData.profileImage}`}
 
                     width="130px"
                     height="130px"

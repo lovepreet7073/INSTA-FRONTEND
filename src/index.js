@@ -7,7 +7,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
-import store  from "./Reducer/store"; // Import your Redux store
+import store  from "./reducer/store"; // Import your Redux store
 import { GoogleOAuthProvider } from '@react-oauth/google';
 ReactDOM.render(
   <React.StrictMode>

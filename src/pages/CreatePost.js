@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addPost } from "../Reducer/postReducer";
+import { addPost } from "../reducer/postReducer";
 import Swal from "sweetalert2";
 import "../assets/css/createpost.css";
 import { useFormik } from "formik";
@@ -30,7 +30,7 @@ const CreatePost = () => {
   
       try {
         const response = await fetch(
-          `http://localhost:5000/user/createpost/${userData._id}`,
+          `${process.env.REACT_APP_API_BASE_URL}/user/createpost/${userData._id}`,
           {
             method: "POST",
             headers: {

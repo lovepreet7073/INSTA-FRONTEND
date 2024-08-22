@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { closeChat, openChat } from "../Reducer/chatReducer";
+import { closeChat, openChat } from "../reducer/chatReducer";
 
 
 import "../assets/css/chat.css";
 import { useSelector, useDispatch } from "react-redux";
 import ScrollableChat from "../components/ScrollableChat";
 import io from "socket.io-client";
-import { removeNotification } from "../Reducer/notification";
+import { removeNotification } from "../reducer/notification"
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import moment from "moment";
@@ -35,7 +35,7 @@ const Chats = ({
   const [imgPreview, setImgPreview] = useState("");
   const [openPicker, setOpenPicker] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const ENDPOINT = "http://localhost:5000";
+  const ENDPOINT =process.env.REACT_APP_API_BASE_URL;
   const notifications = useSelector(
     (state) => state.notifications.notifications
   );
@@ -98,7 +98,7 @@ const Chats = ({
     }
     try {
       const response = await fetch(
-        "http://localhost:5000/api/user/sendmessage",
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/sendmessage`,
         {
           method: "POST",
           headers: {
@@ -159,7 +159,7 @@ const Chats = ({
     if (!selectedChat || !selectedChat._id) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/api/user/allmessages/${selectedChat._id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/allmessages/${selectedChat._id}`,
         {
           method: "GET",
           headers: {
@@ -179,7 +179,7 @@ const Chats = ({
   const handleDeleteForEveryone = async (messageId, chatId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/deleteforeveryone/${messageId}/${chatId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/user/deleteforeveryone/${messageId}/${chatId}`,
         {
           method: "POST",
           headers: {
@@ -214,7 +214,7 @@ const Chats = ({
   const handleDeleteForMe = async (messageId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/deleteforme/${messageId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/user/deleteforme/${messageId}`,
         {
           method: "PUT",
           headers: {
@@ -347,7 +347,7 @@ const Chats = ({
                 />
               ) : (
                 <img
-                  src={`http://localhost:5000/images/${getSender(userData, selectedChat?.users).image
+                  src={`${process.env.REACT_APP_API_BASE_URL}/images/${getSender(userData, selectedChat?.users).image
                     }`}
                   alt={`${selectedChat.users.name}'s profile`}
                   width="53px"

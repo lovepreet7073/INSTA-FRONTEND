@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import { useFormik } from "formik";
-import { resetPasswordSchema } from "../components/Validations";
+import { resetPasswordSchema } from "./Validations";
 const ResetPassword = () => {
   useEffect(() => {
     document.title = "Reset password"
@@ -31,7 +31,7 @@ const ResetPassword = () => {
     validationSchema: resetPasswordSchema,
     onSubmit: async (values) => {
       try {
-        const response = await fetch(`http://localhost:5000/resetpassword/${token}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/resetpassword/${token}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

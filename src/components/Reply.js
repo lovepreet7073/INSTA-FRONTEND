@@ -6,7 +6,7 @@ const Reply = ({ reply, handleReply, commentId, isLastReply }) => {
     <div className="reply" style={{ textAlign: 'right' }}>
       <div className="comm" style={{ marginBottom: '4px', marginTop: '10px', marginLeft: '40px' }}>
         <img
-          src={`http://localhost:5000/images/${reply.postedBy.profileImage}`}
+          src={`${process.env.REACT_APP_API_BASE_URL}/images/${reply.postedBy.profileImage}`}
           style={{ width: '37px', height: '37px', borderRadius: '100px', objectFit: 'cover' }}
           alt="User"
         />

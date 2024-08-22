@@ -1,6 +1,6 @@
 import { React, useState } from 'react'
 import { useSelector, useDispatch } from "react-redux";
-import { closeChat, updateSelectedUsers } from "../Reducer/chatReducer";
+import { closeChat, updateSelectedUsers } from "../reducer/chatReducer";
 import io from "socket.io-client";
 const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, fetchMessages }) => {
 
@@ -9,7 +9,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, f
   const [updategroupName, setUpdateGroupName] = useState([]);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
   const userData = useSelector((state) => state.user.userData);
-  const ENDPOINT = "http://localhost:5000";
+  const ENDPOINT =process.env.REACT_APP_API_BASE_URL;
   var socket = io(ENDPOINT);
   const dispatch = useDispatch()
   const toggleModal = () => {
@@ -22,7 +22,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, f
       chatId: selectedChat._id,
     };
     try {
-      const response = await fetch('http://localhost:5000/user/api/renamegroup', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/api/renamegroup`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, f
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/users?search=${searchTerm}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users?search=${searchTerm}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, f
     };
 
     try {
-      const response = await fetch(`http://localhost:5000/user/api/groupremove`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/api/groupremove`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, f
     };
 
     try {
-      const response = await fetch(`http://localhost:5000/user/api/groupadd`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/api/groupadd`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, f
     };
 
     try {
-      const response = await fetch(`http://localhost:5000/user/api/userremove/${userId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/api/userremove/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -193,10 +193,10 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, f
                     </div>
                     {selectedChat.groupAdmin === userData._id && (
                       <>
-                        <div className="input-control ">
+                        <div className="d-flex justify-content-between justify-content-md-between">
                           <input
                             type="text"
-                            className="form-control form-control-sm"
+                            className="input-control col-9.2"
                             placeholder="Chat Name"
                             value={updategroupName}
                             onChange={(e) => setUpdateGroupName(e.target.value)}
@@ -219,7 +219,7 @@ const UpdateGroup = ({ isUpdateModalOpen, setIsUpdateModalOpen, setFetchAgain, f
                     {serachResult.map((user) => (
                       <div key={user._id} className="d-flex align-items-center mb-2">
                         <img
-                          src={user.profileImage ? `http://localhost:5000/images/${user.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU"}
+                          src={user.profileImage ? `${process.env.REACT_APP_API_BASE_URL}/images/${user.profileImage}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgee_ioFQrKoyiV3tnY77MLsPeiD15SGydSQ&usqp=CAU"}
                           alt={`${user.name}'s profile`}
                           width="53px"
                           height="53px"

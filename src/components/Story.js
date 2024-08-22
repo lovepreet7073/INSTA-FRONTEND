@@ -31,7 +31,7 @@ const Story = () => {
     formData.append('image', image);
 
     try {
-      const response = await fetch('http://localhost:5000/user/api/addstory', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/api/addstory`, {
         method: 'POST',
         body: formData,
         headers: {
@@ -57,7 +57,7 @@ const Story = () => {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await fetch('http://localhost:5000/user/api/getstory', {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/api/getstory`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('jwttoken')}`, // Include token if needed
@@ -87,7 +87,7 @@ const Story = () => {
       if (userStories && userStories.stories.length > 0) {
         await Promise.all(userStories.stories.map(async (story) => {
           if (story._id) {
-            const response = await fetch(`http://localhost:5000/user/api/updateViewers/${story._id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/api/updateViewers/${story._id}`, {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('jwttoken')}`, // Include token if needed
@@ -141,9 +141,9 @@ const Story = () => {
               <li className="list-inline-item mx-2" key={index}>
                 <button className="btn p-0" onClick={() => openStoryModal(userStories.user)}>
                   <div className="d-flex flex-column justify-content-center align-items-center">
-                    <div className=" rounded-circle overflow-hidden d-flex justify-content-center align-items-center story-avatar">
+                    <div className=" rounded-circle overflow-hidden d-flex justify-content-center align-items-center story-avatar setting">
                       <img
-                        src={`http://localhost:5000/images/${userStories.user.profileImage}`}
+                        src={`${process.env.REACT_APP_API_BASE_URL}/images/${userStories.user.profileImage}`}
                         className=""
                         style={{
                           width: "60px",

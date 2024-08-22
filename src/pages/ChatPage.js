@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
-import ChatSidebar from "../components/chatSidebar";
+import ChatSidebar from "../components/ChatSidebar";
 import Chats from "../components/Chats";
 import "../assets/css/chat.css";
 import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
-import { setIncomingCall } from "../Reducer/callReducer";
-import { addNotification } from "../Reducer/notification";
-import { fetchChatsSuccess } from "../Reducer/chatReducer";
+import { setIncomingCall } from "../reducer/callReducer";
+import { addNotification } from "../reducer/notification";
+import { fetchChatsSuccess } from "../reducer/chatReducer";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
-import { endCall } from '../Reducer/callReducer';
 const ChatPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [lastMsg, setLastMsg] = useState('');
@@ -19,7 +18,7 @@ const ChatPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const selectedChat = useSelector((state) => state.chat.selectedChat);
   const dispatch = useDispatch();
-  const ENDPOINT = "http://localhost:5000";
+  const ENDPOINT = process.env.REACT_APP_API_BASE_URL;
   
   const userData = useSelector((state) => state.user.userData);
   var socket;
@@ -30,7 +29,7 @@ const ChatPage = () => {
 const fetchChats = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/user/fetchchats",
+        `${process.env.REACT_APP_API_BASE_URL}/api/user/fetchchats`,
         {
           method: "GET",
           headers: {

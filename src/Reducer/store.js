@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { postReducer } from "./postReducer";
-import { userReducer } from "./UseReducer";
+import { userReducer } from "./useReducer";
 import { chatReducer } from "./chatReducer";
 import { notificationsReducer } from "./notification";
 import { callReducer } from "./callReducer";

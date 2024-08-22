@@ -15,12 +15,12 @@ const AllPosts = () => {
   useEffect(() => {
     document.title = "All Posts";
   }, []);
-  const [openPicker, setOpenPicker] = useState(false);
-  const [mainPicker, setmainPicker] = useState(false);
+
+  const [emojiPickers, setEmojiPickers] = useState({}); const [openPicker, setOpenPicker] = useState(false);
   const [posts, setPosts] = useState([]);
   const [show, setShow] = useState(false);
   const [page, setPage] = useState(1);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
   const [item, setItem] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -29,12 +29,29 @@ const AllPosts = () => {
   const [loading, setLoading] = useState(true);
   const userData = useSelector((state) => state.user.userData);
   const postsPerPage = 7;
+  const toggleEmojiPicker = (postId) => {
+    setEmojiPickers((prev) => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+  };
+  
 
+  const handleEmojiSelect = (postId, emoji) => {
+    setComment((prevComments) => ({
+      ...prevComments,
+      [postId]: (prevComments[postId] || "") + emoji.native,
+    }));
+    setEmojiPickers((prev) => ({
+      ...prev,
+      [postId]: false, // Hide the picker after selecting an emoji
+    }));
+  };
   const fetchPosts = async (id, page) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/user/allposts/${id}?page=${page}&limit=${postsPerPage}`,
+        `${process.env.REACT_APP_API_BASE_URL}/user/allposts/${id}?page=${page}&limit=${postsPerPage}`,
         {
           method: "GET",
           headers: {
@@ -46,11 +63,11 @@ const AllPosts = () => {
 
       if (response.ok) {
         const { posts: newPosts, hasMore } = await response.json();
-        setTimeout(() => {
-          setPosts((prevPosts) => [...prevPosts, ...newPosts]);
 
-          setHasMore(hasMore);
-        }, 1500);
+        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+
+        setHasMore(hasMore);
+
 
 
       } else {
@@ -65,9 +82,7 @@ const AllPosts = () => {
   };
 
 
-  const handleEmojiSelect = (emoji) => {
-    setComment(comment + emoji.native);
-  };
+
 
   useEffect(() => {
     if (userData?._id) {
@@ -78,7 +93,7 @@ const AllPosts = () => {
   const likePost = async (postId, userId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/likepost/${postId}/${userId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/user/likepost/${postId}/${userId}`,
         {
           method: "POST",
           headers: {
@@ -144,11 +159,13 @@ const AllPosts = () => {
 
 
 
-  const createComment = async (text, id) => {
-    if (comment) {
+  const createComment = async (postId) => {
+    const commentText = comment[postId]; // Get the comment for this specific post
+
+    if (commentText) {
       try {
         const response = await fetch(
-          `http://localhost:5000/user/api/comment`,
+          `${process.env.REACT_APP_API_BASE_URL}/user/api/comment`,
           {
             method: "PUT",
             headers: {
@@ -156,27 +173,33 @@ const AllPosts = () => {
               Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
             },
             body: JSON.stringify({
-              text: text,
-              postId: id,
-            })
+              text: commentText,
+              postId: postId,
+            }),
           }
         );
         const updatedPost = await response.json();
         setPosts((prevPosts) =>
-          prevPosts.map((post) => (post._id === id ? updatedPost : post))
+          prevPosts.map((post) => (post._id === postId ? updatedPost : post))
         );
-        setComment("")
-        setmainPicker(false)
+
+        // Clear the comment for the specific post
+        setComment((prevComments) => ({
+          ...prevComments,
+          [postId]: '', // Clear the input field for this specific post
+        }));
+
       } catch (error) {
-        console.error("Error liking post:", error);
+        console.error("Error submitting comment:", error);
       }
     }
-  }
+  };
+
 
   const replyComment = async (postId, commentId, replyText) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/api/comment/${commentId}/${postId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/user/api/comment/${commentId}/${postId}`,
         {
           method: "PUT",
           headers: {
@@ -193,7 +216,6 @@ const AllPosts = () => {
       setPosts((prevPosts) =>
         prevPosts.map((post) => (post._id === postId ? updatedPost : post))
       );
-      setOpenPicker(false);
     } catch (error) {
       console.error("Error reply on comment:", error);
     }
@@ -202,7 +224,7 @@ const AllPosts = () => {
   const replyOnReply = async (postId, commentId, replytext, parentReplyId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/api/replyonComment/${commentId}/${postId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/user/api/replyonComment/${commentId}/${postId}`,
         {
           method: "PUT",
           headers: {
@@ -222,7 +244,6 @@ const AllPosts = () => {
       setPosts((prevPosts) =>
         prevPosts.map((post) => (post._id === postId ? updatedPost : post))
       );
-      setOpenPicker(false);
     } catch (error) {
       console.error("Error reply on comment:", error);
     }
@@ -230,13 +251,19 @@ const AllPosts = () => {
 
   const toggleComment = (post) => {
     setItem(post); // Set the selected post
-    setShow(!show); // Toggle the show state
-    setmainPicker(false)
+    setShow(!show);
+    setEmojiPickers((prev) => ({
+      ...prev,
+      [post._id]: false, // Hide the picker after selecting an emoji
+    })); // Toggle the show state
   }
-  const handleCommentChange = (e) => {
-    setComment(e.target.value);
+  const handleCommentChange = (e, postId) => {
+    const { value } = e.target;
+    setComment((prevComments) => ({
+      ...prevComments,
+      [postId]: value, // Update the comment for this specific postId
+    }));
   };
-
 
   const handleReply = (reply, commentId) => {
     setReplyingTo({
@@ -251,23 +278,26 @@ const AllPosts = () => {
     setReplyingTo(comment)
     setComment(`@${comment.postedBy.name} `);
   }
+
+
   const handleCreateComment = () => {
     if (replyingTo) {
       if (replyingTo.parentReplyId) {
-        replyOnReply(item._id, replyingTo.commentId, comment, replyingTo._id);
+        replyOnReply(item._id, replyingTo.commentId, comment[item._id] || "", replyingTo._id);
       } else {
-        replyComment(item._id, replyingTo._id, comment)
+        replyComment(item._id, replyingTo._id, comment[item._id] || "");
       }
     } else {
-      createComment(comment, item._id);
+      createComment(item._id);
     }
     setComment("");
     setReplyingTo(null);
   };
 
+
   return (
     <div className="home">
-      <Story/>
+      <Story />
       <div className="card">
 
         <InfiniteScroll
@@ -297,7 +327,7 @@ const AllPosts = () => {
                   <div className="card-pic">
                     {post.userId && post.userId.profileImage ? (
                       <img
-                        src={`http://localhost:5000/images/${post.userId.profileImage}`}
+                        src={`${process.env.REACT_APP_API_BASE_URL}/images/${post.userId.profileImage}`}
                         alt=""
                         height="35px"
                         width="35px"
@@ -330,7 +360,7 @@ const AllPosts = () => {
                 <div className="card-image">
                   <img
                     className="post-img"
-                    src={`http://localhost:5000/images/${post.image}`}
+                    src={`${process.env.REACT_APP_API_BASE_URL}/images/${post.image}`}
                     alt="Post"
                   />
                 </div>
@@ -391,14 +421,13 @@ const AllPosts = () => {
                 <div
                   style={{
                     zIndex: "10",
-                    display: mainPicker ? "inline" : "none",
+                    display: emojiPickers[post._id] ? "block" : "none",
                     position: "absolute",
                     bottom: "75px",
                     right: "90px",
                   }}
                 >
-                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
-
+                  <Picker onEmojiSelect={(emoji) => handleEmojiSelect(post._id, emoji)} />
                 </div>
 
                 <div className="add-comment">
@@ -406,14 +435,19 @@ const AllPosts = () => {
                   <i
                     class="bi bi-emoji-smile"
                     style={{ fontSize: "20px", cursor: "pointer" }}
-                    onClick={() => setmainPicker(!mainPicker)
-
-                    }
+                    onClick={() => toggleEmojiPicker(post._id)}
                   ></i>
 
-
-                  <input type='text' value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add a comment" required />
-                  <button className="btn btn-primary-sm" style={{ color: "blue" }} onClick={() => createComment(comment, post._id)}>Post</button>
+                  <input
+                    type='text'
+                    value={comment[post._id] || ''}  // Set value from state or empty string
+                    onChange={(e) => handleCommentChange(e, post._id)}
+                    placeholder="Add a comment"
+                    required
+                  />
+                  <button className="btn btn-primary-sm" style={{ color: "blue" }} onClick={() => createComment(post._id)}>
+                    Post
+                  </button>
                 </div>
               </div>
             ))
@@ -427,24 +461,24 @@ const AllPosts = () => {
       {show && item && (
         <div className="show-comment" style={{ width: "100%" }}>
           <div className="container comment">
-          
+
             <div
               className="post-pic-div"
               style={{
-                backgroundImage: item?.image ? `url(http://localhost:5000/images/${item?.image})` : "none",
-                backgroundSize: "cover", 
-                backgroundPosition: "center", 
+                backgroundImage: item?.image ? `url(${process.env.REACT_APP_API_BASE_URL}/images/${item?.image})` : "none",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
                 width: "100%",
                 height: "inherit"
               }}
             >
-           
+
             </div>
             <div className="details">
               <div className="card-header" style={{ borderBottom: "1px solid #00000029" }}>
                 <div className="card-pic">
                   <img
-                    src={`http://localhost:5000/images/${item.userId.profileImage}`}
+                    src={`${process.env.REACT_APP_API_BASE_URL}/images/${item.userId.profileImage}`}
                     alt=""
                     height="42px"
                     width="42px"
@@ -458,7 +492,7 @@ const AllPosts = () => {
                 {item.comments.map((comment) => {
                   return (
                     <div className="comm" >
-                      <img src={`http://localhost:5000/images/${comment.postedBy.profileImage}`
+                      <img src={`${process.env.REACT_APP_API_BASE_URL}/images/${comment.postedBy.profileImage}`
                       }
                         style={{
                           width: "37px", height: "37px", borderRadius: "100px", objectFit: "cover"
@@ -482,7 +516,7 @@ const AllPosts = () => {
                 <div className="reply-box">
 
                   <img
-                    src={`http://localhost:5000/images/${replyingTo.postedBy.profileImage}`}
+                    src={`${process.env.REACT_APP_API_BASE_URL}/images/${replyingTo.postedBy.profileImage}`}
                     style={{ width: "30px", height: "30px", borderRadius: "100px", objectFit: "cover" }}
                   ></img>
                   <p style={{ margin: "0px" }}>Replying to <strong>{replyingTo.postedBy.name}</strong></p>
@@ -494,7 +528,7 @@ const AllPosts = () => {
               )}
 
               <div className="add-comment">
-                <div
+              <div
                   style={{
                     zIndex: "10",
                     display: openPicker ? "inline" : "none",
@@ -503,7 +537,7 @@ const AllPosts = () => {
                     right: "90px",
                   }}
                 >
-                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                  <Picker data={data} onEmojiSelect={(emoji) => handleEmojiSelect(item._id, emoji)} />
 
                 </div>
                 <i
@@ -513,24 +547,30 @@ const AllPosts = () => {
 
                   }
                 ></i>
-
                 <input
-                  type="text"
-                  value={comment}
-                  onChange={handleCommentChange}
+                  type='text'
+                  value={comment[item._id] || ''}  // Set value from state or empty string
+                  onChange={(e) => handleCommentChange(e, item._id)}
                   placeholder={replyingTo ? `${replyingTo.postedBy.name}` : "Add a comment"}
                   required
                 />
+
                 <button
                   className="btn btn-primary-sm"
                   style={{ color: "blue" }}
                   onClick={() => {
-                    handleCreateComment()
+                    handleCreateComment(item._id)
                     toggleComment(item)
                   }}
                 >
                   {replyingTo ? "Reply" : "Post"}
                 </button>
+
+
+
+
+
+
               </div>
 
             </div>

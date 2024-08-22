@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "../assets/css/post.css";
 import { useFormik } from "formik";
 import { CreatePostSchema } from "../components/Validations";
-import { addPost } from "../Reducer/postReducer";
+import { addPost } from "../reducer/postReducer";
 
 const UpdatePost = ({ post }) => {
     useEffect(() => {
@@ -23,7 +23,7 @@ const UpdatePost = ({ post }) => {
     useEffect(() => {
         async function fetchPostData() {
             try {
-                const response = await fetch(`http://localhost:5000/user/editpost/${postId}`, {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/editpost/${postId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const UpdatePost = ({ post }) => {
             }
 
             try {
-                const response = await fetch(`http://localhost:5000/user/updatepost/${postId}`, {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/updatepost/${postId}`, {
                     method: "POST",
                     body: formData,
                     headers: {
@@ -129,7 +129,7 @@ const UpdatePost = ({ post }) => {
                     <div className="image-part-edit-post">
                         {formik.values.postImg && typeof formik.values.postImg === "string" ? (
                             <img
-                                src={`http://localhost:5000/images/${formik.values.postImg}`}
+                                src={`${process.env.REACT_APP_API_BASE_URL}/images/${formik.values.postImg}`}
                                 alt="Existing Post"
                                 style={{ width: "100%", marginLeft: "2px", marginRight: "6px" }}
                             />

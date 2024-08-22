@@ -2,7 +2,7 @@ import "../assets/css/userpost.css";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addPost, setSelectedPost, deletePost } from "../Reducer/postReducer";
+import { addPost, setSelectedPost, deletePost } from "../reducer/postReducer";
 import Swal from "sweetalert2";
 import Skeleton from "react-loading-skeleton";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -11,61 +11,75 @@ import formatShortDate from "../functions/formatDate"
 
 const UserPost = ({ userId, setPostLength, postLength, isFollow }) => {
   const [posts, setPosts] = useState([]);
+  console.log(posts, "posts")
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-const [expandedPosts, setExpandedPosts] = useState({});
+  const [expandedPosts, setExpandedPosts] = useState({});
 
   const postsPerPage = 4;
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true); // New state for initial load
   const navigate = useNavigate();
   const userData = useSelector((state) => state.user.userData);
   const loginUserId = userData?._id;
   const dispatch = useDispatch();
+  console.log(hasMore,'wwwwwwwwwwww')
+  const fetchPosts = async () => {
+    if (userId && hasMore) {
+      setLoading(true);
+      try {
+        console.log(`Fetching posts for userId: ${userId}, page: ${page}, limit: ${postsPerPage}`);
+
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/user/posts/${userId}?page=${page}&limit=${postsPerPage}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
+            },
+          }
+        );
+        if (response.ok) {
+
+
+          const { posts: newPosts, hasMore:hasMorePost } = await response.json();
+          console.log(newPosts,hasMore,'has-more')
+       
+            setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+            setHasMore(hasMorePost);
+       
+
+          // dispatch(addPost(postData));
+        } else {
+          console.error("Failed to fetch posts");
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      } finally {
+        setLoading(false);
+        setInitialLoad(false); // Update initial load state
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      if (userId) {
-        setLoading(true); 
-        try {
-          const response = await fetch(
-            `http://localhost:5000/user/posts/${userId}?page=${page}&limit=${postsPerPage}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwttoken")}`,
-              },
-            }
-          );
-          if (response.ok) {
-            const postData = await response.json();
-            setPosts((prevPosts) => [...prevPosts, ...postData]);
-            setHasMore(postData.length === postsPerPage);
-            dispatch(addPost(postData));
-          } else {
-            console.error("Failed to fetch posts");
-          }
-        } catch (error) {
-          console.error("Error fetching posts:", error);
-        } finally {
-          setLoading(false);
-          setInitialLoad(false); // Update initial load state
-        }
-      }
-    };
-
+   if(userId && hasMore){
     fetchPosts();
-  }, [userId, page]);
+   }
+  }, [userId, page,hasMore]);
 
   const fetchMorePosts = () => {
-    setPage((prevPage) => prevPage + 1);
+    if (hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
+
 
   const likePost = async (postId, userId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/user/likepost/${postId}/${userId}`,
+        `http://localh${process.env.REACT_APP_API_BASE_URL}/user/likepost/${postId}/${userId}`,
         {
           method: "POST",
           headers: {
@@ -101,7 +115,7 @@ const [expandedPosts, setExpandedPosts] = useState({});
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:5000/user/deletepost/${postId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/user/deletepost/${postId}`,
           {
             method: "DELETE",
             headers: {
@@ -175,7 +189,7 @@ const [expandedPosts, setExpandedPosts] = useState({});
     }));
   };
 
-  
+
   return (
     <div>
       <div className="home">
@@ -224,7 +238,7 @@ const [expandedPosts, setExpandedPosts] = useState({});
                 <div className="card-image div-card" key={index}>
                   {post.image && (
                     <img
-                      src={`http://localhost:5000/images/${post.image}`}
+                      src={`${process.env.REACT_APP_API_BASE_URL}/images/${post.image}`}
                       alt="Post"
                       className="profile-post-img"
                     />
@@ -247,12 +261,12 @@ const [expandedPosts, setExpandedPosts] = useState({});
                         )}
                         <p style={{ margin: "0px" }}>{post.likes}</p>
                       </span>
-                      <div className="set-btns" style={{display:"flex",gap:"12px"}}>
+                      <div className="set-btns" style={{ display: "flex", gap: "12px" }}>
                         {loginUserId === post.userId._id && (
                           <>
-                        <i class="bi bi-pen-fill" onClick={()=>handleUpdateLink(post._id)}style={{cursor:"pointer",fontSize:"20px"}}></i>
+                            <i class="bi bi-pen-fill" onClick={() => handleUpdateLink(post._id)} style={{ cursor: "pointer", fontSize: "20px" }}></i>
 
-                            <i class="bi bi-trash3-fill" onClick={()=>handleDelete(post._id)} style={{cursor:"pointer",fontSize:"20px"}}></i>
+                            <i class="bi bi-trash3-fill" onClick={() => handleDelete(post._id)} style={{ cursor: "pointer", fontSize: "20px" }}></i>
                           </>
                         )}
                       </div>
