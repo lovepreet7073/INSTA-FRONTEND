@@ -5,11 +5,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import '../assets/css/allposts.css';
-import Reply from "../components/Reply";
+import Reply from "../Components/Reply";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import formatShortDate from "../functions/formatDate";
-import Story from "../components/Story";
+import Story from "../Components/Story";
 const AllPosts = () => {
 
   useEffect(() => {
@@ -268,7 +268,7 @@ const AllPosts = () => {
   const handleReply = (reply, commentId) => {
     setReplyingTo({
       ...reply,
-      parentReplyId: reply._id,
+      parentReplyId: reply._id, 
       commentId: commentId
     });
     setComment(`@${reply.postedBy.name} `); // Optionally pre-fill with username
